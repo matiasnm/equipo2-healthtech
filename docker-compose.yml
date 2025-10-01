@@ -1,0 +1,36 @@
+services:
+  db:
+    image: postgres:15
+    container_name: postgres-db
+    environment:
+      POSTGRES_DB: mydb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  flyway:
+    environment:
+      FLYWAY_CLEAN_DISABLED: "false"
+    image: flyway/flyway:9
+    command: -url=jdbc:postgresql://db:5432/mydb -user=postgres -password=postgres clean
+    depends_on:
+      - db
+
+  app:
+    build: ./backend
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/mydb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      TZ: UTC
+      API_SECURITY_SECRET: my-super-secret
+    ports:
+      - "8080:8080"
+
+volumes:
+  pgdata:
