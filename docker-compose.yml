@@ -10,6 +10,8 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    networks:
+      - health-net
 
   flyway:
     environment:
@@ -18,6 +20,8 @@ services:
     command: -url=jdbc:postgresql://db:5432/mydb -user=postgres -password=postgres clean
     depends_on:
       - db
+    networks:
+      - health-net
 
   app:
     build: ./backend
@@ -31,6 +35,11 @@ services:
       API_SECURITY_SECRET: my-super-secret
     ports:
       - "8080:8080"
+    networks:
+      - health-net
 
 volumes:
   pgdata:
+
+networks:
+  health-net:
