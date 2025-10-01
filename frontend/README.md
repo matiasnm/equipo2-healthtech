@@ -4,7 +4,7 @@ Proyecto creado con Vite + React.
 
 ## Stack
 
-- React + Vite
+- React + Vite + TypeScript
 - Tailwind CSS
 - Zustand 
 
@@ -25,3 +25,7 @@ Proyecto creado con Vite + React.
 - main: rama estable
 - dev: integración continua
 - feature-*: desarrollo de funcionalidades
+
+## Migración a TypeScript
+
+El proyecto fue migrado de JavaScript a TypeScript para mejorar la seguridad en el manejo de props, estados y funciones. Esto facilita el mantenimiento.
