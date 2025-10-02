@@ -29,3 +29,14 @@ Proyecto creado con Vite + React.
 ## Migración a TypeScript
 
 El proyecto fue migrado de JavaScript a TypeScript para mejorar la seguridad en el manejo de props, estados y funciones. Esto facilita el mantenimiento.
+
+## 🐳 Dockerización del frontend
+
+### Construcción
+docker build -t healthtech-fe --build-arg VITE_API_URL=https://api.tuapp.com .
+
+### Ejecución 
+docker run -p 3000:80 healthtech-fe
+
+
+La app estará disponible en http://localhost:3000.
