@@ -1,6 +1,5 @@
 package com.equipo2.healthtech.controller;
 
-import com.equipo2.healthtech.dto.user.UserCreateRequestDto;
 import com.equipo2.healthtech.dto.user.UserReadResponseDto;
 import com.equipo2.healthtech.dto.userprofile.UserProfileCreateRequestDto;
 import com.equipo2.healthtech.dto.userprofile.UserProfileReadResponseDto;
@@ -20,6 +19,7 @@ import java.net.URI;
 
 @RestController
 @RequestMapping("/api/v1/users")
+@SecurityRequirement(name = "bearer-key")
 @AllArgsConstructor
 @Slf4j
 public class UserController {
@@ -27,24 +27,21 @@ public class UserController {
     private final UserService userService;
     private final UserProfileService userProfileService;
 
-    @Operation(summary = "Gets an User by id",
-            security = { @SecurityRequirement(name = "bearer-key") })
+    @Operation(summary = "Gets an User by id")
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<UserReadResponseDto> getUser(@PathVariable Long id) {
         return ResponseEntity.ok(userService.readUser(id));
     }
 
-    @Operation(summary = "Gets current User",
-            security = { @SecurityRequirement(name = "bearer-key") })
+    @Operation(summary = "Gets current User")
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/me")
     public ResponseEntity<UserReadResponseDto> getMe() {
         return ResponseEntity.ok(userService.readUser());
     }
 
-    @Operation(summary = "Creates a UserProfile",
-            security = { @SecurityRequirement(name = "bearer-key") })
+    @Operation(summary = "Creates a UserProfile")
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/profile/create")
     public ResponseEntity<UserProfileReadResponseDto> createUser(@RequestBody @Valid UserProfileCreateRequestDto request, UriComponentsBuilder uriBuilder) {

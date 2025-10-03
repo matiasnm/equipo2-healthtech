@@ -21,19 +21,20 @@ public class TestController {
         return "pong";
     }
 
-    @Operation(summary = "Gets a response if authenticated and Role=ADMIN",
-            security = { @SecurityRequirement(name = "bearer-key") })
+    @Operation(summary = "Gets a response if authenticated and Role=ADMIN")
+    @SecurityRequirement(name = "bearer-key")
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/admin")
     public String adminEndpoint() {
         return "Hello Admin!";
     }
 
-    @Operation(summary = "Gets a response if authenticated",
-            security = { @SecurityRequirement(name = "bearer-key") })
+    @Operation(summary = "Gets a response if authenticated")
+    @SecurityRequirement(name = "bearer-key")
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/user")
     public String userEndpoint() {
         return "Hello Authenticated User!";
     }
+
 }

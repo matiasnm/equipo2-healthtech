@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
                 description = "a Healthy App..."
         ),
         security = {
-                @SecurityRequirement(name = "bearerAuth")
+                @SecurityRequirement(name = "bearer-key")
         }
 )
 @SecurityScheme(

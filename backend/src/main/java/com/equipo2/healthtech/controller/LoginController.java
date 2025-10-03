@@ -10,10 +10,12 @@ import com.equipo2.healthtech.service.LoginService;
 import com.equipo2.healthtech.service.MfaService;
 import com.equipo2.healthtech.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -53,6 +55,8 @@ public class LoginController {
     }
 
     @Operation(summary = "Enables MFA for this User")
+    @PreAuthorize("isAuthenticated()")
+    @SecurityRequirement(name = "bearer-key")
     @PostMapping("/mfa/enable")
     public String enableMfa(Authentication auth) {
         return mfaService.enableMfa((User) auth.getPrincipal());
