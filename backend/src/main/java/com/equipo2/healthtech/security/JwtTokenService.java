@@ -18,13 +18,14 @@ public class JwtTokenService {
     @Value("${api.security.secret}")
     private String apiSecret;
 
-    public String createToken(User user) {
+    public String createToken(User user, boolean mfaVerified) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(apiSecret);
             return JWT.create()
                     .withIssuer("health tech")
                     .withSubject(user.getEmail())
                     .withClaim("id", user.getId())
+                    .withClaim("mfa_verified", mfaVerified)
                     .withExpiresAt(getExpirationDate())
                     .sign(algorithm);
         } catch (JWTCreationException exception){
@@ -57,6 +58,33 @@ public class JwtTokenService {
 
     private Instant getExpirationDate() {
         return Instant.now().plus(Duration.ofHours(2));
+    }
+
+    public String createRefreshToken(User user) {
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(apiSecret);
+            return JWT.create()
+                    .withIssuer("health tech")
+                    .withSubject(user.getEmail())
+                    .withClaim("id", user.getId())
+                    .withClaim("type", "refresh")
+                    .withExpiresAt(Instant.now().plus(Duration.ofDays(7))) // ej: 7 días
+                    .sign(algorithm);
+        } catch (JWTCreationException exception){
+            throw new RuntimeException("Error creating refresh token", exception);
+        }
+    }
+
+    public DecodedJWT decode(String token) {
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(apiSecret);
+            return JWT.require(algorithm)
+                    .withIssuer("health tech")
+                    .build()
+                    .verify(token);
+        } catch (JWTVerificationException exception) {
+            throw new RuntimeException("Invalid token: " + exception.getMessage(), exception);
+        }
     }
 
 }

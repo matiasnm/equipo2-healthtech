@@ -36,13 +36,21 @@ public class SecurityFilter extends OncePerRequestFilter {
         var authHeader = request.getHeader("Authorization");
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             var token = authHeader.substring(7);
+            var decoded = tokenService.decode(token);
+            boolean mfaVerified = decoded.getClaim("mfa_verified").asBoolean();
             var username = tokenService.getSubject(token);
-            if (username != null) {
+            if (mfaVerified) {
                 var user = authenticationService.loadUserByUsername(username);
                 var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 log.info("USER: " + username);
                 log.info("TOKEN: " + token);
+            } else {
+                log.warn("MFA NOT VERIFIED -> USER: " + username);
+                if (!request.getRequestURI().startsWith("/auth/mfa/verify")) {
+                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    return;
+                }
             }
         }
 

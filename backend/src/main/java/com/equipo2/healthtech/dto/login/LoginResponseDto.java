@@ -1,6 +1,6 @@
-package com.equipo2.healthtech.dto.user;
+package com.equipo2.healthtech.dto.login;
 
-public record UserLoginResponseDto(
+public record LoginResponseDto(
         String token,
         String refreshToken,
         boolean mfaRequired

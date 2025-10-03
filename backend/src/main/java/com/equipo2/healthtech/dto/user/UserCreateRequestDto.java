@@ -7,6 +7,5 @@ import jakarta.validation.constraints.NotNull;
 public record UserCreateRequestDto(
         @NotBlank(message = "Incomplete attribute: 'email'") String email,
         @NotNull(message = "Incomplete attribute: 'role'") Role role,
-        @NotBlank(message = "Incomplete attribute: 'password'") String password,
-        @NotNull(message = "Incomplete attribute: 'clinicId'") Long clinicId
+        @NotBlank(message = "Incomplete attribute: 'password'") String password
 ) { }

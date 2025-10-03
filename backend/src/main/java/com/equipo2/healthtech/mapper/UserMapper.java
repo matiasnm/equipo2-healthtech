@@ -8,13 +8,11 @@ import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring", uses = { UserProfileMapper.class}, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface UserMapper {
 
     User toUser(UserCreateRequestDto userDto);
-
-    UserReadResponseDto toUserDto(User user);
-
-    List<UserReadResponseDto> toUserDTOs(List<User> user);
+    UserReadResponseDto toUserReadResponseDto(User user);
+    List<UserReadResponseDto> toUserReadResponseDto(List<User> user);
 
 }

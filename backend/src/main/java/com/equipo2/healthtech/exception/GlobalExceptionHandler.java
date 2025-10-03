@@ -16,11 +16,61 @@ import jakarta.validation.ConstraintViolationException;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(NoAuthenticatedUserException.class)
+    ProblemDetail handleNoAuthenticatedUserException(NoAuthenticatedUserException e) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
+        problemDetail.setTitle("No authenticated User");
+        problemDetail.setType(URI.create("/"));
+        problemDetail.setProperty("errorCategory", "Business");
+        problemDetail.setProperty("timestamp", Instant.now());
+        return problemDetail;
+    }
+
+    @ExceptionHandler(InvalidMfaCodeException.class)
+    ProblemDetail handleInvalidMfaCodeException(InvalidMfaCodeException e) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
+        problemDetail.setTitle("Invalid MFA code");
+        problemDetail.setType(URI.create("/"));
+        problemDetail.setProperty("errorCategory", "Business");
+        problemDetail.setProperty("timestamp", Instant.now());
+        return problemDetail;
+    }
+
+    @ExceptionHandler(MfaNotEnabledException.class)
+    ProblemDetail handleMfaNotEnabledException(MfaNotEnabledException e) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
+        problemDetail.setTitle("Mfa not enabled");
+        problemDetail.setType(URI.create("/"));
+        problemDetail.setProperty("errorCategory", "Business");
+        problemDetail.setProperty("timestamp", Instant.now());
+        return problemDetail;
+    }
+
+    @ExceptionHandler(InvalidPasswordException.class)
+    ProblemDetail handleInvalidPasswordException(InvalidPasswordException e) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, e.getMessage());
+        problemDetail.setTitle("Wrong credentials");
+        problemDetail.setType(URI.create("/"));
+        problemDetail.setProperty("errorCategory", "Business");
+        problemDetail.setProperty("timestamp", Instant.now());
+        return problemDetail;
+    }
+
+    @ExceptionHandler(UserProfileAlreadyExistsException.class)
+    ProblemDetail handleUserProfileAlreadyExistsException(UserProfileAlreadyExistsException e) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, e.getMessage());
+        problemDetail.setTitle("UserProfile already exists");
+        problemDetail.setType(URI.create("/"));
+        problemDetail.setProperty("errorCategory", "Business");
+        problemDetail.setProperty("timestamp", Instant.now());
+        return problemDetail;
+    }
+
     @ExceptionHandler(EmailAlreadyExistsException.class)
     ProblemDetail handleEmailAlreadyExistsException(EmailAlreadyExistsException e) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, e.getMessage());
         problemDetail.setTitle("Email already exists");
-        problemDetail.setType(URI.create("/errors/email-already-exists"));
+        problemDetail.setType(URI.create("/"));
         problemDetail.setProperty("errorCategory", "Business");
         problemDetail.setProperty("timestamp", Instant.now());
         return problemDetail;
@@ -30,7 +80,7 @@ public class GlobalExceptionHandler {
     ProblemDetail handleNoResultsException(NoResultsException e) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
         problemDetail.setTitle("No results");
-        problemDetail.setType(URI.create("/")); //https://api.ejemplo.com/errors/not-found
+        problemDetail.setType(URI.create("/"));
         problemDetail.setProperty("errorCategory", "Repository");
         problemDetail.setProperty("timestamp", Instant.now());
         return problemDetail;

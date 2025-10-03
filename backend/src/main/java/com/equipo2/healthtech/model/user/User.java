@@ -2,12 +2,11 @@ package com.equipo2.healthtech.model.user;
 
 import com.equipo2.healthtech.model.AuditableEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.Size;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,33 +27,45 @@ public class User  extends AuditableEntity implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull()
-    private Long clinicId;
-
     @Column(unique = true)
-    @NotBlank()
+    @NotBlank
+    @Email
+    @Size(max = 255)
     private String email;
+
+    @NotBlank
+    @Size(min = 8, max = 255)
+    private String password;
 
     @NotNull()
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @NotBlank()
-    private String password;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = true)
+    @ToString.Exclude
+    private UserProfile userProfile;
 
-    private boolean active = true; // Used to manually deactivate a user
+    @Column(nullable = false)
+    private boolean status = false;     // Pending UserData information...
+
+    @Column(nullable = false)
+    private int blocked = 0;            // Blocked on 3 failed login attempts
+
+    @Column(nullable = false)
+    private boolean active = true;      // Used to manually deactivate a user
+
+    @Column(nullable = false)
     private boolean mfaRequired = false;
+
+    @Column(nullable = false)
     private boolean accountLocked = false;
+
+    @Column(nullable = false)
     private boolean credentialsExpired = false;
-    private Instant accountExpiration;
-    private Instant credentialsExpiration;
 
-
-    private String firstName;
-    private String lastName;
-    private String phone;
-
-    // UserDetails implementation...
+    @Size(max = 255)
+    @Column(nullable = true)
+    private String mfaSecret = null;
 
     @Override
     public String getPassword() {
@@ -72,23 +83,12 @@ public class User  extends AuditableEntity implements UserDetails {
     }
 
     @Override
-    public boolean isAccountNonExpired() {
-        return accountExpiration == null || accountExpiration.isAfter(Instant.now());
-    }
-
-    @Override
     public boolean isAccountNonLocked() {
         return !accountLocked;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return credentialsExpiration == null || credentialsExpiration.isAfter(Instant.now());
     }
 
     @Override
     public boolean isEnabled() {
         return active && isAccountNonExpired() && isAccountNonLocked() && isCredentialsNonExpired();
     }
-
 }

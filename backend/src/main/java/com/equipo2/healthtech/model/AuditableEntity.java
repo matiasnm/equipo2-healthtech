@@ -2,11 +2,11 @@ package com.equipo2.healthtech.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
 
@@ -16,22 +16,12 @@ import java.time.Instant;
 @MappedSuperclass
 public class AuditableEntity {
 
+    @CreationTimestamp
     @Column(updatable = false, nullable = false)
     private Instant createdAt;
 
+    @UpdateTimestamp
     @Column(nullable = false)
     private Instant updatedAt;
-
-    @PrePersist
-    public void prePersist() {
-        Instant now = Instant.now();
-        this.createdAt = now;
-        this.updatedAt = now;
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        this.updatedAt = Instant.now();
-    }
 
 }

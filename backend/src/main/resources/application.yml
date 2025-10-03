@@ -9,21 +9,19 @@ logging:
 spring:
   application:
     name: health tech
-
+  profiles:
+    active: prod
   jackson:
     mapper:
       ACCEPT_CASE_INSENSITIVE_ENUMS: true
-
   datasource:
     url: ${SPRING_DATASOURCE_URL}
     username: ${SPRING_DATASOURCE_USERNAME}
     password: ${SPRING_DATASOURCE_PASSWORD}
-
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
-
   flyway:
     enabled: true
     locations: classpath:db/migration
