@@ -45,19 +45,24 @@ La app estará disponible en http://localhost:3000.
 
 Para evitar conflictos entre sistemas operativos, se agregó el archivo .gitattributes con * text=auto para asegurar que los finales de línea se normalicen automáticamente según el S.O. del dev.
 
-## 🐳 Levantar el frontend con Docker Compose
+## 🐳 Levantar el entorno con Docker Compose
 
-- Crear un archivo .env en la carpeta frontend/ con esta configuración:
+- Crear un archivo .env en la carpeta frontend/ basado en env.example.env
 
-env
-VITE_API_URL=https://api.remotebackend.com
+- Completar según el entorno. No subir al repositorio.
 
 - Ejecutar desde la carpeta frontend
 docker compose up --build -d
 
 - Acceder a la app en http://localhost:3000
-para detener y eliminar docker compose down
-para detener solamente docker compose stop
 
+- Verificar que se conecta al backend (http://app:8080)
+
+Comandos útiles
+
+docker compose down        # Detiene y elimina los contenedores
+docker compose stop        # Solo detiene los servicios
+docker compose ps          # Ver estado de los contenedores
+docker logs healthtech     # Consultar logs
 
 Esto permite levantar el frontend, el backend y la base de datos desde el mismo archivo con un solo comando.
