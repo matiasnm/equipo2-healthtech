@@ -33,7 +33,7 @@ El proyecto fue migrado de JavaScript a TypeScript para mejorar la seguridad en 
 ## 🐳 Dockerización del frontend
 
 ### Construcción
-docker build -t healthtech-fe --build-arg VITE_API_URL=https://api.tuapp.com .
+docker build -t healthtech-fe --build-arg VITE_API_URL=http://localhost:8080 .
 
 ### Ejecución 
 docker run -p 3000:80 healthtech-fe
