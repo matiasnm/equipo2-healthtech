@@ -1,35 +1,44 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '../public/vite.svg'
-import './App.css'
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { useAuth } from './hooks/useAuth';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Home from './pages/Home';
+import NotFound from './pages/NotFound';
+import Dashboard from './pages/Dashboard';
+import Profile from './pages/Profile';
+import HistoryPage from './pages/HistoryPage';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const { isAuthenticated } = useAuth();
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank" rel="noopener">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank" rel="noopener">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <main className="min-h-screen bg-secondary text-text font-sans">
+      <Routes>
+        {/* Rutas públicas */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/" element={<Home />} />
+
+        {/* Rutas privadas */}
+        <Route
+          path="/dashboard"
+          element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/profile"
+          element={isAuthenticated ? <Profile /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/history"
+          element={isAuthenticated ? <HistoryPage /> : <Navigate to="/login" />}
+        />
+
+        {/* Ruta por defecto */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </main>
+  );
 }
 
-export default App
+export default App;
+
