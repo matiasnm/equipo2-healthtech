@@ -34,6 +34,20 @@ services:
     networks:
       - health-net
 
+  web:
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: ${VITE_API_URL}
+    env_file:
+      - .env
+    container_name: web
+    ports:
+      - 3002:80
+    networks:
+      - health-net
+
 volumes:
   pgdata:
 
