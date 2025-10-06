@@ -2,10 +2,8 @@ services:
   db:
     image: postgres:15
     container_name: postgres-db
-    environment:
-      POSTGRES_DB: mydb
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+    env_file:
+      - .env
     ports:
       - "5432:5432"
     volumes:
@@ -14,10 +12,10 @@ services:
       - health-net
 
   flyway:
-    environment:
-      FLYWAY_CLEAN_DISABLED: "false"
+    env_file:
+      - .env      
     image: flyway/flyway:9
-    command: -url=jdbc:postgresql://db:5432/mydb -user=postgres -password=postgres clean
+    command: ${FLYWAY_COMMAND:-migrate}
     depends_on:
       - db
     networks:
@@ -29,13 +27,8 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - db
-    environment:
-      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
-      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
-      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
-      TZ: ${TZ}
-      API_SECURITY_SECRET: ${API_SECURITY_SECRET}
-      FRONTEND_URL: ${FRONTEND_URL}
+    env_file:
+      - .env
     ports:
       - "8080:8080"
     networks:
