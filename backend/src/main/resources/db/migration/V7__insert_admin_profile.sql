@@ -1,5 +1,5 @@
-INSERT INTO user_profiles (user_id, full_name, phone, address, birthday)
-VALUES (1, 'Admin Admin', '123456789', 'Admin Street 1', '1980-01-01')
+INSERT INTO user_profiles (user_id, full_name, gender, phone, address, birthday)
+VALUES (1, 'Admin Admin', 'Degenerado', '123456789', 'Admin Street 1', '1980-01-01')
 RETURNING id;
 
 INSERT INTO identifiers (system, value, type, user_id, related_person_id)

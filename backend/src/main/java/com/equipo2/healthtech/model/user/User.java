@@ -17,6 +17,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "users") // ! IMPORTANT: Use plurals on DB tables and singular for Entity naming
+@Inheritance(strategy = InheritanceType.JOINED)
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
