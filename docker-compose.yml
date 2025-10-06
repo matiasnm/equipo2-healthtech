@@ -44,7 +44,7 @@ services:
       - .env
     container_name: web
     ports:
-      - 3002:80
+      - 8001:80
     networks:
       - health-net
 
