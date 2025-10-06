@@ -24,7 +24,9 @@ services:
       - health-net
 
   app:
-    build: ../../Users/Newen/OneDrive/Desktop/equipo2-healthtech-test/equipo2-healthtech-test/backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     depends_on:
       - db
     environment:

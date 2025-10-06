@@ -42,6 +42,10 @@ public class UserProfile {
 
     @NotBlank()
     @Size(max = 50)
+    private String gender;
+
+    @NotBlank()
+    @Size(max = 50)
     private String phone;
 
     @NotBlank()
