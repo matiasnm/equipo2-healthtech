@@ -13,9 +13,9 @@ services:
 
   flyway:
     env_file:
-      - .env      
+      - .env
     image: flyway/flyway:9
-    command: ${FLYWAY_COMMAND:-migrate}
+    command: -url=${FLYWAY_URL} -user=${FLYWAY_USER} -password=${FLYWAY_PASSWORD} clean
     depends_on:
       - db
     networks:
