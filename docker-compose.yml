@@ -24,7 +24,9 @@ services:
       - health-net
 
   app:
-    build: ./backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     depends_on:
       - db
     environment:

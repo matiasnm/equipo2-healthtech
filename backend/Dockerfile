@@ -3,30 +3,22 @@ FROM eclipse-temurin:17-jdk-alpine
 
 WORKDIR /app
 
-# Copy Maven wrapper and pom.xml
+# Copiar wrapper y POM
 COPY mvnw .
 COPY .mvn .mvn
 COPY pom.xml .
 
-# Download dependencies (cached)
+# Descargar dependencias
 RUN ./mvnw dependency:go-offline -B
 
-# Copy the actual source code
+# Copiar código fuente
 COPY src ./src
 
-# Build the application
-RUN ./mvnw clean package -DskipTests
+# Compilar
+RUN ./mvnw package -DskipTests
 
-# ---- Run stage ----
-FROM eclipse-temurin:17-jdk-alpine
-
-WORKDIR /app
-
-# Copy the built jar from the build stage
-COPY --from=build /app/target/*.jar app.jar
-
-# Expose the port
+# Exponer puerto
 EXPOSE 8080
 
-# Run the app
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Ejecutar
+CMD ["java", "-jar", "target/healthtech-0.0.1-SNAPSHOT.jar"]
