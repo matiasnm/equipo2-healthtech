@@ -24,7 +24,7 @@ import java.util.List;
 public class User  extends AuditableEntity implements UserDetails {
 
     @Id()
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.TABLE)
     private Long id;
 
     @Column(unique = true)
