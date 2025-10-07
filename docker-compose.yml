@@ -36,6 +36,7 @@ services:
       TZ: ${TZ}
       API_SECURITY_SECRET: ${API_SECURITY_SECRET}
       FRONTEND_URL: ${FRONTEND_URL}
+      API_URL: ${API_URL}
     ports:
       - "8080:8080"
     networks:

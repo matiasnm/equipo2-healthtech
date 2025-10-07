@@ -33,3 +33,7 @@ spring:
 api:
   security:
     secret: ${API_SECURITY_SECRET}
+  url: ${API_URL}
+
+frontend:
+  url: ${FRONTEND_URL}
