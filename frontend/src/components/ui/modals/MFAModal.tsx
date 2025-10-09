@@ -1,12 +1,12 @@
 import { useMFA } from "../../../hooks/useMFA";
 import { toast } from "react-toastify";
-import type { User } from "../../../types/User.types"; // ✅ nuevo origen del tipo
+import type { User } from "../../../types/User.types"; 
 
 type MFAModalProps = {
   userId: string;
   tempToken?: string;
   onClose: () => void;
-  onSuccess?: (token: string, user: User) => void; // ✅ opcional por seguridad
+  onSuccess?: (token: string, user: User) => void; 
 };
 
 const MFAModal = ({ userId, tempToken, onClose, onSuccess }: MFAModalProps) => {
