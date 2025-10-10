@@ -3,32 +3,32 @@ package com.equipo2.healthtech.model.practitioner;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "practitioner_roles")
+@Table(name = "practitioner_role_codes")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class PractitionerRole {
+public class PractitionerRoleCode {
 
-    @Id()
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "role_code_id", nullable = false)
-    private PractitionerRoleCode roleCode;
-
-    //@NotNull
-    //private Long roleCodeId;
+    @NotNull
+    @Column(nullable = false)
+    private String system; // e.g. http://hl7.org/fhir/practitioner-role
 
     @NotBlank
-    @Size(max = 255)
-    private String speciality;
+    @Column(nullable = false)
+    private String code; // e.g. "doctor", "nurse"
+
+    private String display; // e.g. "Doctor", "Nurse"
+
+    private String definition; // optional description of the role
 }
