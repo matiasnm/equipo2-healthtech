@@ -25,13 +25,13 @@ public class UserProfileServiceImpl implements UserProfileService {
     private final UserProfileMapper userProfileMapper;
     private final SecurityUtils securityUtils;
 
-    private UserProfile getUserProfile() throws NoResultsException {
+    private UserProfile getUserProfile() {
         User user = securityUtils.getAuthenticatedUser();
         return userProfileRepository.findById(user.getId())
                 .orElseThrow(() -> NoResultsException.of(user.getId()));
     }
 
-    private UserProfile getUserProfile(Long id) throws NoResultsException {
+    private UserProfile getUserProfile(Long id) {
         if (id == null) {
             throw NoResultsException.of("null");
         }

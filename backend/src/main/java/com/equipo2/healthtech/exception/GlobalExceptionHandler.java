@@ -8,6 +8,7 @@ import java.util.Set;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -23,9 +24,17 @@ public class GlobalExceptionHandler {
     ProblemDetail handleAuthenticationException(AuthenticationException e) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, e.getMessage());
         problemDetail.setTitle("Authentication error");
-        problemDetail.setType(URI.create("/"));
         problemDetail.setProperty("errorCategory", "Business");
         problemDetail.setProperty("timestamp", Instant.now());
+        return problemDetail;
+    }
+
+    @ExceptionHandler(JwtAuthenticationException.class)
+    public ProblemDetail handleJwtAuthenticationException(JwtAuthenticationException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, ex.getMessage());
+        problemDetail.setTitle("Authentication error");
+        problemDetail.setProperty("errorCategory", "Business");
+        problemDetail.setProperty("timestamp", LocalDateTime.now());
         return problemDetail;
     }
 
@@ -34,7 +43,7 @@ public class GlobalExceptionHandler {
         ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
         problemDetail.setTitle("Data Integrity Violation");
         problemDetail.setDetail("Invalid reference or missing required field: " + extractConstraintMessage(ex));
-        problemDetail.setProperty("errorCategory", "DATABASE_CONSTRAINT_VIOLATION");
+        problemDetail.setProperty("errorCategory", "Repository");
         problemDetail.setProperty("timestamp", LocalDateTime.now());
         return problemDetail;
     }
@@ -111,7 +120,7 @@ public class GlobalExceptionHandler {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
         problemDetail.setTitle("No results");
         problemDetail.setType(URI.create("/"));
-        problemDetail.setProperty("errorCategory", "Repository");
+        problemDetail.setProperty("errorCategory", "Business");
         problemDetail.setProperty("timestamp", Instant.now());
         return problemDetail;
     }
@@ -151,6 +160,15 @@ public class GlobalExceptionHandler {
     ProblemDetail handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, e.getMessage());
         problemDetail.setTitle("Invalid Argument");
+        problemDetail.setProperty("errorCategory", "Business");
+        problemDetail.setProperty("timestamp", Instant.now());
+        return problemDetail;
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    ProblemDetail handleAccessDeniedException(AccessDeniedException e) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, e.getMessage());
+        problemDetail.setTitle("Access Denied");
         problemDetail.setProperty("errorCategory", "Business");
         problemDetail.setProperty("timestamp", Instant.now());
         return problemDetail;
