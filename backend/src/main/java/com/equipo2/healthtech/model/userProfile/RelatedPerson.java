@@ -1,4 +1,4 @@
-package com.equipo2.healthtech.model.user;
+package com.equipo2.healthtech.model.userProfile;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;

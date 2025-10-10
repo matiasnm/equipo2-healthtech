@@ -1,11 +1,8 @@
-package com.equipo2.healthtech.model.user;
+package com.equipo2.healthtech.model.userProfile;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import org.hibernate.annotations.CreationTimestamp;
-
-import java.time.Instant;
 
 @Entity
 @Table(name = "user_media")

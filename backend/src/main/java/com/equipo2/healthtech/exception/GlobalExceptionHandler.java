@@ -2,10 +2,13 @@ package com.equipo2.healthtech.exception;
 
 import java.net.URI;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Set;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -15,6 +18,33 @@ import jakarta.validation.ConstraintViolationException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(AuthenticationException.class)
+    ProblemDetail handleAuthenticationException(AuthenticationException e) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, e.getMessage());
+        problemDetail.setTitle("Authentication error");
+        problemDetail.setType(URI.create("/"));
+        problemDetail.setProperty("errorCategory", "Business");
+        problemDetail.setProperty("timestamp", Instant.now());
+        return problemDetail;
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ProblemDetail handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
+        problemDetail.setTitle("Data Integrity Violation");
+        problemDetail.setDetail("Invalid reference or missing required field: " + extractConstraintMessage(ex));
+        problemDetail.setProperty("errorCategory", "DATABASE_CONSTRAINT_VIOLATION");
+        problemDetail.setProperty("timestamp", LocalDateTime.now());
+        return problemDetail;
+    }
+
+    private String extractConstraintMessage(DataIntegrityViolationException ex) {
+        if (ex.getCause() != null) {
+            return ex.getCause().getMessage();
+        }
+        return "Constraint violation occurred.";
+    }
 
     @ExceptionHandler(NoAuthenticatedUserException.class)
     ProblemDetail handleNoAuthenticatedUserException(NoAuthenticatedUserException e) {

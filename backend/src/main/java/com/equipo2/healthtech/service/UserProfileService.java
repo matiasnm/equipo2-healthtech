@@ -6,8 +6,8 @@ import com.equipo2.healthtech.dto.userprofile.UserProfileUpdateRequestDto;
 
 public interface UserProfileService {
 
-    Long createUserProfile(UserProfileCreateRequestDto request);
-    UserProfileReadResponseDto readUserProfile(Long id);
-    void updateUserProfile(UserProfileUpdateRequestDto request);
+    Long create(UserProfileCreateRequestDto request);
+    UserProfileReadResponseDto read(Long id);
+    void update(UserProfileUpdateRequestDto request);
 
 }
