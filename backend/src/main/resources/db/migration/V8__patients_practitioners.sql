@@ -9,8 +9,17 @@ CREATE TABLE patients (
     practitioner_id BIGINT REFERENCES practitioners(user_id)
 );
 
--- 3. Practitioner role codes
+-- 3a. Practitioner role codes
 CREATE TABLE practitioner_role_codes (
+    id BIGSERIAL PRIMARY KEY,
+    system TEXT NOT NULL,
+    code VARCHAR(255) NOT NULL,
+    display TEXT,
+    definition TEXT
+);
+
+-- 3b. Speciality codes
+CREATE TABLE practitioner_speciality_codes (
     id BIGSERIAL PRIMARY KEY,
     system TEXT NOT NULL,
     code VARCHAR(255) NOT NULL,
@@ -22,7 +31,7 @@ CREATE TABLE practitioner_role_codes (
 CREATE TABLE practitioner_roles (
     id BIGSERIAL PRIMARY KEY,
     role_code_id BIGINT NOT NULL REFERENCES practitioner_role_codes(id),
-    speciality VARCHAR(255) NOT NULL
+    speciality_code_id BIGINT NOT NULL REFERENCES practitioner_speciality_codes(id)
 );
 
 -- 5. Add role column to practitioners (nullable initially)
@@ -34,6 +43,17 @@ CREATE INDEX idx_practitioner_role_id ON practitioners(practitioner_role_id);
 
 -- 7. Insert some common FHIR practitioner role codes
 INSERT INTO practitioner_role_codes (system, code, display, definition) VALUES
-    ('http://hl7.org/fhir/practitioner-role', 'doctor', 'Doctor', 'A physician'),
-    ('http://hl7.org/fhir/practitioner-role', 'nurse', 'Nurse', 'A nurse'),
-    ('http://hl7.org/fhir/practitioner-role', 'pharmacist', 'Pharmacist', 'A pharmacist');
+    ('http://terminology.hl7.org/CodeSystem/practitioner-role', 'doctor', 'Doctor', 'A physician'),
+    ('http://terminology.hl7.org/CodeSystem/practitioner-role', 'nurse', 'Nurse', 'A nurse'),
+    ('http://terminology.hl7.org/CodeSystem/practitioner-role', 'pharmacist', 'Pharmacist', 'A pharmacist'),
+    ('http://terminology.hl7.org/CodeSystem/practitioner-role', 'researcher', 'Researcher', 'A practitioner that may perform research'),
+    ('http://terminology.hl7.org/CodeSystem/practitioner-role', 'teacher', 'Teacher/educator', 'Someone who is able to provide educational services'),
+    ('http://terminology.hl7.org/CodeSystem/practitioner-role', 'ict pharmacist', 'ICT professional', 'A pharmacist');
+
+INSERT INTO practitioner_speciality_codes (system, code, display, definition) VALUES
+    ('http://snomed.info/sct', '408467006', 'Adult mental illness', ''),
+    ('http://snomed.info/sct', '394577000', 'Anesthetics', ''),
+    ('http://snomed.info/sct', '394578005', 'Audiological medicine', ''),
+    ('http://snomed.info/sct', '421661004', 'Blood banking and transfusion medicine', ''),
+    ('http://snomed.info/sct', '408462000', 'Burns care', ''),
+    ('http://snomed.info/sct', '394579002', 'Cardiology', '');

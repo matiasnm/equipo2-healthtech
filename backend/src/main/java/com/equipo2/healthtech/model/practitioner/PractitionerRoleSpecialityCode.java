@@ -9,12 +9,12 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "practitioner_role_codes")
+@Table(name = "practitioner_speciality_codes")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class PractitionerRoleCode {
+public class PractitionerRoleSpecialityCode {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

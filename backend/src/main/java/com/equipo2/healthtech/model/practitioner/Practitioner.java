@@ -4,6 +4,7 @@ import com.equipo2.healthtech.model.appointment.Appointment;
 import com.equipo2.healthtech.model.patient.Patient;
 import com.equipo2.healthtech.model.user.User;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 

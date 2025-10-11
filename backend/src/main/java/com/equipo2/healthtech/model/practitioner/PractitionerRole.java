@@ -25,10 +25,8 @@ public class PractitionerRole {
     @JoinColumn(name = "role_code_id", nullable = false)
     private PractitionerRoleCode roleCode;
 
-    //@NotNull
-    //private Long roleCodeId;
 
-    @NotBlank
-    @Size(max = 255)
-    private String speciality;
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "speciality_code_id", nullable = false)
+    private PractitionerRoleSpecialityCode specialityCode;
 }

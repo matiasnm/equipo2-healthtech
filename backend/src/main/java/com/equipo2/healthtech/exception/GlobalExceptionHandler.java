@@ -115,6 +115,16 @@ public class GlobalExceptionHandler {
         return problemDetail;
     }
 
+    @ExceptionHandler(ConflictGeneralPractitionerException.class)
+    ProblemDetail handleConflictGeneralPractitionerException(ConflictGeneralPractitionerException e) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, e.getMessage());
+        problemDetail.setTitle("General Practitioner already assigned");
+        problemDetail.setType(URI.create("/"));
+        problemDetail.setProperty("errorCategory", "Business");
+        problemDetail.setProperty("timestamp", Instant.now());
+        return problemDetail;
+    }
+
     @ExceptionHandler(NoResultsException.class)
     ProblemDetail handleNoResultsException(NoResultsException e) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());

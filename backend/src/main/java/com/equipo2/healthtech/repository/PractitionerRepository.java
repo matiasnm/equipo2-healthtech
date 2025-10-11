@@ -7,10 +7,13 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface PractitionerRepository extends JpaRepository<Practitioner, Long> {
 
     List<Practitioner> findAllByIdInAndStatusTrue(List<Long> ids);
+
+    Optional<Practitioner> findByIdAndStatusTrue(Long id);
 
     @Query("""
         SELECT p FROM Practitioner p
