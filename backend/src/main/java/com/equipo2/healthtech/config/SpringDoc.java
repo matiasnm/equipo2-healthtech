@@ -27,7 +27,22 @@ public class SpringDoc {
                         .info(new Info()
                                 .title("Health Tech")
                                 .version("1.0.0")
-                                .description("a Healthy App..."))
+                                .description("""
+                        **a Healthy App...** \s
+
+                        ### RULES [!]
+                       \s
+                        1. if 'status' = false -> User Profile is null! (ALL USERS)
+                        2. Practitioners MUST set a PractitionerRole in order to be active!
+                       \s
+                        ### Login Info
+                        \s
+                        USER                    | PASS          [ROLE]          | INFO
+                        **admin@ht.com**        | admin         [ADMIN]         | status=true
+                        **patient1@ht.com**     | patient       [PATIENT]       | status=true
+                        **doctor1@ht.com**      | doctor        [PRACTITIONER]  | status = true; practitionerRole = null
+
+                       \s"""))
                         // Security
                         .addSecurityItem(new SecurityRequirement().addList("bearer-key"))
                         .components(
