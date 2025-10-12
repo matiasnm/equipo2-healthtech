@@ -1,44 +1,76 @@
 import { Suspense, lazy } from 'react';
 import type { JSX } from 'react';
 import ProtectedRoute from '../ProtectedRoute';
-import Dashboard from '../../pages/Dashboard';
-import HistoryPage from '../../pages/HistoryPage';
+import History from '../../pages/History';
 import Profile from '../../pages/Profile';
 import { ROUTES } from '../../routes/routes';
+import Account from '../../pages/Account';
+import Professionals from '../../pages/Professionals';
+import Patients from '../../pages/Patients';
 
 const LazyDashboard = lazy(() => import('../../pages/Dashboard'));
-type PrivateRoute = {
+
+type PrivateRoute = { 
   path: string;
   element: JSX.Element;
-  roles: string[];
+  allowedRoles: string[];
 };
 
 export const PrivateRoutes: PrivateRoute[] = [
-  { 
-    path: ROUTES.DASHBOARD, 
+  {
+    path: ROUTES.DASHBOARD,
     element: (
-      <ProtectedRoute allowedRoles={['admin', 'medic']}>
-        <Dashboard />
+      <ProtectedRoute allowedRoles={['admin', 'medic', 'patient', 'superadmin']}>
+        <Suspense fallback={<div>Cargando dashboard...</div>}>
+          <LazyDashboard />
+        </Suspense>
       </ProtectedRoute>
     ),
-    roles: ['admin', 'patient', 'medic'],
+    allowedRoles: ['admin', 'medic', 'patient', 'superadmin'],
   },
-  { 
-    path: ROUTES.HISTORYPAGE, 
+  {
+    path: ROUTES.HISTORY,
     element: (
-      <ProtectedRoute allowedRoles={['admin', 'medic']}>
-        <HistoryPage />
+      <ProtectedRoute allowedRoles={['admin', 'medic', 'superadmin']}>
+        <History />
       </ProtectedRoute>
     ),
-    roles: ['admin', 'patient', 'medic'], 
+    allowedRoles: ['admin', 'medic', 'superadmin'],
   },
-  { 
+  {
     path: ROUTES.PROFILE,
     element: (
-      <ProtectedRoute allowedRoles={['admin', 'medic']}>
+      <ProtectedRoute allowedRoles={['patient', 'medic', 'superadmin']}>
         <Profile />
       </ProtectedRoute>
     ),
-    roles: ['admin', 'patient', 'medic'], 
+    allowedRoles: ['patient', 'medic', 'superadmin'],
+  },
+  {
+    path: ROUTES.ACCOUNT,
+    element: (
+      <ProtectedRoute allowedRoles={['patient', 'admin', 'superadmin']}>
+        <Account />
+      </ProtectedRoute>
+    ),
+    allowedRoles: ['patient', 'admin', 'superadmin'],
+  },
+  {
+    path: ROUTES.PROFESSIONALS,
+    element: (
+      <ProtectedRoute allowedRoles={['admin', 'medic', 'patient', 'superadmin']}>
+        <Professionals />
+      </ProtectedRoute>
+    ),
+    allowedRoles: ['admin', 'medic', 'patient', 'superadmin'],
+  },
+  {
+    path: ROUTES.PATIENTS,
+    element: (
+      <ProtectedRoute allowedRoles={['admin', 'medic', 'superadmin']}>
+        <Patients />
+      </ProtectedRoute>
+    ),
+    allowedRoles: ['admin', 'medic', 'superadmin'],
   },
 ];
