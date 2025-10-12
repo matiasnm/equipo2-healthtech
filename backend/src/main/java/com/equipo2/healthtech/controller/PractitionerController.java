@@ -1,6 +1,7 @@
 package com.equipo2.healthtech.controller;
 
 import com.equipo2.healthtech.dto.practitioner.PractitionerReadResponseDto;
+import com.equipo2.healthtech.dto.practitioner.PractitionerReadSummaryResponseDto;
 import com.equipo2.healthtech.dto.practitioner.PractitionerRoleCreateRequestDto;
 import com.equipo2.healthtech.dto.practitioner.PractitionerRoleReadResponseDto;
 import com.equipo2.healthtech.repository.PractitionerRepository;
@@ -10,6 +11,10 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -20,18 +25,28 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 @Slf4j
 public class PractitionerController {
-
-    private final PractitionerRepository practitionerRepository;
+//PRACTITIONER NOT FOUND?
     private final PractitionerService practitionerService;
+
+    @Operation(summary = "Gets all active/valid Practitioners")
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/list")
+    public ResponseEntity<Page<PractitionerReadSummaryResponseDto>> readAllActive(
+            @ParameterObject
+            @PageableDefault(page = 0, size = 10, sort = "userProfile.fullName")
+            Pageable pageable) {
+        Page<PractitionerReadSummaryResponseDto> result = practitionerService.readAllActive(pageable);
+        return ResponseEntity.ok(result);
+    }
 
     @Operation(summary = "Gets Practitioner by id")
     @PreAuthorize("hasAnyRole('ADMIN', 'SUPERADMIN')")
     @GetMapping("/{id}")
-    public ResponseEntity<PractitionerReadResponseDto> getPractitioner(@PathVariable Long id) {
+    public ResponseEntity<PractitionerReadResponseDto> read(@PathVariable Long id) {
         return ResponseEntity.ok(practitionerService.read(id));
     }
 
-    @Operation(summary = "Gets current Practitioner")
+    @Operation(summary = "Gets current authenticated Practitioner")
     @PreAuthorize("hasAnyRole('PRACTITIONER', 'ADMIN', 'SUPERADMIN')")
     @GetMapping("/me")
     public ResponseEntity<PractitionerReadResponseDto> getMe() {

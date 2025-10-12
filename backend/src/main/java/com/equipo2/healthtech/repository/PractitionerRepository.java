@@ -1,6 +1,8 @@
 package com.equipo2.healthtech.repository;
 
 import com.equipo2.healthtech.model.practitioner.Practitioner;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -11,7 +13,11 @@ import java.util.Optional;
 
 public interface PractitionerRepository extends JpaRepository<Practitioner, Long> {
 
-    List<Practitioner> findAllByIdInAndStatusTrue(List<Long> ids);
+    Page<Practitioner> findAllByStatusIsTrueAndPractitionerRoleIsNotNull(Pageable pageable);
+
+    List<Practitioner> findAllByIdInAndStatusTrueAndPractitionerRoleIsNotNull(List<Long> ids);
+
+    //List<Practitioner> findAllByIdInAndStatusTrue(List<Long> ids);
 
     Optional<Practitioner> findByIdAndStatusTrue(Long id);
 

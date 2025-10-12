@@ -34,6 +34,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class AppointmentServiceImpl implements AppointmentService {
 
+    //!!!!!!!!Appointments, practitioenrs deben tener seteado un practitioenrRole !
+
     private final AppointmentRepository appointmentRepository;
     private final PatientRepository patientRepository;
     private final PractitionerRepository practitionerRepository;
@@ -69,7 +71,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         if (practitionerIds == null || practitionerIds.isEmpty()) {
             throw NoResultsException.of("Practitioner list is empty");
         }
-        List<Practitioner> practitioners = practitionerRepository.findAllByIdInAndStatusTrue(practitionerIds);
+        List<Practitioner> practitioners = practitionerRepository.findAllByIdInAndStatusTrueAndPractitionerRoleIsNotNull(practitionerIds);
         if (practitioners.size() != practitionerIds.size()) {
             throw NoResultsException.of("One or more Practitioners not found or inactive");
         }

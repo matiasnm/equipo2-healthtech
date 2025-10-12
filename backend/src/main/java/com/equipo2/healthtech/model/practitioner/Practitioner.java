@@ -4,8 +4,6 @@ import com.equipo2.healthtech.model.appointment.Appointment;
 import com.equipo2.healthtech.model.patient.Patient;
 import com.equipo2.healthtech.model.user.User;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -20,7 +18,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 public class Practitioner extends User {
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "practitioner_role_id", nullable = false)
     private PractitionerRole practitionerRole;
 

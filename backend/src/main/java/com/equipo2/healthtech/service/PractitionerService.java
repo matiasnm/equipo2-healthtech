@@ -1,14 +1,19 @@
 package com.equipo2.healthtech.service;
 
 import com.equipo2.healthtech.dto.practitioner.PractitionerReadResponseDto;
+import com.equipo2.healthtech.dto.practitioner.PractitionerReadSummaryResponseDto;
 import com.equipo2.healthtech.dto.practitioner.PractitionerRoleCreateRequestDto;
 import com.equipo2.healthtech.dto.practitioner.PractitionerRoleReadResponseDto;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 
 public interface PractitionerService {
 
-    PractitionerReadResponseDto read(Long id);
+    public PractitionerReadResponseDto read(Long id);
 
-    PractitionerReadResponseDto readMe();
+    public PractitionerReadResponseDto readMe();
 
-    PractitionerRoleReadResponseDto createPractitionerRole(Long id, PractitionerRoleCreateRequestDto request);
+    public Page<PractitionerReadSummaryResponseDto> readAllActive(Pageable pageable);
+
+    public PractitionerRoleReadResponseDto createPractitionerRole(Long id, PractitionerRoleCreateRequestDto request);
 }
