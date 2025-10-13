@@ -13,6 +13,10 @@ public record UserProfileUpdateRequestDto (
 
         @NotBlank
         @Size(max = 50)
+        String gender,
+
+        @NotBlank
+        @Size(max = 50)
         String phone,
 
         @NotBlank

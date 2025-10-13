@@ -3,7 +3,7 @@ package com.equipo2.healthtech.mapper;
 import com.equipo2.healthtech.dto.identifier.IdentifierCreateRequestDto;
 import com.equipo2.healthtech.dto.relatedperson.RelatedPersonIdentifierReadResponseDto;
 import com.equipo2.healthtech.dto.user.UserIdentifierReadResponseDto;
-import com.equipo2.healthtech.model.user.Identifier;
+import com.equipo2.healthtech.model.userProfile.Identifier;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;

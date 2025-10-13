@@ -7,7 +7,7 @@ public class NoResultsException extends RuntimeException {
     }
 
     public NoResultsException(String msg) {
-        super("No results for: %s".formatted(msg));
+        super(msg);
     }
 
     public static NoResultsException of(Long id) {

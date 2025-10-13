@@ -1,5 +1,6 @@
-package com.equipo2.healthtech.model.user;
+package com.equipo2.healthtech.model.userProfile;
 
+import com.equipo2.healthtech.model.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

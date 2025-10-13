@@ -11,6 +11,7 @@ public record UserProfileReadResponseDto(
         String fullName,
         String phone,
         String address,
+        String gender,
         LocalDate birthday,
         List<UserIdentifierReadResponseDto> identifiers,
         List<RelatedPersonReadResponseDto> relatedPersons

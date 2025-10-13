@@ -11,7 +11,7 @@ INSERT INTO users (
     created_at,
     updated_at
 ) VALUES (
-    'admin@healthtech.com',
+    'admin@ht.com',
     '$2y$10$6./inPlJPCrrGRz.fWlAL.DW1ULNVzvpBBFpE8u0pBph97sJWj8ZK', -- bcrypt hash, pass = "admin"
     'ADMIN',
     true,

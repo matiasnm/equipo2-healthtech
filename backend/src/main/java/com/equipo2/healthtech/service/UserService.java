@@ -11,13 +11,13 @@ import java.util.Optional;
 
 public interface UserService {
 
-    Long createUser(UserCreateRequestDto request);
-    UserReadResponseDto readUser();
-    UserReadResponseDto readUser(Long id);
-    UserReadResponseDto readUser(String email);
+    Long create(UserCreateRequestDto request);
+    UserReadResponseDto read(Long id);
+    UserReadResponseDto read(String email);
+    UserReadResponseDto readMe();
     Page<UserReadResponseDto> readAll(Pageable pageable);
     void updatePassword(UserUpdatePasswordRequestDto request);
-    void deleteUser(Long id) ;
+    void delete(Long id) ;
 
     Optional<User> findUserByEmail(String email);
 }

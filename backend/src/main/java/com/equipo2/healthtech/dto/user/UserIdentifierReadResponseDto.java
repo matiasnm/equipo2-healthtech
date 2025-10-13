@@ -1,6 +1,6 @@
 package com.equipo2.healthtech.dto.user;
 
-import com.equipo2.healthtech.model.user.IdentifierType;
+import com.equipo2.healthtech.model.userProfile.IdentifierType;
 
 public record UserIdentifierReadResponseDto(
         String system,

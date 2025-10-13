@@ -9,6 +9,8 @@ logging:
 spring:
   application:
     name: health tech
+  server:
+    forward-headers-strategy: framework
   profiles:
     active: prod
   jackson:

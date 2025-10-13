@@ -4,8 +4,10 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
+import com.equipo2.healthtech.exception.JwtAuthenticationException;
 import com.equipo2.healthtech.model.user.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -47,12 +49,12 @@ public class JwtTokenService {
 
             String subject = decodedJWT.getSubject();
             if (subject == null) {
-                throw new RuntimeException("Token subject is null");
+                throw JwtAuthenticationException.of("Token subject is null");
             }
             return subject;
 
-        } catch (JWTVerificationException exception) {
-            throw new RuntimeException("Invalid token: " + exception.getMessage(), exception);
+        } catch (JWTVerificationException e) {
+            throw JwtAuthenticationException.of("Invalid token: " + e.getMessage());
         }
     }
 
@@ -70,9 +72,25 @@ public class JwtTokenService {
                     .withClaim("type", "refresh")
                     .withExpiresAt(Instant.now().plus(Duration.ofDays(7))) // ej: 7 días
                     .sign(algorithm);
-        } catch (JWTCreationException exception){
-            throw new RuntimeException("Error creating refresh token", exception);
+        } catch (JWTCreationException e){
+            throw JwtAuthenticationException.of("Error creating refresh token: " + e.getMessage());
         }
+    }
+
+    public String validateRefreshToken(String token) {
+        if (token == null || token.isBlank()) {
+            throw JwtAuthenticationException.of("Refresh token is missing");
+        }
+        DecodedJWT decodedJWT = this.decode(token);
+        String type = decodedJWT.getClaim("type").asString();
+        if (!"refresh".equals(type)) {
+            throw JwtAuthenticationException.of("Invalid token type. Expected 'refresh'.");
+        }
+        String email = decodedJWT.getSubject();
+        if (email == null) {
+            throw JwtAuthenticationException.of("Token subject (email) is missing.");
+        }
+        return email;
     }
 
     public DecodedJWT decode(String token) {
@@ -82,8 +100,10 @@ public class JwtTokenService {
                     .withIssuer("health tech")
                     .build()
                     .verify(token);
-        } catch (JWTVerificationException exception) {
-            throw new RuntimeException("Invalid token: " + exception.getMessage(), exception);
+        } catch (TokenExpiredException e) {
+            throw JwtAuthenticationException.of("Token expired: " + e.getMessage());
+        } catch (JWTVerificationException e) {
+            throw JwtAuthenticationException.of("Invalid token: " + e.getMessage());
         }
     }
 

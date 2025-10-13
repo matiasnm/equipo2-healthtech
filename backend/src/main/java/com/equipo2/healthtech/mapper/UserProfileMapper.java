@@ -2,7 +2,8 @@ package com.equipo2.healthtech.mapper;
 
 import com.equipo2.healthtech.dto.userprofile.UserProfileCreateRequestDto;
 import com.equipo2.healthtech.dto.userprofile.UserProfileReadResponseDto;
-import com.equipo2.healthtech.model.user.UserProfile;
+import com.equipo2.healthtech.dto.userprofile.UserProfileReadSummaryResponseDto;
+import com.equipo2.healthtech.model.userProfile.UserProfile;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
@@ -11,4 +12,5 @@ public interface UserProfileMapper {
 
     UserProfile toUserProfile(UserProfileCreateRequestDto userProfileDto);
     UserProfileReadResponseDto toUserProfileReadResponseDto(UserProfile userProfile);
+    UserProfileReadSummaryResponseDto toUserProfileReadSummaryResponseDto(UserProfile userProfile);
 }

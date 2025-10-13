@@ -19,6 +19,10 @@ public record UserProfileCreateRequestDto(
         @Size(max = 500)
         String address,
 
+        @NotBlank
+        @Size(max = 50)
+        String gender,
+
         @NotNull
         LocalDate birthday
 ) {}

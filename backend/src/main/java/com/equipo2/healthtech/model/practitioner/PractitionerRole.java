@@ -2,6 +2,7 @@ package com.equipo2.healthtech.model.practitioner;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,11 +21,12 @@ public class PractitionerRole {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long practitionerId;
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "role_code_id", nullable = false)
+    private PractitionerRoleCode roleCode;
 
-    private Long roleCodeId;
 
-    @NotBlank
-    @Size(max = 255)
-    private String speciality;
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "speciality_code_id", nullable = false)
+    private PractitionerRoleSpecialityCode specialityCode;
 }
