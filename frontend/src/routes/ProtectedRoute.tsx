@@ -1,7 +1,6 @@
 import { Navigate } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
-import type { JSX } from 'react';
-
+import { useAuthStore } from '../hooks/useAuthStore';
+import {JSX} from "react";
 
 type ProtectedRouteProps = {
   children: JSX.Element;
@@ -9,14 +8,15 @@ type ProtectedRouteProps = {
 };
 
 const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
-  const { isAuthenticated, role } = useAuth();
+  const { user, isLoading } = useAuthStore();
 
-  if (!isAuthenticated || (allowedRoles && !allowedRoles.includes(role || ''))) {
+  if (isLoading) return <p className="text-center">Cargando...</p>;
+
+  if (!user || (allowedRoles && !allowedRoles.includes(user.role))) {
     return <Navigate to="/login" replace />;
   }
 
   return children;
 };
-
 
 export default ProtectedRoute;

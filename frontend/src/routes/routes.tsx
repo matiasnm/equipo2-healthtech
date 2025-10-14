@@ -1,16 +1,22 @@
 export const ROUTES = {
   // Public Routes
-    LOGIN: '/login',
-    REGISTER: '/register',
-    HOME: '/',
-    NOTFOUND: '*',
-    ABOUT: '/about',
+  HOME: '/',
+  LOGIN: '/login',
+  REGISTER: '/register',
+  ABOUT: '/about',
+  COMPONENTS: '/components',
+  NOTFOUND: '*',
 
-  // Privates Routes
-    DASHBOARD: '/dashboard',
-    HISTORYPAGE: '/historypage',
-    PROFILE: '/profile',
-    SETTINGS: '/settings',
+  // Private Routes
+  DASHBOARD: '/dashboard',
+  ENCOUNTER: '/encounter',
+  PROFILE: '/profile',
+  ACCOUNT: '/account',
+  APPOINTMENTS: '/appointments',
+  PRACTITIONERS: '/practitioners',
+  PATIENTS: '/patients',
+  SETTINGS: '/settings',
+  
 } as const;
 
 export type TypeRoutes = keyof typeof ROUTES;

@@ -1,0 +1,95 @@
+import {
+  GiHeartOrgan,
+  GiBrain,
+  GiStomach,
+  GiKidneys,
+  GiBabyBottle,
+  GiPelvisBone,
+  GiBoneKnife,
+  GiEyeTarget,
+  GiChemicalDrop,
+  GiSoap,
+  GiPsychicWaves,
+} from "react-icons/gi";
+
+export const specialties = [
+  {
+    name: "Cardiología",
+    imageUrl: "/images/cardiologia.jpg",
+    icon: <GiHeartOrgan />,
+    gradientClass: "bg-gradient-cardiología",
+    linkTo: "#cardiología",
+  },
+  {
+    name: "Neurología",
+    imageUrl: "/images/neurologia.jpg",
+    icon: <GiBrain />,
+    gradientClass: "bg-gradient-neurología",
+    linkTo: "#neurología",
+  },
+  {
+    name: "Gastroenterología",
+    imageUrl: "/images/gastro.jpg",
+    icon: <GiStomach />,
+    gradientClass: "bg-gradient-gastroenterología",
+    linkTo: "#gastroenterología",
+  },
+  {
+    name: "Nefrología",
+    imageUrl: "/images/nefrologia.jpg",
+    icon: <GiKidneys />,
+    gradientClass: "bg-gradient-nefrología",
+    linkTo: "#nefrología",
+  },
+  {
+    name: "Pediatría",
+    imageUrl: "/images/pediatria.jpg",
+    icon: <GiBabyBottle />,
+    gradientClass: "bg-gradient-pediatría",
+    linkTo: "#pediatría",
+  },
+  {
+    name: "Ginecología",
+    imageUrl: "/images/ginecologia.jpg",
+    icon: <GiPelvisBone />,
+    gradientClass: "bg-gradient-ginecología",
+    linkTo: "#ginecología",
+  },
+  {
+    name: "Traumatología",
+    imageUrl: "/images/traumatologia.jpg",
+    icon: <GiBoneKnife />,
+    gradientClass: "bg-gradient-traumatología",
+    linkTo: "#traumatología",
+  },
+  {
+    name: "Oftalmología",
+    imageUrl: "/images/oftalmologia.jpg",
+    icon: <GiEyeTarget />,
+    gradientClass: "bg-gradient-oftalmología",
+    linkTo: "#oftalmología",
+  },
+  {
+    name: "Endocrinología",
+    imageUrl: "/images/endocrinologia.jpg",
+    icon: <GiChemicalDrop />,
+    gradientClass: "bg-gradient-endocrinología",
+    linkTo: "#endocrinología",
+  },
+  {
+    name: "Dermatología",
+    imageUrl: "/images/dermatologia.jpg",
+    icon: <GiSoap />,
+    gradientClass: "bg-gradient-dermatología",
+    linkTo: "#dermatología",
+  },
+  {
+    name: "Psiquiatría",
+    imageUrl: "/images/psiquiatria.jpg",
+    icon: <GiPsychicWaves/>,
+    gradientClass: "bg-gradient-psiquiatría",
+    linkTo: "#psiquiatría",
+  },
+
+];
+

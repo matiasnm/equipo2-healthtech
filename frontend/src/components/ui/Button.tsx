@@ -1,16 +1,30 @@
-import React from 'react';
 interface ButtonProps {
-  variant?: 'primary' | 'secondary' | 'accent';
+  variant?: 'primary' | 'secondary' | 'accent' | 'danger';
   size?: 'sm' | 'md' | 'lg';
   children: React.ReactNode;
+  type?: 'button' | 'submit' | 'reset';
+  disabled?: boolean;
+  fullWidth?: boolean;
+  onClick?: () => void;
+  className?: string;
 }
 
-export const Button = ({ variant = 'primary', size = 'md', children }: ButtonProps) => {
-  const base = 'rounded font-semibold transition-colors';
+export const Button = ({
+  variant = 'primary',
+  size = 'md',
+  children,
+  type = 'button',
+  disabled = false,
+  fullWidth = false,
+  onClick,
+  className = '',
+}: ButtonProps) => {
+  const base = 'rounded-lg font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 font-[var(--font-monserrat)]';
   const variants = {
-    primary: 'bg-primary text-white hover:bg-blue-800',
-    secondary: 'bg-secondary text-primary hover:bg-blue-100',
-    accent: 'bg-accent text-white hover:bg-yellow-500',
+    primary: 'bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-hover)] focus:ring-[var(--color-primary)]',
+    secondary: 'bg-[var(--color-secondary)] text-white hover:bg-[var(--color-secondary-hover)] focus:ring-[var(--color-secondary)] ',
+    accent: 'bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)] focus:ring-[var(--color-accent)]',
+    danger: 'bg-[var(--color-error)] text-white hover:bg-[var(--color-error-hover)] focus:ring-[var(--color-error)] ',
   };
   const sizes = {
     sm: 'px-3 py-1 text-sm',
@@ -18,5 +32,17 @@ export const Button = ({ variant = 'primary', size = 'md', children }: ButtonPro
     lg: 'px-6 py-3 text-lg',
   };
 
-  return <button className={`${base} ${variants[variant]} ${sizes[size]}`}>{children}</button>;
+  return (
+    <button
+      type={type}
+      onClick={onClick}
+      disabled={disabled}
+      className={`${base} ${variants[variant]} ${sizes[size]} ${fullWidth ? 'w-full' : ''} ${
+        disabled ? 'opacity-50 cursor-not-allowed' : ''
+      } ${className}`}
+    >
+      {children}
+    </button>
+  );
 };
+
