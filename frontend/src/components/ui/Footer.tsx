@@ -7,15 +7,15 @@ export const Footer = () => {
         
         {/* Logo + redes */}
         <div className="flex items-center gap-6 md:gap-8 w-full md:w-auto">
-          <div className="w-16 h-16 rounded-full border-4 border-[var(--color-primary)] bg-white flex items-center justify-center overflow-hidden">
+          <div className="w-16 h-16 rounded-full border-2 border-[var(--color-primary)] flex items-center justify-center overflow-hidden">
             <img
               src="/favicon.ico" 
-              alt="Logo Panacea"
-              className="w-12 h-12 object-contain"
+              alt="Logo Healt Tech"
+              className="w-15 h-15 object-contain"
             />
           </div>
           <div className="flex flex-col">
-            <span className="text-2xl font-bold leading-none">Panacea</span>
+            <span className="text-2xl font-bold leading-none">Health Tech</span>
             <span className="text-xs text-[var(--color-inverted)]">Clínica integral</span>
           </div>
           <div className="flex gap-4 text-lg text-[var(--color-inverted)] ml-4">

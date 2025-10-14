@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { fetchUser, login, logout as logoutService } from '../services/authservice';
-import type { User } from '../types/User.types';
+import type { User } from '../types/user.types';
 
 type AuthState = {
   user: User | null;

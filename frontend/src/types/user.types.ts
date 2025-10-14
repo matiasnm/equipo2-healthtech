@@ -1,7 +1,7 @@
 export type User = {
   id: string;
   email: string;
-  role: 'admin' | 'medic' | 'patient';
+  role: 'superAdmin' |'admin' | 'practitioner' | 'patient';
 };
 
 export type LoginCredentials = {

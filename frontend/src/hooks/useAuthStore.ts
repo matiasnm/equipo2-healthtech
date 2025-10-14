@@ -1,10 +1,10 @@
 import { create } from 'zustand';
 import { fetchUser, login, logout as logoutService } from '../services/authservice';
-import type { User, LoginCredentials } from '../types/User.types';
+import type { User, LoginCredentials } from '../types/user.types';
 
 interface AuthState {
   user: User | null;
-  role: string | null;
+  role: 'admin' | 'superAdmin' | 'practitioner' | 'patient' | 'public' | null;
   token: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
@@ -15,6 +15,7 @@ interface AuthState {
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
+  
   user: null,
   role: null,
   token: localStorage.getItem('token'),

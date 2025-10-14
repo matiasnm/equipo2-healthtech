@@ -9,11 +9,11 @@ export const ROUTES = {
 
   // Private Routes
   DASHBOARD: '/dashboard',
-  HISTORY: '/history',
+  ENCOUNTER: '/encounter',
   PROFILE: '/profile',
   ACCOUNT: '/account',
-  AGENDA: '/agenda',
-  PROFESSIONALS: '/professionals',
+  APPOINTMENTS: '/appointments',
+  PRACTITIONERS: '/practitioners',
   PATIENTS: '/patients',
   SETTINGS: '/settings',
   

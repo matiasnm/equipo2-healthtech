@@ -21,7 +21,7 @@ export const Layout = ({ children, header, footer }: LayoutProps) => {
       {children}
     </div>
 
-    {/* Footer opcional */}
+    {/* Footer */}
     {footer && <div className="relative z-10">{footer}</div>}
   </div>
 </main>

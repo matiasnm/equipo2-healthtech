@@ -1,8 +1,4 @@
-import {
-  FiPhone,
-  FiMapPin,
-  FiVideo,
-} from "react-icons/fi";
+import { FiPhone, FiMapPin, FiVideo } from "react-icons/fi";
 import { FaWhatsapp, FaCalendarAlt } from "react-icons/fa";
 
 interface CustomCardProps {
@@ -22,7 +18,7 @@ interface CustomCardProps {
   whatsappLink?: string;
   calendarLink?: string;
 }
-
+ 
 export const CustomCard = ({
   variant = "default",
   imageUrl,
@@ -44,8 +40,8 @@ export const CustomCard = ({
   const allHours = Array.from({ length: 11 }, (_, i) => i + 8);
 
   const variants = {
-    default: "bg-[var(--color-secondary)]/50 shadow-lg",
-    bordered: "bg-[var(--color-primary)]/30 border border-gray-200 shadow-lg",
+    default: "bg-[var(--color-secondary)]/50 border border-[var(--color-accent)] shadow-lg",
+    bordered: "bg-[var(--color-primary)]/30 border border-[var(--color-accent)] shadow-lg",
     highlighted: "bg-[var(--color-accent)]/10 border border-[var(--color-accent)] shadow-lg",
   };
 
@@ -55,7 +51,7 @@ export const CustomCard = ({
         <img
           src={imageUrl}
           alt={name}
-          className="w-32 h-32 object-cover rounded-full border-4 border-[var(--color-primary)]"
+          className="w-32 h-32 object-cover rounded-full border-2 border-[var(--color-accent)]"
         />
       </div>
       <div className="flex flex-col gap-2 md:w-2/3 w-full">
