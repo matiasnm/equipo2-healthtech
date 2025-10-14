@@ -1,6 +1,6 @@
 import { useMFA } from "../../../hooks/useMFA";
 import { toast } from "react-toastify";
-import type { User } from "../../../types/User.types"; 
+import type { User } from "../../../types/user.types"; 
 
 type MFAModalProps = {
   userId: string;

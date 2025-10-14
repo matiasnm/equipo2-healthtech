@@ -1,57 +1,88 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useAuthStore } from "../store/AuthStore";
+import { useAuthStore } from "../store/authStore";
 import MFAModal from "../components/ui/modals/MFAModal";
-import type { User } from "../types/User.types";
+import { loginUser } from "../services/auth";
+import type { User } from "../types/user.types";
 
 const Login = () => {
   const navigate = useNavigate();
-  const setUser = useAuthStore((state) => state.setUser);
+  const { setUser, setToken } = useAuthStore();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showMFAModal, setShowMFAModal] = useState(false);
-  const [userId, setUserId] = useState<string>("");
-  const [tempToken, setTempToken] = useState<string>("");
+  const [userId, setUserId] = useState("");
+  const [tempToken, setTempToken] = useState("");
+
+
+  const redirectByRole = (role: User["role"]) => {
+  switch (role) {
+    case "ADMIN":
+      return "/dashboard";
+    case "PRACTITIONER":
+      return "/dashboard";
+    case "PATIENT":
+      return "/practitioners"; 
+    default:
+      return "/";
+  }
+};
+
+
 
   const handleLogin = async () => {
     try {
-      const res = await axios.post("/api/v1/auth/login", { email, password });
-      const { token, mfaRequired, tempToken: receivedTempToken, userId: receivedUserId, user } = res.data;
+      const { token, mfaRequired, tempToken, userId, user } = await loginUser({ email, password });
 
-      if (mfaRequired) {
-        setUserId(receivedUserId);
-        setTempToken(receivedTempToken);
+      if (mfaRequired && tempToken && userId) {
+        setUserId(userId);
+        setTempToken(tempToken);
         setShowMFAModal(true);
-      } else {
-        const mockUser: User = user ?? {
-          id: receivedUserId ?? "dev-id",
-          email,
-          role: "PATIENT",
-        };
-
-        localStorage.setItem("token", token);
-        setUser(mockUser);
-        navigate("/dashboard");
+        return;
       }
-    } catch (err) {
+
+      if (!token || !user) {
+        toast.error("Respuesta incompleta del servidor");
+        return;
+      }
+
+      localStorage.setItem("token", token);
+      setUser(user);
+      setToken(token);
+      navigate("/dashboard");
+    } catch {
       toast.error("Login fallido");
     }
   };
 
-  // 🔧 Acceso rápido para desarrollo
-  const loginAsMock = (role: User["role"]) => {
-    const mockUser: User = {
-      id: `mock-${role}`,
-      email: `${role}@dev.local`,
-      role,
-    };
-    localStorage.setItem("token", "mock-token");
-    setUser(mockUser);
-    navigate("/dashboard");
+  const loginWithSwaggerUser = async (role: User["role"]) => {
+  const credentials: Record<User["role"], { email: string; password: string }> = {
+    SUPERADMIN: { email: "", password: "" },//no  aun en swagger
+    ADMIN: { email: "admin@ht.com", password: "admin" },
+    PATIENT: { email: "patient1@ht.com", password: "patient" },
+    PRACTITIONER: { email: "doctor1@ht.com", password: "doctor" },
   };
+
+  const { email, password } = credentials[role];
+
+  try {
+    const { token, user } = await loginUser({ email, password });
+
+    if (!token || !user) {
+      toast.error("Respuesta incompleta del servidor");
+      return;
+    }
+
+    localStorage.setItem("token", token);
+    setUser(user);
+    setToken(token);
+    navigate(redirectByRole(user.role));
+  } catch {
+    toast.error("Login de prueba fallido");
+  }
+};
 
   return (
     <div className="flex flex-col gap-4 p-4 max-w-md mx-auto">
@@ -81,35 +112,37 @@ const Login = () => {
         <MFAModal
           userId={userId}
           tempToken={tempToken}
-          onSuccess={(token: string, user: User) => {
+          onSuccess={(token, user) => {
             localStorage.setItem("token", token);
             setUser(user);
+            setToken(token);
             setShowMFAModal(false);
-            navigate("/dashboard");
+            navigate(redirectByRole(user.role));
           }}
           onClose={() => setShowMFAModal(false)}
         />
       )}
 
-      {/* 🚧 Acceso rápido para desarrollo */}
       {import.meta.env.DEV && (
-        <div className="mt-6 border-t pt-4">
-          <h3 className="text-sm font-semibold text-gray-500 mb-2">Acceso rápido (dev)</h3>
-          <div className="flex gap-2 flex-wrap">
-            {["admin", "medic", "patient"].map((role) => (
-              <button
-                key={role}
-                onClick={() => loginAsMock(role as User["role"])}
-                className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 text-sm"
-              >
-                Ingresar como {role}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
+  <div className="mt-6 border-t pt-4">
+    <h3 className="text-sm font-semibold text-gray-500 mb-2">Acceso rápido (Swagger)</h3>
+    <div className="flex gap-2 flex-wrap">
+      {["ADMIN", "PRACTITIONER", "PATIENT"].map((role) => (
+        <button
+          key={role}
+          onClick={() => loginWithSwaggerUser(role as User["role"])}
+          className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 text-sm"
+        >
+          Ingresar como {role.toLowerCase()}
+        </button>
+      ))}
+    </div>
+  </div>
+)}
+
     </div>
   );
 };
 
 export default Login;
+
