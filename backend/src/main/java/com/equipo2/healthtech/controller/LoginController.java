@@ -1,8 +1,6 @@
 package com.equipo2.healthtech.controller;
 
-import com.equipo2.healthtech.dto.login.LoginRequestDto;
-import com.equipo2.healthtech.dto.login.LoginResponseDto;
-import com.equipo2.healthtech.dto.login.MfaVerificationRequestDto;
+import com.equipo2.healthtech.dto.login.*;
 import com.equipo2.healthtech.dto.user.UserCreateRequestDto;
 import com.equipo2.healthtech.dto.user.UserReadResponseDto;
 import com.equipo2.healthtech.model.user.User;
@@ -34,17 +32,16 @@ public class LoginController {
 
     @Operation(summary = "Register endpoint for ALL ROLES")
     @PostMapping({"/register"})
-    public ResponseEntity<UserReadResponseDto> createUser(@RequestBody @Valid UserCreateRequestDto request, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<Void> createUser(@RequestBody @Valid UserCreateRequestDto request, UriComponentsBuilder uriBuilder) {
         log.info("CREATE -> New User: {}", request);
-        Long id = userService.createUser(request);
-        UserReadResponseDto dto = userService.readUser(id);
+        Long id = userService.create(request);
         URI location = uriBuilder.path("/users/{id}").buildAndExpand(id).toUri();
-        return ResponseEntity.created(location).body(dto);
+        return ResponseEntity.created(location).build();
     }
 
     @Operation(summary = "Login endpoint for ALL ROLES")
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDto> login(@RequestBody @Valid LoginRequestDto request) {
+    public ResponseEntity<LoginWithUserResponseDto> login(@RequestBody @Valid LoginRequestDto request) {
         return ResponseEntity.ok(loginService.login(request));
     }
 
@@ -62,10 +59,10 @@ public class LoginController {
         return mfaService.enableMfa((User) auth.getPrincipal());
     }
 
-    //@PostMapping("/refresh")
-    //public ResponseEntity<LoginResponseDto> refresh(@RequestBody RefreshTokenRequest request) {
-    //    return ResponseEntity.ok(loginService.refreshToken(request));
-    //}
+    @PostMapping("/refresh")
+    public ResponseEntity<LoginResponseDto> refreshToken(@RequestBody RefreshTokenRequest request) {
+        return ResponseEntity.ok(loginService.refreshToken(request));
+    }
 
     //@PostMapping("/logout")
     //public ResponseEntity<Void> logout(@RequestBody LogoutRequest request) {

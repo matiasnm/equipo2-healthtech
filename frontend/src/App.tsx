@@ -10,7 +10,6 @@ import HistoryPage from './pages/HistoryPage';
 
 function App() {
   const { isAuthenticated } = useAuth();
-
   return (
     <main className="min-h-screen bg-secondary text-text font-sans">
       <Routes>

@@ -7,19 +7,22 @@ import com.equipo2.healthtech.exception.EmailAlreadyExistsException;
 import com.equipo2.healthtech.exception.InvalidPasswordException;
 import com.equipo2.healthtech.exception.NoResultsException;
 import com.equipo2.healthtech.mapper.UserMapper;
+import com.equipo2.healthtech.model.patient.Patient;
+import com.equipo2.healthtech.model.practitioner.Practitioner;
+import com.equipo2.healthtech.model.user.Role;
 import com.equipo2.healthtech.model.user.User;
+import com.equipo2.healthtech.repository.PatientRepository;
+import com.equipo2.healthtech.repository.PractitionerRepository;
 import com.equipo2.healthtech.repository.UserRepository;
 import com.equipo2.healthtech.security.SecurityUtils;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +35,8 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final PatientRepository patientRepository;
+    private final PractitionerRepository practitionerRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
     private final SecurityUtils securityUtils;
@@ -58,39 +63,62 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public Long createUser(@Valid UserCreateRequestDto request) {
+    public Long create(UserCreateRequestDto request) {
         if (userRepository.existsByEmail(request.email())) {
             throw EmailAlreadyExistsException.of(request.email());
         }
-        User user = userMapper.toUser(request);
-        user.setPassword(passwordEncoder.encode(request.password()));
-        User savedUser = userRepository.save(user);
-        return savedUser.getId();
+        User user;
+
+        switch (request.role()) {
+            case PATIENT -> {
+                Patient patient = userMapper.toPatient(request);
+                patient.setPassword(passwordEncoder.encode(request.password()));
+                user = patientRepository.save(patient); // saves in users + patients table
+            }
+            case PRACTITIONER -> {
+                Practitioner practitioner = userMapper.toPractitioner(request);
+                practitioner.setPassword(passwordEncoder.encode(request.password()));
+                user = practitionerRepository.save(practitioner); // saves in users + practitioners table
+            }
+            default -> {
+                // plain User for other roles (ADMIN, SUPER_ADMIN, etc.)
+                user = userMapper.toUser(request);
+                user.setPassword(passwordEncoder.encode(request.password()));
+                user = userRepository.save(user);
+            }
+        }
+        return user.getId();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public UserReadResponseDto readUser() {
-        User user = getUser(securityUtils.getAuthenticatedUser().getId());
-        UserReadResponseDto dto = userMapper.toUserReadResponseDto(user);
-        return userMapper.toUserReadResponseDto(user);
+    public UserReadResponseDto read(Long id) {
+        User authUser = securityUtils.getAuthenticatedUser();
+
+        if (id == null || id.equals(authUser.getId())) {
+            return userMapper.toUserReadResponseDto(authUser);
+        }
+
+        if (authUser.getRole() == Role.ADMIN || authUser.getRole() == Role.SUPER_ADMIN) {
+            User user = getUser(id);
+            return userMapper.toUserReadResponseDto(user);
+        }
+        throw new AccessDeniedException("Not allowed");
     }
 
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
-    public UserReadResponseDto readUser(Long id) {
-        User user = getUser(id);
-        return userMapper.toUserReadResponseDto(user);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
-    public UserReadResponseDto readUser(String email) {
+    public UserReadResponseDto read(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> NoResultsException.of(email));
         return userMapper.toUserReadResponseDto(user);
+    }
+
+    @Override
+    public UserReadResponseDto readMe() {
+        User authUser = securityUtils.getAuthenticatedUser();
+        return userMapper.toUserReadResponseDto(authUser);
     }
 
     @Override
@@ -107,7 +135,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void updatePassword(@Valid UserUpdatePasswordRequestDto request) {
+    public void updatePassword(UserUpdatePasswordRequestDto request) {
         User user = securityUtils.getAuthenticatedUser();
         if (user.getPassword().equals(request.oldPassword())) {
             throw InvalidPasswordException.of(user.getEmail());
@@ -118,7 +146,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void deleteUser(Long id) {
+    public void delete(Long id) {
         setInactive(id);
     }
 

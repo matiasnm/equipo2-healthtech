@@ -15,10 +15,13 @@ public class CorsConfig {
     @Value("${frontend.url}")
     private String frontendUrl;
 
+    @Value("${api.url}")
+    private String apiUrl;
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of(frontendUrl)); // tu frontend
+        configuration.setAllowedOrigins(List.of(frontendUrl, apiUrl));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Verifier", "Content-Type"));
         configuration.setAllowCredentials(true);

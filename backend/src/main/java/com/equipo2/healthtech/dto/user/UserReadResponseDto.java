@@ -7,5 +7,6 @@ public record UserReadResponseDto(
         Long id,
         String email,
         Role role,
+        boolean status,
         UserProfileReadResponseDto userProfile
 ) { }

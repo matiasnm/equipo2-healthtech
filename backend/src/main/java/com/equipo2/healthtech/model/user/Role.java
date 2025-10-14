@@ -4,7 +4,7 @@ public enum Role {
     ADMIN,
     SUPER_ADMIN,
     PATIENT,
-    PROVIDER,
+    PRACTITIONER,
     STAFF,
     BILLING
 }

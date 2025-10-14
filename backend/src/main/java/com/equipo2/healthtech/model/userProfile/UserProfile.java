@@ -1,5 +1,6 @@
-package com.equipo2.healthtech.model.user;
+package com.equipo2.healthtech.model.userProfile;
 
+import com.equipo2.healthtech.model.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -39,6 +40,10 @@ public class UserProfile {
     @NotBlank()
     @Size(max = 255)
     private String fullName;
+
+    @NotBlank()
+    @Size(max = 50)
+    private String gender;
 
     @NotBlank()
     @Size(max = 50)

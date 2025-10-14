@@ -1,4 +1,4 @@
-package com.equipo2.healthtech.model.user;
+package com.equipo2.healthtech.model.userProfile;
 
 public enum RelatedPersonType {
     NEXT_OF_KIN,

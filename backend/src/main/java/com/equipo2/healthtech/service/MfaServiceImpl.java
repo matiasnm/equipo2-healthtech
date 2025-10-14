@@ -37,6 +37,6 @@ public class MfaServiceImpl implements MfaService {
         user.setMfaSecret("MOCK_MFA_SECRET");
         user.setMfaRequired(true);
         userRepository.save(user);
-        return "MOCK_OTP_URL";
+        return "MOCK_OTP_URL, visit 'mfa\\verify' endpoint and use 'code: \"MOCK_MFA_SECRET\"'";
     }
 }

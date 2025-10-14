@@ -9,6 +9,8 @@ logging:
 spring:
   application:
     name: health tech
+  server:
+    forward-headers-strategy: framework
   profiles:
     active: prod
   jackson:
@@ -33,3 +35,7 @@ spring:
 api:
   security:
     secret: ${API_SECURITY_SECRET}
+  url: ${API_URL}
+
+frontend:
+  url: ${FRONTEND_URL}
