@@ -1,0 +1,55 @@
+services:
+  db:
+    image: postgres:15
+    container_name: postgres-db
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - health-net
+
+  flyway:
+    env_file:
+      - .env
+    image: flyway/flyway:9
+    command: -url=${FLYWAY_URL} -user=${FLYWAY_USER} -password=${FLYWAY_PASSWORD} clean
+    depends_on:
+      - db
+    networks:
+      - health-net
+
+  app:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    env_file:
+      - .env
+    ports:
+      - "8010:8080"
+    networks:
+      - health-net
+
+  web:
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: ${VITE_API_URL}
+    env_file:
+      - .env
+    container_name: web
+    ports:
+      - 8001:80
+    networks:
+      - health-net
+
+volumes:
+  pgdata:
+
+networks:
+  health-net:
