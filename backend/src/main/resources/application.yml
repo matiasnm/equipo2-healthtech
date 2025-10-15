@@ -39,3 +39,6 @@ api:
 
 frontend:
   url: ${FRONTEND_URL}
+
+cors:
+  allow_all: ${CORS_ALLOW_ALL}
