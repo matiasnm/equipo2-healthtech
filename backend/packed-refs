@@ -1,0 +1,9 @@
+# pack-refs with: peeled fully-peeled sorted 
+21852db5ce894ffe9087913de7f0419b341b4b40 refs/remotes/origin/dev
+5ba055e858dbe3f2c5fd6e28627bb664ad479252 refs/remotes/origin/dev-test
+67d8a2e14f71b1e8a269dcbee52da61b472c2b42 refs/remotes/origin/dev-v
+615c120f5b17502a10e4c25962e7edc6486743cb refs/remotes/origin/feature/routes-auth
+21852db5ce894ffe9087913de7f0419b341b4b40 refs/remotes/origin/formulario-login
+c7a6d4134cd574f2f638377cbd079928234c5e5d refs/remotes/origin/main
+5e44249d7ca2174cf8e7fce14b298e441a76dfaa refs/remotes/origin/test
+be8035dbc12b38608517d0e52a4f703b1e228d66 refs/remotes/origin/test-v

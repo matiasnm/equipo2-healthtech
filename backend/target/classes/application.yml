@@ -1,0 +1,44 @@
+debug: true
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.springframework: DEBUG
+
+spring:
+  application:
+    name: health tech
+  server:
+    forward-headers-strategy: framework
+  profiles:
+    active: prod
+  jackson:
+    mapper:
+      ACCEPT_CASE_INSENSITIVE_ENUMS: true
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+  api-docs:
+    cache:
+      disabled: true
+
+api:
+  security:
+    secret: ${API_SECURITY_SECRET}
+  url: ${API_URL}
+
+frontend:
+  url: ${FRONTEND_URL}
+
+cors:
+  allow_all: ${CORS_ALLOW_ALL}

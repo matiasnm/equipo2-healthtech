@@ -1,0 +1,17 @@
+CREATE TYPE role_enum AS ENUM ('ADMIN', 'SUPER_ADMIN', 'PATIENT', 'PRACTITIONER', 'STAFF');
+
+CREATE TABLE users (
+    id BIGSERIAL PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    role role_enum NOT NULL,
+    status BOOLEAN DEFAULT FALSE NOT NULL,
+    blocked INT DEFAULT 0 NOT NULL,
+    active BOOLEAN DEFAULT TRUE NOT NULL,
+    mfa_required BOOLEAN DEFAULT FALSE NOT NULL,
+    account_locked BOOLEAN DEFAULT FALSE NOT NULL,
+    credentials_expired BOOLEAN DEFAULT FALSE NOT NULL,
+    mfa_secret VARCHAR(255),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT now()
+);
