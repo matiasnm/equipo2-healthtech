@@ -86,6 +86,21 @@ VALUES
     ('http://ar.gov/dni', '34567890', 'NATIONAL_ID', 3, NULL),
     ('http://passport.gov', 'C3456789', 'PASSPORT', 3, NULL);
 
+-- Add Practitioner Profile
+INSERT INTO practitioner_profiles (
+    experience,
+    studies,
+    office_code,
+    remote
+) VALUES
+    (10, 'Cardiology specialization at UBA', 'A1', true)
+RETURNING id;
+
+UPDATE practitioners
+SET practitioner_profile_id = 1
+WHERE user_id = 3;
+
+
 -- Create User
 INSERT INTO users (
     email,

@@ -63,16 +63,6 @@ public class AppointmentController {
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "Get available practitioners within a time range")
-    @PreAuthorize("isAuthenticated()")
-    @PostMapping("/available-practitioners")
-    public ResponseEntity<List<PractitionerReadSummaryResponseDto>> getAvailablePractitioners(
-            @Valid @RequestBody AppointmentAvailabilityRequestDto request) {
-        List<PractitionerReadSummaryResponseDto> available =
-                appointmentService.getAvailablePractitioners(request.startTime(), request.endTime());
-        return ResponseEntity.ok(available);
-    }
-
     @Operation(summary = "Check if a specific practitioner is available in a time range")
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/available-practitioners/{id}")
@@ -82,4 +72,15 @@ public class AppointmentController {
         boolean available = appointmentService.isPractitionerAvailable(id, request.startTime(), request.endTime());
         return ResponseEntity.ok(available);
     }
+
+    @Operation(summary = "Get ALL available practitioners upon Dto (dates/remote/speciality)")
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/available-practitioners")
+    public ResponseEntity<List<PractitionerReadSummaryResponseDto>> getAvailablePractitioners(
+            @Valid @RequestBody AppointmentAvailabilityRequestDto request) {
+        List<PractitionerReadSummaryResponseDto> available =
+                appointmentService.getAvailablePractitioners(request);
+        return ResponseEntity.ok(available);
+    }
+
 }

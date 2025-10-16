@@ -8,7 +8,6 @@ import com.equipo2.healthtech.model.user.Role;
 import com.equipo2.healthtech.model.user.User;
 import com.equipo2.healthtech.repository.PatientRepository;
 import com.equipo2.healthtech.repository.PractitionerRepository;
-import com.equipo2.healthtech.repository.UserRepository;
 import com.equipo2.healthtech.security.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

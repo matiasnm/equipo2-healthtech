@@ -32,8 +32,11 @@ public class SpringDoc {
 
     ### ⚙️ RULES
 
-    1. If `status = false` → **User Profile is null** (ALL USERS)  
-    2. Practitioners **must set a PractitionerRole** in order to be active!
+    1. If `status = false` → **UserProfile is null** (ALL USERS)  
+    
+    2.a Practitioners **must set a PractitionerRole** in order to be active!
+    
+    2.b Practitioners **must set a PractitionerProfile** in order to be active!
 
     ### 🔐 Login Info
 

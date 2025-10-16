@@ -73,18 +73,18 @@ public class UserServiceImpl implements UserService {
             case PATIENT -> {
                 Patient patient = userMapper.toPatient(request);
                 patient.setPassword(passwordEncoder.encode(request.password()));
-                user = patientRepository.save(patient); // saves in users + patients table
+                user = patientRepository.saveAndFlush(patient); // saves in users + patients table
             }
             case PRACTITIONER -> {
                 Practitioner practitioner = userMapper.toPractitioner(request);
                 practitioner.setPassword(passwordEncoder.encode(request.password()));
-                user = practitionerRepository.save(practitioner); // saves in users + practitioners table
+                user = practitionerRepository.saveAndFlush(practitioner); // saves in users + practitioners table
             }
             default -> {
                 // plain User for other roles (ADMIN, SUPER_ADMIN, etc.)
                 user = userMapper.toUser(request);
                 user.setPassword(passwordEncoder.encode(request.password()));
-                user = userRepository.save(user);
+                user = userRepository.saveAndFlush(user);
             }
         }
         return user.getId();

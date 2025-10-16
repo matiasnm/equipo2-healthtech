@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -36,9 +37,15 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     Optional<Appointment> findByIdWithParticipants(Long id);
 
     @Query("""
-        SELECT a FROM Appointment a
-        WHERE (:startTime < a.endTime AND :endTime > a.startTime)
-        AND a.status = 'SCHEDULED'
-        """)
-    Optional<Appointment> findConflictsAppointments(@Param("startTime") OffsetDateTime startTime, @Param("endTime") OffsetDateTime endTime);
+    SELECT COUNT(a) > 0
+    FROM Appointment a
+    JOIN a.practitioners p
+    WHERE p.id = :practitionerId
+      AND a.status = 'SCHEDULED'
+      AND (:startTime < a.endTime AND :endTime > a.startTime)
+    """)
+    boolean  findConflictingAppointments(
+            @Param("practitionerId") Long practitionerId,
+            @Param("startTime") OffsetDateTime startTime,
+            @Param("endTime") OffsetDateTime endTime);
 }
