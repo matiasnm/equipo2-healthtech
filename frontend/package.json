@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
     "@tanstack/react-query": "^5.90.3",
     "axios": "^1.12.2",
     "lucide-react": "^0.545.0",
@@ -17,9 +18,11 @@
     "primereact": "^10.9.7",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
+    "react-hook-form": "^7.65.0",
     "react-icons": "^5.5.0",
     "react-router-dom": "^7.9.3",
     "react-toastify": "^11.0.5",
+    "zod": "^4.1.12",
     "zustand": "^5.0.8"
   },
   "devDependencies": {

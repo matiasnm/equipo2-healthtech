@@ -1,10 +1,43 @@
+export type Identifier = {
+  system: string;
+  value: string;
+  type: 'NATIONAL_ID' | string;
+  userId?: number;
+  relatedPersonId?: number;
+};
+ 
+export type RelatedPerson = {
+  id: number;
+  userId: number;
+  type: 'NEXT_OF_KIN' | string;
+  fullName: string;
+  phone: string;
+  email: string;
+  address: string;
+  identifiers: Identifier[];
+};
+
+export type UserProfile = {
+  id: number;
+  fullName: string;
+  phone: string;
+  address: string;
+  gender: string;
+  birthday: string;
+  identifiers: Identifier[];
+};
+
 export type User = {
-  id: string;
+  id: number;
   email: string;
   role: 'ADMIN' | 'SUPERADMIN' | 'PATIENT' | 'PRACTITIONER';
+  status: boolean;
+  userProfile?: UserProfile;
+  relatedPersons?: RelatedPerson[];
   name?: string;
   avatarUrl?: string;
 };
+
 
 export type RegisterPayload = {
   email: string;
@@ -20,11 +53,12 @@ export type LoginCredentials = {
 };
 
 export type LoginResponse = {
-  token: string;
-  user?: User;
-  mfaRequired?: boolean;
-  tempToken?: string;
-  userId?: string;
+  login: {
+    token: string;
+    refreshToken: string;
+    mfaRequired: boolean;
+  };
+  user: User;
 };
 
 export type MFAResponse = {

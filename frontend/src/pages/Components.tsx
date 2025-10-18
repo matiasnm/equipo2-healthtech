@@ -1,4 +1,4 @@
-import { Button, Input, Navbar, Footer, MFAModal, Layout, CustomCard, SpecialtyGrid } from '../components/ui/index';
+import { Button, Input, Navbar, Footer, MFAModal, Layout, CustomCard, Card, SpecialtyGrid } from '../components/ui/index';
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';

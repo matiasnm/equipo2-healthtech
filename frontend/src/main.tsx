@@ -18,7 +18,7 @@ if (rootElement) {
         <QueryClientProvider client={queryClient}> 
             <PrimeReactProvider value={{ pt: Tailwind }}>
               <AppRouter />
-              <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop closeOnClick pauseOnFocusLoss pauseOnHover draggable  theme='colored' />
+              <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop closeOnClick pauseOnFocusLoss pauseOnHover draggable  theme='light' />
             </PrimeReactProvider>
         </QueryClientProvider>
       </BrowserRouter>
