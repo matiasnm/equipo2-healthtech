@@ -11,7 +11,7 @@ export default {
       colors: {
       },
       fontFamily: {
-        sans: ['Inter', 'sans-serif'],
+        sans: ['Poppins', 'Montserrat', 'sans-serif'],
       },
     },
   },

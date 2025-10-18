@@ -1,12 +1,9 @@
-interface InputProps {
+import { ChangeEvent, InputHTMLAttributes } from "react";
+
+interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
-  name?: string;
-  id?: string;
-  type?: string;
-  placeholder?: string;
-  value?: string;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  autoComplete?: string;
+  error?: boolean;
+  errorMessage?: string;
   variant?: "full" | "auto" | "centered";
 }
 
@@ -21,18 +18,15 @@ const getAutoComplete = (type?: string, autoComplete?: string): string => {
   }
 };
 
+
 export const Input = ({
   label,
-  name,
-  id,
-  type = "text",
-  placeholder,
-  value,
-  onChange,
-  autoComplete,
+  error = false,
+  errorMessage,
   variant = "full",
+  ...rest
 }: InputProps) => {
-  const inputId = id ?? name ?? label.toLowerCase().replace(/\s+/g, "-");
+  const inputId = rest.id ?? rest.name ?? label.toLowerCase().replace(/\s+/g, "-");
 
   const variantClasses = {
     full: "w-full",
@@ -49,15 +43,17 @@ export const Input = ({
       </label>
       <input
         id={inputId}
-        name={name ?? inputId}
-        type={type}
-        placeholder={placeholder}
-        value={value}
-        onChange={onChange}
-        autoComplete={getAutoComplete(type, autoComplete)}
-        className={`px-3 py-2.5 text-lg font-[var(--font-poppins)] rounded-lg border bg-white text-[var(--color-primary)] border-[#0770cb] focus:outline-2 focus:outline-offset-1 focus:outline-[#0894e5] ${inputVariant}`}
+        autoComplete={getAutoComplete(rest.type, rest.autoComplete)}
+        className={`px-3 py-2.5 text-lg font-[var(--font-poppins)] rounded-lg border bg-white text-[var(--color-primary)] ${
+          error
+            ? "border-[var(--color-error)] ring-0.5 ring-[var(--color-error)] focus:outline-[var(--color-error-hover)]"
+            : "border-[#0770cb] focus:outline-[#0894e5]"
+        } ${inputVariant}`}
+        {...rest}
       />
+      {errorMessage && (
+        <p className="text-sm text-[var(--color-error)] mt-1">{errorMessage}</p>
+      )}
     </div>
   );
 };
-

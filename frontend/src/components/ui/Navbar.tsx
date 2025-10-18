@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
-import { useAuthStore } from '../../hooks/useAuthStore';
+import { useAuthStore } from '../../store/useAuthStore';
 import { roleBasedLinks } from '../../constants/roleLinks';
 import { NavLink } from '../../types/navigation';
 import { toast } from 'react-toastify';

@@ -2,6 +2,7 @@ export { Button } from './Button';
 export { Input } from './Input';
 export { Layout } from './Layout';
 export { CustomCard } from './CustomCard';
+export { Card } from './Card';
 export {SpecialtyGrid} from './SpecialtyGrid';
 export { default as MFAModal } from './modals/MFAModal';
 export { Navbar } from './Navbar';

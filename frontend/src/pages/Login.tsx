@@ -1,44 +1,42 @@
-import React, { useState } from "react";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useAuthStore } from "../store/authStore";
-import MFAModal from "../components/ui/modals/MFAModal";
-import { loginUser } from "../services/auth";
+import { loginSchema, LoginFormData } from "../schemas/login.schema";
+import { useAuthStore } from "../store/useAuthStore";
+import { loginUser, persistSession } from "../services/auth";
+import { Button, Input, MFAModal, Layout, Card } from "../components/ui/index";
+import { redirectByRole } from "../utils/redirectByRole";
 import type { User } from "../types/user.types";
 
 const Login = () => {
   const navigate = useNavigate();
   const { setUser, setToken } = useAuthStore();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showMFAModal, setShowMFAModal] = useState(false);
-  const [userId, setUserId] = useState("");
-  const [tempToken, setTempToken] = useState("");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+  });
 
+  const [showMFAModal, setShowMFAModal] = React.useState(false);
+  const [userId, setUserId] = React.useState("");
+  const [tempToken, setTempToken] = React.useState("");
 
-  const redirectByRole = (role: User["role"]) => {
-  switch (role) {
-    case "ADMIN":
-      return "/dashboard";
-    case "PRACTITIONER":
-      return "/dashboard";
-    case "PATIENT":
-      return "/practitioners"; 
-    default:
-      return "/";
-  }
-};
-
-
-
-  const handleLogin = async () => {
+  const onSubmit = async (data: LoginFormData) => {
     try {
-      const { token, mfaRequired, tempToken, userId, user } = await loginUser({ email, password });
+      const { login, user } = await loginUser(data);
+      const { token, mfaRequired } = login;
 
-      if (mfaRequired && tempToken && userId) {
-        setUserId(userId);
-        setTempToken(tempToken);
+      console.log("Login response:", { login, user });
+
+      if (mfaRequired && token && user.id) {
+        setUserId(user.id.toString());
+        setTempToken(token);
         setShowMFAModal(true);
         return;
       }
@@ -48,101 +46,115 @@ const Login = () => {
         return;
       }
 
-      localStorage.setItem("token", token);
-      setUser(user);
-      setToken(token);
-      navigate("/dashboard");
-    } catch {
-      toast.error("Login fallido");
+      if (!user.status) {
+        toast.error("Tu cuenta está inactiva");
+        return;
+      }
+
+      persistSession(token, user);
+      navigate(redirectByRole(user.role));
+    } catch (error: any) {
+      console.log("Error en login:", error);
+      const message = error?.response?.data?.message;
+      if (message === "No tenés permisos para esta acción") {
+        toast.error(message);
+      } else {
+        toast.error("Login fallido");
+      }
     }
   };
 
   const loginWithSwaggerUser = async (role: User["role"]) => {
-  const credentials: Record<User["role"], { email: string; password: string }> = {
-    SUPERADMIN: { email: "", password: "" },//no  aun en swagger
-    ADMIN: { email: "admin@ht.com", password: "admin" },
-    PATIENT: { email: "patient1@ht.com", password: "patient" },
-    PRACTITIONER: { email: "doctor1@ht.com", password: "doctor" },
+    const credentials: Record<User["role"], { email: string; password: string }> = {
+      SUPERADMIN: { email: "", password: "" },
+      ADMIN: { email: "admin@ht.com", password: "admin" },
+      PATIENT: { email: "patient1@ht.com", password: "patient" },
+      PRACTITIONER: { email: "doctor1@ht.com", password: "doctor" },
+    };
+
+    const { email, password } = credentials[role];
+    setValue("email", email);
+    setValue("password", password);
+    onSubmit({ email, password });
   };
 
-  const { email, password } = credentials[role];
-
-  try {
-    const { token, user } = await loginUser({ email, password });
-
-    if (!token || !user) {
-      toast.error("Respuesta incompleta del servidor");
-      return;
-    }
-
-    localStorage.setItem("token", token);
-    setUser(user);
-    setToken(token);
-    navigate(redirectByRole(user.role));
-  } catch {
-    toast.error("Login de prueba fallido");
-  }
-};
-
   return (
-    <div className="flex flex-col gap-4 p-4 max-w-md mx-auto">
-      <h2 className="text-xl font-bold">Iniciar sesión</h2>
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        className="border p-2 rounded"
-      />
-      <input
-        type="password"
-        placeholder="Contraseña"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        className="border p-2 rounded"
-      />
-      <button
-        onClick={handleLogin}
-        className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
-      >
-        Iniciar sesión
-      </button>
+    <Layout>
+      <Card className="max-w-md mx-auto">
+        <h2 className="text-xl font-bold mb-4">Iniciar sesión</h2>
 
-      {showMFAModal && (
-        <MFAModal
-          userId={userId}
-          tempToken={tempToken}
-          onSuccess={(token, user) => {
-            localStorage.setItem("token", token);
-            setUser(user);
-            setToken(token);
-            setShowMFAModal(false);
-            navigate(redirectByRole(user.role));
-          }}
-          onClose={() => setShowMFAModal(false)}
-        />
-      )}
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Input
+            type="email"
+            label="Email"
+            {...register("email")}
+            placeholder="ejemplo@correo.com"
+            error={!!errors.email}
+            errorMessage={errors.email?.message}
+          />
 
-      {import.meta.env.DEV && (
-  <div className="mt-6 border-t pt-4">
-    <h3 className="text-sm font-semibold text-gray-500 mb-2">Acceso rápido (Swagger)</h3>
-    <div className="flex gap-2 flex-wrap">
-      {["ADMIN", "PRACTITIONER", "PATIENT"].map((role) => (
-        <button
-          key={role}
-          onClick={() => loginWithSwaggerUser(role as User["role"])}
-          className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 text-sm"
-        >
-          Ingresar como {role.toLowerCase()}
-        </button>
-      ))}
-    </div>
-  </div>
-)}
+          <Input
+            type="password"
+            label="Contraseña"
+            {...register("password")}
+            placeholder="******"
+            error={!!errors.password}
+            errorMessage={errors.password?.message}
+          />
 
-    </div>
+          <Button variant="primary" type="submit" className="w-full mt-4">
+            Iniciar sesión
+          </Button>
+
+          <p className="text-sm text-center text-[var(--color-muted)] mt-4">
+              ¿No tenés cuenta?{" "}
+            <a href="/register" className="text-[var(--color-primary)] font-medium hover:underline hover:text-[var(--color-primary-hover)] transition-colors">
+              Registrate aquí
+            </a>
+          </p>
+
+        </form>
+
+        {showMFAModal && (
+          <MFAModal
+            userId={userId}
+            tempToken={tempToken}
+            onSuccess={(token, user) => {
+              if (!user.status) {
+                toast.error("Tu cuenta está inactiva");
+                return;
+              }
+
+              persistSession(token, user);
+              setShowMFAModal(false);
+              navigate(redirectByRole(user.role));
+            }}
+            onClose={() => setShowMFAModal(false)}
+          />
+        )}
+
+        {import.meta.env.DEV && (
+          <div className="mt-6 border-t pt-4">
+            <h3 className="text-sm font-semibold text-gray-500 mb-2">
+              Acceso rápido (Swagger)
+            </h3>
+            <div className="flex gap-2 flex-wrap">
+              {["ADMIN", "PRACTITIONER", "PATIENT"].map((role) => (
+                <Button
+                  key={role}
+                  variant="accent"
+                  size="sm"
+                  onClick={() => loginWithSwaggerUser(role as User["role"])}
+                >
+                  Ingresar como {role.toLowerCase()}
+                </Button>
+              ))}
+            </div>
+          </div>
+        )}
+      </Card>
+    </Layout>
   );
 };
 
 export default Login;
-

@@ -9,17 +9,16 @@ interface LayoutProps {
 export const Layout = ({ children, header, footer }: LayoutProps) => {
 
   return (
-    <main className="font-[var(--font-monserrat)]">
-  <div className="min-h-screen w-full bg-white relative flex flex-col">
+    <main className="font-[var(--font-monserrat)] min-h-screen w-full bg-sunset-gradient flex flex-col">
+  <div className="min-h-screen w-full relative bg-white/20 backdrop-blur-md flex flex-col">
     
-    {/* Header 
-    {header && <div className="relative z-20">{header}</div>}
-    */}
+    {/* Header */}
+  {header && <div className="relative z-20">{header}</div>}
 
     {/* Contenido principal */}
-    <div className="relative z-10 max-w-6xl mx-auto px-4 py-6 sm:px-8 bg-opacity-90 rounded-xl shadow-md flex-grow">
-      {children}
-    </div>
+  <div className="relative z-10 max-w-6xl mx-auto px-4 py-6 sm:px-8 flex-grow">
+    {children}
+  </div>
 
     {/* Footer */}
     {footer && <div className="relative z-10">{footer}</div>}

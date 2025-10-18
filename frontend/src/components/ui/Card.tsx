@@ -7,9 +7,14 @@ type CardProps = {
 
 export const Card = ({ children, className = "" }: CardProps) => {
   return (
-    <div className={`bg-[var(--color-secondary)]/50 border border-[var(--color-accent)] shadow-lg rounded-lg p-6 ${className}`}>
-      {children}
+    <div className={`relative rounded-lg overflow-hidden ${className}`}>
+      <div className="absolute inset-0 bg-white" />
+
+      <div className="relative bg-[var(--color-secondary)]/80 border border-[var(--color-accent)] shadow-lg backdrop-blur rounded-lg p-6">
+        {children}
+      </div>
     </div>
   );
 };
+
 
