@@ -2,10 +2,9 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 
 const privateAPI = axios.create({
-  baseURL: 'http://api.mbst.online:8010',//api/v1
+  baseURL: 'http://api.mbst.online:8010',
   headers: {
     'Content-Type': 'application/json',
-    Authorization: `Bearer ${localStorage.getItem('token')}`,
   },
 });
 

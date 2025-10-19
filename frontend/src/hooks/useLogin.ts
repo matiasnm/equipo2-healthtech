@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { loginUser } from '../services/auth';
-import { useAuthStore } from '../store/authStore';
+import { useAuthStore } from '../store/useAuthStore';
 import { toast } from 'react-toastify';
 
 export const useLogin = () => {
@@ -8,7 +8,9 @@ export const useLogin = () => {
 
   return useMutation({
     mutationFn: loginUser,
-    onSuccess: ({ token, user }) => {
+    onSuccess: ({ login, user }) => {
+      const token = login?.token;
+      
       if (!user || !token) {
         toast.error('Respuesta incompleta del servidor');
         return;

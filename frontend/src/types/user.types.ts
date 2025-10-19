@@ -4,8 +4,8 @@ export type Identifier = {
   type: 'NATIONAL_ID' | string;
   userId?: number;
   relatedPersonId?: number;
-};
- 
+}; 
+
 export type RelatedPerson = {
   id: number;
   userId: number;

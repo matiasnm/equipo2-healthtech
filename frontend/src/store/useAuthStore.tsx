@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { fetchUser, logoutUser } from '../services/auth';
 import type { User } from '../types/user.types';
- 
+
 interface AuthState {
   user: User | null;
   role: User['role'] | null;
@@ -11,7 +11,7 @@ interface AuthState {
   error: string | null;
   setUser: (user: User) => void;
   setToken: (token: string) => void;
-  logout: () => void;
+  logout: () => Promise<void>;
   validateSession: () => Promise<void>;
 }
 
@@ -24,25 +24,13 @@ export const useAuthStore = create<AuthState>((set) => ({
   error: null,
 
   setUser: (user) =>
-    set({
-      user,
-      role: user.role,
-      isAuthenticated: true,
-    }),
+    set({ user, role: user.role, isAuthenticated: true }),
 
-  setToken: (token) =>
-    set({
-      token,
-      isAuthenticated: true,
-    }),
+  setToken: (token) => 
+    set({ token, isAuthenticated: true }),
 
   logout: async () => {
-    try {
-      await logoutUser();
-    } catch (error) {
-      console.warn("Logout fallido:", error);
-    }
-
+    await logoutUser();
     localStorage.removeItem('token');
     set({
       user: null,

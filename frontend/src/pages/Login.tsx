@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { loginSchema, LoginFormData } from "../schemas/login.schema";
 import { useAuthStore } from "../store/useAuthStore";
-import { loginUser, persistSession } from "../services/auth";
+import { loginUser } from "../services/auth";
 import { Button, Input, MFAModal, Layout, Card } from "../components/ui/index";
 import { redirectByRole } from "../utils/redirectByRole";
 import type { User } from "../types/user.types";
@@ -51,7 +51,9 @@ const Login = () => {
         return;
       }
 
-      persistSession(token, user);
+      localStorage.setItem("token", token);
+      setUser(user);
+      setToken(token);
       navigate(redirectByRole(user.role));
     } catch (error: any) {
       console.log("Error en login:", error);
@@ -125,7 +127,9 @@ const Login = () => {
                 return;
               }
 
-              persistSession(token, user);
+              localStorage.setItem("token", token);
+              setUser(user);
+              setToken(token);
               setShowMFAModal(false);
               navigate(redirectByRole(user.role));
             }}
