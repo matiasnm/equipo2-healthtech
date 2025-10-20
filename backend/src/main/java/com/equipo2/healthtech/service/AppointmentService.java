@@ -3,6 +3,7 @@ package com.equipo2.healthtech.service;
 import com.equipo2.healthtech.dto.appointment.*;
 import com.equipo2.healthtech.dto.practitioner.PractitionerReadSummaryResponseDto;
 import com.equipo2.healthtech.model.appointment.AppointmentStatus;
+import com.equipo2.healthtech.model.practitioner.Practitioner;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -23,7 +24,9 @@ public interface AppointmentService {
 
     public void delete(Long id);
 
-    public boolean isPractitionerAvailable(Long id, OffsetDateTime start, OffsetDateTime end);
+    public boolean isPractitionerAvailable(Practitioner practitioner, OffsetDateTime start, OffsetDateTime end);
+
+    public Practitioner getValidPractitioner(Long id);
 
     public List<PractitionerReadSummaryResponseDto> getAvailablePractitioners(AppointmentAvailabilityRequestDto request);
 

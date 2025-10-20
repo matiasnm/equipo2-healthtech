@@ -44,7 +44,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
       AND a.status = 'SCHEDULED'
       AND (:startTime < a.endTime AND :endTime > a.startTime)
     """)
-    boolean  findConflictingAppointments(
+    List<Appointment> findConflictingAppointments(
             @Param("practitionerId") Long practitionerId,
             @Param("startTime") OffsetDateTime startTime,
             @Param("endTime") OffsetDateTime endTime);

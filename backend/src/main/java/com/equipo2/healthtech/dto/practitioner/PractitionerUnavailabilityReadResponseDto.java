@@ -1,9 +1,10 @@
 package com.equipo2.healthtech.dto.practitioner;
 
+import java.time.DayOfWeek;
 import java.time.OffsetTime;
 
 public record PractitionerUnavailabilityReadResponseDto(
-        Integer dayOfWeek,
+        DayOfWeek dayOfWeek,
         OffsetTime startTime,
         OffsetTime endTime
 ) { }

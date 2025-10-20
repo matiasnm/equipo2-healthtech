@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalTime;
+import java.time.DayOfWeek;
 import java.time.OffsetTime;
 
 @Table(name = "practitioner_unavailability")
@@ -26,8 +26,9 @@ public class Unavailability {
     private Practitioner practitioner;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     @Column(name = "day_of_week", nullable = false)
-    private Integer dayOfWeek;
+    private DayOfWeek dayOfWeek;
 
     @NotNull
     @Column(name = "start_time", nullable = false)

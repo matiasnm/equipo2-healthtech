@@ -6,6 +6,7 @@ import com.equipo2.healthtech.dto.appointment.AppointmentReadDetailResponseDto;
 import com.equipo2.healthtech.dto.appointment.AppointmentUpdateRequestDto;
 import com.equipo2.healthtech.dto.practitioner.PractitionerReadSummaryResponseDto;
 import com.equipo2.healthtech.model.appointment.AppointmentStatus;
+import com.equipo2.healthtech.model.practitioner.Practitioner;
 import com.equipo2.healthtech.service.AppointmentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -69,7 +70,8 @@ public class AppointmentController {
     public ResponseEntity<Boolean> isPractitionerAvailable(
             @PathVariable Long id,
             @Valid @RequestBody AppointmentAvailabilityRequestDto request) {
-        boolean available = appointmentService.isPractitionerAvailable(id, request.startTime(), request.endTime());
+        Practitioner practitioner = appointmentService.getValidPractitioner(id);
+        boolean available = appointmentService.isPractitionerAvailable(practitioner, request.startTime(), request.endTime());
         return ResponseEntity.ok(available);
     }
 

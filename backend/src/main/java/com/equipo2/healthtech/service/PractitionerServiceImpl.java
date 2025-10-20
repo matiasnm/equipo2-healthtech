@@ -8,6 +8,7 @@ import com.equipo2.healthtech.mapper.PractitionerUnavailabilityMapper;
 import com.equipo2.healthtech.mapper.UserMapper;
 import com.equipo2.healthtech.model.practitioner.Practitioner;
 import com.equipo2.healthtech.model.practitioner.PractitionerRole;
+import com.equipo2.healthtech.model.practitioner.PractitionerSpecifications;
 import com.equipo2.healthtech.model.unavailability.Unavailability;
 import com.equipo2.healthtech.model.user.Role;
 import com.equipo2.healthtech.model.user.User;
@@ -22,6 +23,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
@@ -82,17 +84,16 @@ public class PractitionerServiceImpl implements PractitionerService{
         Sort sort = pageable.getSort().isUnsorted()
                 ? Sort.by("userProfile.fullName").ascending()
                 : pageable.getSort();
-
         Pageable sortedPageable = PageRequest.of(
                 pageable.getPageNumber(),
                 pageable.getPageSize(),
                 sort
         );
 
-        Page<Practitioner> practitioners = practitionerRepository.
-                findAllByStatusIsTrueAndPractitionerRoleIsNotNullAndPractitionerProfileIsNotNull(sortedPageable);
+        Specification<Practitioner> spec = PractitionerSpecifications.isActiveAndConfigured();
+        Page<Practitioner> practitioners = practitionerRepository.findAll(spec, sortedPageable);
         if (practitioners.isEmpty()) {
-            return Page.empty();
+            return Page.empty(sortedPageable);
         }
         return practitioners.map(userMapper::toPractitionerReadSummaryResponseDto);
     }

@@ -43,6 +43,17 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final AppointmentMapper appointmentMapper;
     private final UserMapper userMapper;
 
+
+    private boolean canAccessAppointment(User user, Appointment appointment) {
+        return switch (user.getRole()) {
+            case ADMIN, SUPER_ADMIN -> true;
+            case PATIENT -> appointment.getPatient().getId().equals(user.getId());
+            case PRACTITIONER ->
+                    appointment.getPractitioners().stream().anyMatch(p -> p.getId().equals(user.getId()));
+            default -> false;
+        };
+    }
+
     private Appointment getAppointment(Long id) {
         if (id == null) throw NoResultsException.of("null");
         return appointmentRepository.findByIdWithParticipants(id)
@@ -62,56 +73,48 @@ public class AppointmentServiceImpl implements AppointmentService {
         if (practitionerIds == null || practitionerIds.isEmpty()) {
             throw NoResultsException.of("Practitioner request list is empty");
         }
-        List<Practitioner> practitioners = practitionerRepository.findAllByIdInAndStatusTrueAndPractitionerRoleIsNotNullAndPractitionerProfileIsNotNull(practitionerIds);
+        Specification<Practitioner> spec = PractitionerSpecifications.isActiveAndConfigured()
+                .and((root, query, cb) -> root.get("id").in(practitionerIds));
+        List<Practitioner> practitioners = practitionerRepository.findAll(spec);
+
         if (practitioners.size() != practitionerIds.size()) {
             throw NoResultsException.of("One or more Practitioners not found or inactive");
         }
         return practitioners;
     }
 
-    private Practitioner getValidPractitioner(Long id) {
+    public Practitioner getValidPractitioner(Long id) {
         if (id == null) {
             throw NoResultsException.of("Practitioner Id is null");
         }
-        Practitioner practitioner = practitionerRepository
-                .findByIdAndStatusTrueAndPractitionerRoleIsNotNullAndPractitionerProfileIsNotNull(id)
-                .orElseThrow( () -> NoResultsException.of("Practitioner not found dor Id: " + id));
-        return practitioner;
+        Specification<Practitioner> spec = PractitionerSpecifications.isActiveAndConfigured()
+                .and((root, query, cb) -> cb.equal(root.get("id"), id));
+        return practitionerRepository.findOne(spec)
+                .orElseThrow(() -> NoResultsException.of("Practitioner not found or inactive for Id: " + id));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public boolean isPractitionerAvailable(Long id, OffsetDateTime start, OffsetDateTime end) {
-        Practitioner practitioner = getValidPractitioner(id);
+    public boolean isPractitionerAvailable(Practitioner practitioner, OffsetDateTime start, OffsetDateTime end) {
         boolean hasUnavailability = practitioner.getUnavailability().stream()
-                .anyMatch(u -> overlaps(u.getStartTime(), u.getEndTime(), start.toOffsetTime(), end.toOffsetTime()));
-        if (hasUnavailability) return false;
+                .anyMatch(u -> overlaps(
+                        u.getStartTime(),
+                        u.getEndTime(),
+                        start.toOffsetTime(),
+                        end.toOffsetTime())
+                );
+        if (hasUnavailability) {
+            log.info("PRACTITIONER id: {} -> UNAVAILABILITY", practitioner.getId());
+            return false;
+        }
 
-        return appointmentRepository.findConflictingAppointments(
+        List<Appointment> conflicts = appointmentRepository.findConflictingAppointments(
                 practitioner.getId(), start, end);
-    }
-
-    private boolean isPractitionerAvailable(Practitioner practitioner, OffsetDateTime start, OffsetDateTime end) {
-        boolean hasUnavailability = practitioner.getUnavailability().stream()
-                .anyMatch(u -> overlaps(u.getStartTime(), u.getEndTime(), start.toOffsetTime(), end.toOffsetTime()));
-        if (hasUnavailability) return false;
-
-        return appointmentRepository.findConflictingAppointments(
-                practitioner.getId(), start, end);
-    }
-
-    private boolean overlaps(OffsetTime uStart, OffsetTime uEnd, OffsetTime start, OffsetTime end) {
-        return start.isBefore(uEnd) && end.isAfter(uStart);
-    }
-
-    private boolean canAccessAppointment(User user, Appointment appointment) {
-        return switch (user.getRole()) {
-            case ADMIN, SUPER_ADMIN -> true;
-            case PATIENT -> appointment.getPatient().getId().equals(user.getId());
-            case PRACTITIONER ->
-                    appointment.getPractitioners().stream().anyMatch(p -> p.getId().equals(user.getId()));
-            default -> false;
-        };
+        if (!conflicts.isEmpty()) {
+            log.info("PRACTITIONER id: {} -> APPOINTMENT CONFLICT", practitioner.getId());
+            return false;
+        }
+        return true;
     }
 
     private void arePractitionersAvailable(List<Practitioner> practitioners, OffsetDateTime start, OffsetDateTime end) {
@@ -121,6 +124,10 @@ public class AppointmentServiceImpl implements AppointmentService {
                         " is not available in the requested time slot.");
             }
         }
+    }
+
+    private boolean overlaps(OffsetTime uStart, OffsetTime uEnd, OffsetTime start, OffsetTime end) {
+        return start.isBefore(uEnd) && end.isAfter(uStart);
     }
 
     @Override
@@ -229,16 +236,22 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public List<PractitionerReadSummaryResponseDto> getAvailablePractitioners(AppointmentAvailabilityRequestDto request) {
-        Specification<Practitioner> spec = Specification.anyOf();
+        Specification<Practitioner> spec = PractitionerSpecifications.isActiveAndConfigured();
 
-        if (request.remote() != null)
+        if (request.remote() != null) {
+            log.info("GET -> PRACTITIONERS BY REMOTE: {}");
             spec = spec.and(PractitionerSpecifications.hasRemote(request.remote()));
+        }
 
-        if (request.specialityCode() != null)
+        if (request.specialityCode() != null && !request.specialityCode().isEmpty()) {
+            log.info("GET -> PRACTITIONERS BY SPECIALITY CODE: {}");
             spec = spec.and(PractitionerSpecifications.hasSpeciality(request.specialityCode()));
+        }
 
-        if (request.startTime() != null && request.endTime() != null)
+        if (request.startTime() != null && request.endTime() != null) {
+            log.info("GET -> PRACTITIONERS BY DATE: {}");
             spec = spec.and(PractitionerSpecifications.isAvailableBetween(request.startTime(), request.endTime()));
+        }
 
         List<Practitioner> practitioners = practitionerRepository.findAll(spec);
 
