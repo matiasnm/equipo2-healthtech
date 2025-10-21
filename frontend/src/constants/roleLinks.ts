@@ -9,8 +9,6 @@ export const roleBasedLinks: Record<string, NavLink[]> = {
     { label: 'Profesionales', to: '/practitioners' },
     { label: 'Mi cuenta', to: '/account' },
     { label: 'Registro', to: '/encounter' },
-    { label: 'Inicio', to: '/' },
-    { label: 'Sobre Nosotros', to: '/About' },
   ],
   admin: [
     { label: 'Reportes', to: '/dashboard' },
@@ -21,7 +19,6 @@ export const roleBasedLinks: Record<string, NavLink[]> = {
     { label: 'Mi cuenta', to: '/account' },
     { label: 'Registro', to: '/encounter' },
     { label: 'Inicio', to: '/' },
-    { label: 'Sobre Nosotros', to: '/About' },
   ],
   practitioner: [
     { label: 'Reportes', to: '/dashboard' },
@@ -29,21 +26,19 @@ export const roleBasedLinks: Record<string, NavLink[]> = {
     { label: 'Agenda', to: '/appointments' },
     { label: 'Perfil', to: '/profile' },
     { label: 'Profesionales', to: '/practitioners' },
-    { label: 'Mi cuenta', to: '/account' },
-    { label: 'Inicio', to: '/' },
-    { label: 'Sobre Nosotros', to: '/About' },
+    { label: 'Mi cuenta', to: '/account' }
   ],
   patient: [
     { label: 'Perfil', to: '/profile' },
     { label: 'Profesionales', to: '/practitioners' },
     { label: 'Mi cuenta', to: '/account' },
-    { label: 'Registro', to: '/encounter' },
-    { label: 'Inicio', to: '/' },
-    { label: 'Sobre Nosotros', to: '/About' },
+    { label: 'Registro', to: '/encounter' }
   ],
   public: [
     { label: 'Inicio', to: '/' },
-    { label: 'Sobre Nosotros', to: '/About' },
+    { label: 'Nuestros servicios', to: '/#servicios' },
+    { label: 'Sobre Nosotros', to: '/about' },
+    { label: 'Contacto', to: '/contact' },
   ],
   
 };
