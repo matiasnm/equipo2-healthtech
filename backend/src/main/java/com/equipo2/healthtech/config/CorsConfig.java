@@ -36,7 +36,6 @@ public class CorsConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-
         if (corsAllowAll) {
             // IMPORTANTE: usar allowedOriginPatterns con "*"; setAllowedOrigins("/**") NO es válido y provoca rechazos
             configuration.setAllowedOriginPatterns(List.of("*"));
@@ -57,7 +56,7 @@ public class CorsConfig {
         }
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
+        source.registerCorsConfiguration("/", configuration);
         return source;
     }
 
