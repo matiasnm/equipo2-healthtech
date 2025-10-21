@@ -38,7 +38,7 @@ public class CorsConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         if (corsAllowAll) {
-            // IMPORTANTE: usar allowedOriginPatterns con "*"; setAllowedOrigins("/**") NO es válido y provoca rechazos
+            // IMPORTANTE: usar allowedOriginPatterns con ""; setAllowedOrigins("/*") NO es válido y provoca rechazos
             configuration.setAllowedOriginPatterns(List.of("*"));
             configuration.setAllowedMethods(List.of("*"));
             configuration.setAllowedHeaders(List.of("*"));
@@ -57,7 +57,7 @@ public class CorsConfig {
         }
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
+        source.registerCorsConfiguration("/", configuration);
         return source;
     }
 
