@@ -56,7 +56,8 @@ public class CorsConfig {
         }
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/", configuration);
+        // Aplicar CORS a todas las rutas. Usar "/" sólo aplica a la raíz y no a endpoints como "/api/**".
+        source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 
