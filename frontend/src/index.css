@@ -23,10 +23,7 @@
 
 
 @import 'tailwindcss';
-@tailwind base;
-@tailwind components;
 @tailwind utilities;
-
 
 @layer components {
   .p-button {
@@ -78,6 +75,14 @@
 .Toastify__toast-container {
   z-index: 9999 !important;
 }
+
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+}
+
 
 
 /*Animaciones*/ 
