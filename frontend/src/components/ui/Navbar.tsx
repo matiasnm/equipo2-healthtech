@@ -12,7 +12,7 @@ export const Navbar = () => {
   const navigate = useNavigate();
   const { role, user, isAuthenticated, logout } = useAuthStore();
 
-  const safeRole = role ?? 'public';
+  const safeRole = role ?? 'PUBLIC';
   const links: NavLink[] = roleBasedLinks[safeRole] ?? [];
 
   const hiddenRoutes = ['/login', '/register'];
@@ -26,8 +26,13 @@ export const Navbar = () => {
     navigate('/login');
   };
 
+  {import.meta.env.MODE === 'development' && (
+  <div>Rol detectado: {role}</div>
+  )}
+
+
   return (
-    <nav className="bg-primary text-[var(--color-inverted)] font-[var(--font-monserrat)]">
+    <nav className="w-full bg-primary text-[var(--color-inverted)] font-[var(--font-monserrat)]">
       <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-3">
@@ -80,7 +85,7 @@ export const Navbar = () => {
               <li>
                 <button
                   onClick={handleLogout}
-                  className="bg-white text-primary px-3 py-1 rounded hover:bg-gray-100 transition"
+                  className="bg-[var(--color-secondary)] text-bold px-3 py-1 rounded hover:bg-[var(--color-secondary-hover)] transition"
                 >
                   Cerrar sesión
                 </button>

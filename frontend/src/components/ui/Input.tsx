@@ -3,7 +3,7 @@ import { ChangeEvent, InputHTMLAttributes } from "react";
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
   error?: boolean;
-  errorMessage?: string;
+  errorMessage?: string | undefined;
   variant?: "full" | "auto" | "centered";
 }
 

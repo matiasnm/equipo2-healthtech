@@ -2,7 +2,7 @@ import { FaTwitter, FaYoutube, FaFacebook } from "react-icons/fa";
 
 export const Footer = () => {
   return (
-    <footer className="w-full bg-[var(--color-muted)] text-[var(--color-inverted)] px-4 py-4">
+    <footer className="w-full bg-[var(--color-muted)] text-[var(--color-inverted)] relative z-10 px-4 py-4"> 
       <div className="max-w-screen-xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 md:gap-12">
         
         {/* Logo + redes */}
@@ -42,7 +42,7 @@ export const Footer = () => {
       </div>
 
       <div className="w-full border-t border-gray-500 my-4" />
-      <div className="text-center text-xs">© 2025 Panacea clínica integral – Todos los derechos reservados.</div>
+      <div className="text-center text-xs">© 2025 Healt Tech clínica integral – Todos los derechos reservados.</div>
     </footer>
   );
 };

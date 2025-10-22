@@ -1,3 +1,5 @@
+import { slugify } from "../../utils/slugify";
+
 interface SpecialtyCardProps {
   name: string;
   imageUrl: string;
@@ -16,7 +18,7 @@ export const SpecialtyCard = ({
   return (
     
     <a
-      href={linkTo}
+      href={`#${slugify(name)}`}
       className="group relative rounded-xl overflow-hidden shadow-md hover:scale-[1.03] transition-transform duration-300 ease-in-out animate-cloud"
     >
       {/* Fondo degradado */}

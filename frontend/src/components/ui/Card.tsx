@@ -10,7 +10,7 @@ export const Card = ({ children, className = "" }: CardProps) => {
     <div className={`relative rounded-lg overflow-hidden ${className}`}>
       <div className="absolute inset-0 bg-white" />
 
-      <div className="relative bg-[var(--color-secondary)]/80 border border-[var(--color-accent)] shadow-lg backdrop-blur rounded-lg p-6">
+      <div className="relative bg-[var(--color-secondary)]/80 border-2 border-[var(--color-accent)] shadow-lg backdrop-blur rounded-lg p-6">
         {children}
       </div>
     </div>
