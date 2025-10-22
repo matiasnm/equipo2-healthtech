@@ -3,6 +3,7 @@ import Register from '../../pages/Register';
 import About from '../../pages/About';
 import Home from '../../pages/Home';
 import type { JSX } from 'react';
+import ErrorBoundary from '../../components/ErrorBoundary';
 import Components from '../../pages/Components';
 
 type PublicRoute = {
@@ -13,7 +14,7 @@ type PublicRoute = {
 export const PublicRoutes: PublicRoute[] = [
   { path: '/', element: <Home /> },
   { path: '/login', element: <Login /> },
-  { path: '/register', element: <Register /> },
+  { path: '/register', element: <ErrorBoundary><Register /></ErrorBoundary> },
   { path: '/about', element: <About /> },
   { path: '/components', element: <Components /> },
 

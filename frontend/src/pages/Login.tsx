@@ -68,7 +68,6 @@ const Login = () => {
 
   const loginWithSwaggerUser = async (role: User["role"]) => {
     const credentials: Record<User["role"], { email: string; password: string }> = {
-      SUPERADMIN: { email: "", password: "" },
       ADMIN: { email: "admin@ht.com", password: "admin" },
       PATIENT: { email: "patient1@ht.com", password: "patient" },
       PRACTITIONER: { email: "doctor1@ht.com", password: "doctor" },
@@ -82,10 +81,10 @@ const Login = () => {
 
   return (
     <Layout>
-      <Card className="max-w-md mx-auto">
+      <Card className="max-w-md mx-auto my-8 ">
         <h2 className="text-xl font-bold mb-4">Iniciar sesión</h2>
 
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Input
             type="email"
             label="Email"

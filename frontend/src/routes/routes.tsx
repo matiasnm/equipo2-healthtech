@@ -1,3 +1,5 @@
+import ProfileSetupForm from "components/ProfileSetupForm";
+
 export const ROUTES = {
   // Public Routes
   HOME: '/',
@@ -11,6 +13,8 @@ export const ROUTES = {
   DASHBOARD: '/dashboard',
   ENCOUNTER: '/encounter',
   PROFILE: '/profile',
+  PROFILE_SETUP: '/profile/setup',
+  EDIT_PROFILE: '/perfil/editar',
   ACCOUNT: '/account',
   APPOINTMENTS: '/appointments',
   PRACTITIONERS: '/practitioners',

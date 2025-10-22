@@ -1,9 +1,7 @@
 export type Identifier = {
   system: string;
   value: string;
-  type: 'NATIONAL_ID' | string;
-  userId?: number;
-  relatedPersonId?: number;
+  type: 'NATIONAL_ID' | 'PASSPORT' | 'DRIVER_LICENSE' | 'HEALTH_CARD' | 'OTHER';
 }; 
 
 export type RelatedPerson = {
@@ -22,7 +20,7 @@ export type UserProfile = {
   fullName: string;
   phone: string;
   address: string;
-  gender: string;
+  gender: 'MALE' | 'FEMALE' | 'OTHER';
   birthday: string;
   identifiers: Identifier[];
 };
@@ -30,7 +28,7 @@ export type UserProfile = {
 export type User = {
   id: number;
   email: string;
-  role: 'ADMIN' | 'SUPERADMIN' | 'PATIENT' | 'PRACTITIONER';
+  role: 'ADMIN' | 'PATIENT' | 'PRACTITIONER';
   status: boolean;
   userProfile?: UserProfile;
   relatedPersons?: RelatedPerson[];
@@ -42,8 +40,8 @@ export type User = {
 export type RegisterPayload = {
   email: string;
   password: string;
-  role: User['role'];
-  name?: string;
+  confirmPassword: string;
+  role: 'ADMIN' | 'PATIENT' | 'PRACTITIONER';
 };
 
 
@@ -66,14 +64,29 @@ export type MFAResponse = {
   user: User;
 };
 
+export type CreateProfilePayload = {
+  fullName: string;
+  phone: string;
+  address: string;
+  gender: 'MALE' | 'FEMALE' | 'OTHER';
+  birthday: string;
+  identifiers?: {
+    system: string;
+    value: string;
+    type: 'NATIONAL_ID' | 'PASSPORT' | 'DRIVER_LICENSE' | 'HEALTH_CARD' | 'OTHER';
+  }[];
+};
+
 export type UpdateProfilePayload = {
-  name?: string;
-  email?: string;
-  avatarUrl?: string;
+  fullName: string;
+  phone: string;
+  address: string;
+  gender: 'MALE' | 'FEMALE' | 'OTHER';
+  birthday: string;
 };
 
 export type UpdatePasswordPayload = {
-  currentPassword: string;
+  oldPassword: string;
   newPassword: string;
 };
 

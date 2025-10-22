@@ -11,7 +11,7 @@ export const registerUser = (data: RegisterPayload): Promise<User> =>
   publicAPI.post('/api/v1/auth/register', data).then((res) => res.data);
 
 // Verificación MFA
-export const verifymfa = (
+export const verifymfa = ( 
   userId: string,
   code: string,
   tempToken: string
