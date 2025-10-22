@@ -36,9 +36,8 @@ public class CorsConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-
         if (corsAllowAll) {
-            // IMPORTANTE: usar allowedOriginPatterns con ""; setAllowedOrigins("/*") NO es válido y provoca rechazos
+            // IMPORTANTE: usar allowedOriginPatterns con "*"; setAllowedOrigins("/**") NO es válido y provoca rechazos
             configuration.setAllowedOriginPatterns(List.of("*"));
             configuration.setAllowedMethods(List.of("*"));
             configuration.setAllowedHeaders(List.of("*"));
@@ -57,7 +56,8 @@ public class CorsConfig {
         }
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/", configuration);
+        // Aplicar CORS a todas las rutas. Usar "/" sólo aplica a la raíz y no a endpoints como "/api/**".
+        source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 
