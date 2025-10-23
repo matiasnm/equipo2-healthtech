@@ -1,6 +1,20 @@
--- 1. Practitioners table
+-- 1.a Practitioners profile table
+CREATE TABLE practitioner_profiles (
+    id BIGSERIAL PRIMARY KEY,
+    experience INTEGER NOT NULL,
+    studies VARCHAR(500),
+    office_code VARCHAR(2),
+    remote BOOLEAN NOT NULL DEFAULT TRUE
+);
+
+-- 1.b Practitioners table  (FK al profile)
 CREATE TABLE practitioners (
-    user_id BIGINT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE
+    user_id BIGINT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+    practitioner_profile_id BIGINT UNIQUE,
+    CONSTRAINT fk_practitioner_profile
+        FOREIGN KEY (practitioner_profile_id)
+            REFERENCES practitioner_profiles(id)
+            ON DELETE CASCADE
 );
 
 -- 2. Patients table
