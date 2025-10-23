@@ -1,95 +1,70 @@
-import {
-  GiHeartOrgan,
-  GiBrain,
-  GiStomach,
-  GiKidneys,
-  GiBabyBottle,
-  GiPelvisBone,
-  GiBoneKnife,
-  GiEyeTarget,
-  GiChemicalDrop,
-  GiSoap,
-  GiPsychicWaves,
-} from "react-icons/gi";
+import { ReactElement } from "react";
+import { GiHeartOrgan, GiBrain, GiStomach, GiKidneys, GiBabyBottle, GiPelvisBone, GiBoneKnife, GiEyeTarget, GiChemicalDrop, GiSoap, GiPsychicWaves,} from "react-icons/gi";
 
-export const specialties = [
+export interface Specialty {
+  name: string;
+  imageUrl: string;
+  icon: ReactElement;
+  gradientClass: string;
+  linkTo: string;
+}
+
+export const specialties: Specialty[] = [
   {
     name: "Cardiología",
-    imageUrl: "/images/cardiologia.jpg",
+    imageUrl: "https://images.pexels.com/photos/6129040/pexels-photo-6129040.jpeg",
     icon: <GiHeartOrgan />,
     gradientClass: "bg-gradient-cardiología",
     linkTo: "#cardiología",
   },
   {
     name: "Neurología",
-    imageUrl: "/images/neurologia.jpg",
+    imageUrl: "https://images.pexels.com/photos/4226123/pexels-photo-4226123.jpeg",
     icon: <GiBrain />,
     gradientClass: "bg-gradient-neurología",
     linkTo: "#neurología",
   },
   {
     name: "Gastroenterología",
-    imageUrl: "/images/gastro.jpg",
+    imageUrl: "https://images.pexels.com/photos/7659573/pexels-photo-7659573.jpeg",
     icon: <GiStomach />,
     gradientClass: "bg-gradient-gastroenterología",
     linkTo: "#gastroenterología",
   },
   {
     name: "Nefrología",
-    imageUrl: "/images/nefrologia.jpg",
+    imageUrl: "https://images.pexels.com/photos/6129688/pexels-photo-6129688.jpeg",
     icon: <GiKidneys />,
     gradientClass: "bg-gradient-nefrología",
     linkTo: "#nefrología",
   },
   {
     name: "Pediatría",
-    imageUrl: "/images/pediatria.jpg",
+    imageUrl: "https://images.pexels.com/photos/5998445/pexels-photo-5998445.jpeg",
     icon: <GiBabyBottle />,
     gradientClass: "bg-gradient-pediatría",
     linkTo: "#pediatría",
   },
   {
     name: "Ginecología",
-    imageUrl: "/images/ginecologia.jpg",
+    imageUrl: "https://images.pexels.com/photos/7089015/pexels-photo-7089015.jpeg",
     icon: <GiPelvisBone />,
     gradientClass: "bg-gradient-ginecología",
     linkTo: "#ginecología",
   },
   {
     name: "Traumatología",
-    imageUrl: "/images/traumatologia.jpg",
+    imageUrl: "https://images.pexels.com/photos/4506109/pexels-photo-4506109.jpeg",
     icon: <GiBoneKnife />,
     gradientClass: "bg-gradient-traumatología",
     linkTo: "#traumatología",
   },
   {
-    name: "Oftalmología",
-    imageUrl: "/images/oftalmologia.jpg",
-    icon: <GiEyeTarget />,
-    gradientClass: "bg-gradient-oftalmología",
-    linkTo: "#oftalmología",
-  },
-  {
-    name: "Endocrinología",
-    imageUrl: "/images/endocrinologia.jpg",
-    icon: <GiChemicalDrop />,
-    gradientClass: "bg-gradient-endocrinología",
-    linkTo: "#endocrinología",
-  },
-  {
-    name: "Dermatología",
-    imageUrl: "/images/dermatologia.jpg",
-    icon: <GiSoap />,
-    gradientClass: "bg-gradient-dermatología",
-    linkTo: "#dermatología",
-  },
-  {
     name: "Psiquiatría",
-    imageUrl: "/images/psiquiatria.jpg",
-    icon: <GiPsychicWaves/>,
+    imageUrl: "https://images.pexels.com/photos/4101143/pexels-photo-4101143.jpeg",
+    icon: <GiPsychicWaves />,
     gradientClass: "bg-gradient-psiquiatría",
     linkTo: "#psiquiatría",
   },
-
 ];
 
