@@ -44,7 +44,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final UserMapper userMapper;
 
 
-    private boolean canAccessAppointment(User user, Appointment appointment) {
+    public boolean canAccessAppointment(Appointment appointment) {
+        User user = securityUtils.getAuthenticatedUser();
         return switch (user.getRole()) {
             case ADMIN, SUPER_ADMIN -> true;
             case PATIENT -> appointment.getPatient().getId().equals(user.getId());
@@ -54,10 +55,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         };
     }
 
-    private Appointment getAppointment(Long id) {
-        if (id == null) throw NoResultsException.of("null");
+    public Appointment getAppointment(Long id) {
+        if (id == null) throw NoResultsException.of("Appointment id is null");
         return appointmentRepository.findByIdWithParticipants(id)
-                .orElseThrow(() -> NoResultsException.of(id));
+                .orElseThrow(() -> NoResultsException.of("Appointment not found with id: " + id));
     }
 
     private Patient getValidPatient(Long patientId) {
@@ -94,7 +95,6 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public boolean isPractitionerAvailable(Practitioner practitioner, OffsetDateTime start, OffsetDateTime end) {
         boolean hasUnavailability = practitioner.getUnavailability().stream()
                 .anyMatch(u -> overlaps(
@@ -160,10 +160,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     @Transactional(readOnly = true)
     public AppointmentReadDetailResponseDto read(Long id) {
-        User user = securityUtils.getAuthenticatedUser();
         Appointment appointment = getAppointment(id);
-
-        if (!canAccessAppointment(user, appointment)) {
+        if (!canAccessAppointment(appointment)) {
             throw new AccessDeniedException("You are not allowed to view this appointment");
         }
         log.info("READ -> APPOINTMENT ID: {}", appointment.getId());
@@ -182,7 +180,6 @@ public class AppointmentServiceImpl implements AppointmentService {
             case PATIENT -> appointmentRepository.findAllByPatientId(user.getId(), pageable);
             default -> throw new AccessDeniedException("You are not authorized to view appointments");
         };
-
         return appointments.map(appointmentMapper::toAppointmentReadResponseDto);
     }
 
@@ -190,8 +187,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Transactional
     public void update(Long id, AppointmentUpdateRequestDto request) {
         Appointment appointment = getAppointment(id);
-        User user = securityUtils.getAuthenticatedUser();
-        if (!canAccessAppointment(user, appointment)) {
+        if (!canAccessAppointment(appointment)) {
             throw new AccessDeniedException("You are not allowed to update this appointment");
         }
 
@@ -213,11 +209,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Transactional
     public void updateStatus(Long id, AppointmentStatus newStatus)
             throws NoResultsException, AccessDeniedException {
-
-        User user = securityUtils.getAuthenticatedUser();
         Appointment appointment = getAppointment(id);
-
-        if (!canAccessAppointment(user, appointment)) {
+        if (!canAccessAppointment(appointment)) {
             throw new AccessDeniedException("You are not allowed to modify this appointment");
         }
 
@@ -239,17 +232,17 @@ public class AppointmentServiceImpl implements AppointmentService {
         Specification<Practitioner> spec = PractitionerSpecifications.isActiveAndConfigured();
 
         if (request.remote() != null) {
-            log.info("GET -> PRACTITIONERS BY REMOTE: {}");
+            log.info("GET -> PRACTITIONERS BY REMOTE");
             spec = spec.and(PractitionerSpecifications.hasRemote(request.remote()));
         }
 
         if (request.specialityCode() != null && !request.specialityCode().isEmpty()) {
-            log.info("GET -> PRACTITIONERS BY SPECIALITY CODE: {}");
+            log.info("GET -> PRACTITIONERS BY SPECIALITY CODE");
             spec = spec.and(PractitionerSpecifications.hasSpeciality(request.specialityCode()));
         }
 
         if (request.startTime() != null && request.endTime() != null) {
-            log.info("GET -> PRACTITIONERS BY DATE: {}");
+            log.info("GET -> PRACTITIONERS BY DATE");
             spec = spec.and(PractitionerSpecifications.isAvailableBetween(request.startTime(), request.endTime()));
         }
 

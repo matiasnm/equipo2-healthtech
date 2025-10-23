@@ -2,8 +2,10 @@ package com.equipo2.healthtech.service;
 
 import com.equipo2.healthtech.dto.appointment.*;
 import com.equipo2.healthtech.dto.practitioner.PractitionerReadSummaryResponseDto;
+import com.equipo2.healthtech.model.appointment.Appointment;
 import com.equipo2.healthtech.model.appointment.AppointmentStatus;
 import com.equipo2.healthtech.model.practitioner.Practitioner;
+import com.equipo2.healthtech.model.user.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -30,4 +32,7 @@ public interface AppointmentService {
 
     public List<PractitionerReadSummaryResponseDto> getAvailablePractitioners(AppointmentAvailabilityRequestDto request);
 
+    public boolean canAccessAppointment(Appointment appointment);
+
+    public Appointment getAppointment(Long id);
 }

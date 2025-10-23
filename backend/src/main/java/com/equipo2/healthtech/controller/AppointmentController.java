@@ -1,9 +1,6 @@
 package com.equipo2.healthtech.controller;
 
-import com.equipo2.healthtech.dto.appointment.AppointmentAvailabilityRequestDto;
-import com.equipo2.healthtech.dto.appointment.AppointmentCreateRequestDto;
-import com.equipo2.healthtech.dto.appointment.AppointmentReadDetailResponseDto;
-import com.equipo2.healthtech.dto.appointment.AppointmentUpdateRequestDto;
+import com.equipo2.healthtech.dto.appointment.*;
 import com.equipo2.healthtech.dto.practitioner.PractitionerReadSummaryResponseDto;
 import com.equipo2.healthtech.model.appointment.AppointmentStatus;
 import com.equipo2.healthtech.model.practitioner.Practitioner;
@@ -13,6 +10,10 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -44,6 +45,15 @@ public class AppointmentController {
     @GetMapping("/{id}")
     public ResponseEntity<AppointmentReadDetailResponseDto> getAppointment(@PathVariable Long id) {
         return ResponseEntity.ok(appointmentService.read(id));
+    }
+
+    @Operation(summary = "Lists all Appointment for this Authenticated User")
+    @GetMapping("/list")
+    public ResponseEntity<Page<AppointmentReadResponseDto>> readAllAppointment(
+            @ParameterObject
+            @PageableDefault(page = 0, size = 10, sort = "patient.userProfile.fullName")
+            Pageable pageable) {
+        return ResponseEntity.ok(appointmentService.readAll(pageable));
     }
 
     @Operation(summary = "Updates an Appointment")
@@ -83,6 +93,15 @@ public class AppointmentController {
         List<PractitionerReadSummaryResponseDto> available =
                 appointmentService.getAvailablePractitioners(request);
         return ResponseEntity.ok(available);
+    }
+
+    @Operation(summary = "Deletes an Appointment")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
+    @PostMapping("/{id}")
+    public ResponseEntity<Void> deleteAppointment(
+            @PathVariable Long id) {
+        appointmentService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
 }
