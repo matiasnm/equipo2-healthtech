@@ -15,7 +15,7 @@ import com.equipo2.healthtech.model.user.User;
 import com.equipo2.healthtech.repository.PractitionerRepository;
 import com.equipo2.healthtech.repository.PractitionerRoleCodeRepository;
 import com.equipo2.healthtech.repository.PractitionerRoleRepository;
-import com.equipo2.healthtech.repository.SpecialityCodeRepository;
+import com.equipo2.healthtech.repository.PractitionerSpecialityCodeRepository;
 import com.equipo2.healthtech.security.SecurityUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +38,7 @@ public class PractitionerServiceImpl implements PractitionerService{
     private final PractitionerRepository practitionerRepository;
     private final PractitionerRoleRepository practitionerRoleRepository;
     private final PractitionerRoleCodeRepository roleCodeRepository;
-    private final SpecialityCodeRepository specialityCodeRepository;
+    private final PractitionerSpecialityCodeRepository specialityCodeRepository;
     private final PractitionerRoleMapper practitionerRoleMapper;
     private final UserMapper userMapper;
     private final SecurityUtils securityUtils;

@@ -1,6 +1,6 @@
 package com.equipo2.healthtech.mapper;
 
-import com.equipo2.healthtech.dto.practitioner.CodeableConceptReadDto;
+import com.equipo2.healthtech.dto.CodeableConceptReadDto;
 import com.equipo2.healthtech.dto.practitioner.PractitionerRoleCreateRequestDto;
 import com.equipo2.healthtech.dto.practitioner.PractitionerRoleReadResponseDto;
 import com.equipo2.healthtech.model.practitioner.PractitionerRole;

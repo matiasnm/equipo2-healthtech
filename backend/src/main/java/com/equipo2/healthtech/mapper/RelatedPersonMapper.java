@@ -5,10 +5,7 @@ import com.equipo2.healthtech.dto.relatedperson.RelatedPersonIdentifierReadRespo
 import com.equipo2.healthtech.dto.relatedperson.RelatedPersonReadResponseDto;
 import com.equipo2.healthtech.model.userProfile.Identifier;
 import com.equipo2.healthtech.model.userProfile.RelatedPerson;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
 
 import java.util.List;
 
@@ -36,4 +33,7 @@ public interface RelatedPersonMapper {
                     return dto;
                 }).toList();
     }
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateRelatedPersonFromDto(RelatedPersonCreateRequestDto dto, @MappingTarget RelatedPerson entity);
 }

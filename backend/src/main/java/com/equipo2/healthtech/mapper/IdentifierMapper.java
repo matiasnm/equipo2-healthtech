@@ -1,8 +1,7 @@
 package com.equipo2.healthtech.mapper;
 
 import com.equipo2.healthtech.dto.identifier.IdentifierCreateRequestDto;
-import com.equipo2.healthtech.dto.relatedperson.RelatedPersonIdentifierReadResponseDto;
-import com.equipo2.healthtech.dto.user.UserIdentifierReadResponseDto;
+import com.equipo2.healthtech.dto.identifier.IdentifierReadResponseDto;
 import com.equipo2.healthtech.model.userProfile.Identifier;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -12,10 +11,10 @@ import org.mapstruct.ReportingPolicy;
 public interface IdentifierMapper {
 
     @Mapping(source = "userProfile.id", target = "userId")
-    UserIdentifierReadResponseDto toUserIdentifierReadResponseDto(Identifier identifier);
+    IdentifierReadResponseDto toUserIdentifierReadResponseDto(Identifier identifier);
 
     @Mapping(source = "relatedPerson.id", target = "relatedPersonId")
-    RelatedPersonIdentifierReadResponseDto toRelatedPersonIdentifierReadResponseDto(Identifier identifier);
+    IdentifierReadResponseDto toRelatedPersonIdentifierReadResponseDto(Identifier identifier);
 
     Identifier toIdentifier(IdentifierCreateRequestDto dto);
 }
