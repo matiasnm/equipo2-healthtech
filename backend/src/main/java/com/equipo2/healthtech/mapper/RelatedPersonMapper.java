@@ -25,6 +25,7 @@ public interface RelatedPersonMapper {
         return identifiers.stream()
                 .map(id -> {
                     RelatedPersonIdentifierReadResponseDto dto = new RelatedPersonIdentifierReadResponseDto(
+                            id.getId(),
                             id.getSystem(),
                             id.getValue(),
                             id.getType(),

@@ -5,14 +5,18 @@ INSERT INTO encounters (
     diagnosis_code_id,
     appointment_id,
     patient_id,
-    notes
+    notes,
+    created_at,
+    updated_at
 ) VALUES (
-             'FINISHED',
+             'COMPLETED',
              'AMB',
              1,
              2,
              1,
              2,
-             'Patient visited for routine check-up'
+             'Patient visited for routine check-up',
+             now(),
+             now()
          )
 RETURNING id;

@@ -1,6 +1,5 @@
 package com.equipo2.healthtech.dto.userprofile;
 
-import com.equipo2.healthtech.dto.user.UserIdentifierReadResponseDto;
 import com.equipo2.healthtech.dto.relatedperson.RelatedPersonReadResponseDto;
 
 import java.time.LocalDate;
@@ -13,6 +12,6 @@ public record UserProfileReadResponseDto(
         String address,
         String gender,
         LocalDate birthday,
-        List<UserIdentifierReadResponseDto> identifiers,
+        List<UserProfileIdentifierReadResponseDto> identifiers,
         List<RelatedPersonReadResponseDto> relatedPersons
 ) {}

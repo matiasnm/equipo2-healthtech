@@ -34,7 +34,7 @@ INSERT INTO user_profiles (user_id, full_name, gender, phone, address, birthday)
 VALUES (2, 'Patient One', 'FEMALE', '555-0100', 'Patient Street 10', '1990-05-15');
 
 -- Add Identifiers
-INSERT INTO identifiers (system, value, type, user_id, related_person_id)
+INSERT INTO identifiers (system, value, type, user_profile_id, related_person_id)
 VALUES
     ('http://ar.gov/dni', '23456789', 'NATIONAL_ID', 2, NULL),
     ('http://passport.gov', 'B2345678', 'PASSPORT', 2, NULL);
@@ -81,7 +81,7 @@ INSERT INTO user_profiles (user_id, full_name, gender, phone, address, birthday)
 VALUES (3, 'Dr. John Smith', 'MALE', '555-0300', 'Doctor Street 20', '1985-09-01');
 
 -- Add Identifiers
-INSERT INTO identifiers (system, value, type, user_id, related_person_id)
+INSERT INTO identifiers (system, value, type, user_profile_id, related_person_id)
 VALUES
     ('http://ar.gov/dni', '34567890', 'NATIONAL_ID', 3, NULL),
     ('http://passport.gov', 'C3456789', 'PASSPORT', 3, NULL);

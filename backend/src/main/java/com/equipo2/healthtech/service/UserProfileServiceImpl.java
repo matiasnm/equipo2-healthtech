@@ -1,10 +1,11 @@
 package com.equipo2.healthtech.service;
 
 import com.equipo2.healthtech.dto.identifier.IdentifierCreateRequestDto;
-import com.equipo2.healthtech.dto.identifier.IdentifierReadResponseDto;
 import com.equipo2.healthtech.dto.relatedperson.RelatedPersonCreateRequestDto;
+import com.equipo2.healthtech.dto.relatedperson.RelatedPersonIdentifierReadResponseDto;
 import com.equipo2.healthtech.dto.relatedperson.RelatedPersonReadResponseDto;
 import com.equipo2.healthtech.dto.userprofile.UserProfileCreateRequestDto;
+import com.equipo2.healthtech.dto.userprofile.UserProfileIdentifierReadResponseDto;
 import com.equipo2.healthtech.dto.userprofile.UserProfileReadResponseDto;
 import com.equipo2.healthtech.dto.userprofile.UserProfileUpdateRequestDto;
 import com.equipo2.healthtech.exception.NoResultsException;
@@ -23,6 +24,7 @@ import com.equipo2.healthtech.repository.UserRepository;
 import com.equipo2.healthtech.security.SecurityUtils;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +35,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class UserProfileServiceImpl implements UserProfileService {
 
     private final UserProfileRepository userProfileRepository;
@@ -126,32 +129,38 @@ public class UserProfileServiceImpl implements UserProfileService {
 
     @Override
     @Transactional
-    public IdentifierReadResponseDto createUserProfileIdentifier(IdentifierCreateRequestDto request) {
+    public UserProfileIdentifierReadResponseDto createUserProfileIdentifier(IdentifierCreateRequestDto request) {
         User authUser = securityUtils.getAuthenticatedUser();
         UserProfile profile = authUser.getUserProfile();
         Identifier identifier = identifierMapper.toIdentifier(request);
         identifier.setUserProfile(profile);
         identifierRepository.saveAndFlush(identifier);
-        return identifierMapper.toUserIdentifierReadResponseDto(identifier);
+        return identifierMapper.toUserProfileIdentifierReadResponseDto(identifier);
     }
 
     @Override
     @Transactional
-    public IdentifierReadResponseDto createRelatedPersonIdentifier(Long id, IdentifierCreateRequestDto request) {
+    public RelatedPersonIdentifierReadResponseDto createRelatedPersonIdentifier(Long id, IdentifierCreateRequestDto request) {
         validateUserToRelatedPerson(id);
         RelatedPerson relatedPerson = relatedPersonRepository.findById(id)
                 .orElseThrow(() -> new NoResultsException("RelatedPerson not found"));
         Identifier identifier = identifierMapper.toIdentifier(request);
         identifier.setRelatedPerson(relatedPerson);
         identifierRepository.saveAndFlush(identifier);
-        return identifierMapper.toUserIdentifierReadResponseDto(identifier);
+        return identifierMapper.toRelatedPersonIdentifierReadResponseDto(identifier);
     }
 
     @Override
     @Transactional
     public void deleteUserProfileIdentifier(Long id) {
+        Identifier identifier = identifierRepository.findById(id)
+                .orElseThrow(() -> new NoResultsException("Identifier not found"));
         validateUserToIdentifier(id);
-        relatedPersonRepository.deleteById(id);
+        UserProfile userProfile = identifier.getUserProfile();
+        if (userProfile != null) {
+            userProfile.getIdentifiers().remove(identifier);
+        }
+        //relatedPersonRepository.deleteById(id); Hibernate will remove cause OrphanRemoval = true
     }
 
     @Override
@@ -160,12 +169,12 @@ public class UserProfileServiceImpl implements UserProfileService {
         validateUserToRelatedPerson(id);
         Identifier identifier = identifierRepository.findById(identifierId)
                 .orElseThrow(() -> new NoResultsException("Identifier not found"));
-
-        if (identifier.getRelatedPerson() == null ||
-                !identifier.getRelatedPerson().getId().equals(id)) {
+        RelatedPerson relatedPerson = identifier.getRelatedPerson();
+        if (relatedPerson == null || !relatedPerson.getId().equals(id)) {
             throw new AccessDeniedException("Identifier does not belong to this related person");
         }
-        identifierRepository.delete(identifier);
+        relatedPerson.getIdentifiers().remove(identifier);
+        //identifierRepository.delete(identifier); Hibernate will remove cause OrphanRemoval = true
     }
 
     private void validateUserToIdentifier(Long identifierId) {

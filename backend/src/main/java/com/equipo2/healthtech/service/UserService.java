@@ -1,9 +1,5 @@
 package com.equipo2.healthtech.service;
 
-import com.equipo2.healthtech.dto.identifier.IdentifierCreateRequestDto;
-import com.equipo2.healthtech.dto.identifier.IdentifierReadResponseDto;
-import com.equipo2.healthtech.dto.relatedperson.RelatedPersonCreateRequestDto;
-import com.equipo2.healthtech.dto.relatedperson.RelatedPersonReadResponseDto;
 import com.equipo2.healthtech.dto.user.UserCreateRequestDto;
 import com.equipo2.healthtech.dto.user.UserReadResponseDto;
 import com.equipo2.healthtech.dto.user.UserUpdatePasswordRequestDto;

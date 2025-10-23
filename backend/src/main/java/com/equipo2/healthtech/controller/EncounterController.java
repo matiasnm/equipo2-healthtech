@@ -34,6 +34,8 @@ public class EncounterController {
     // Como llevar a cabo notificaciones?
     // Login con google? mfa?
     // integrar google meet?
+    // pdfs generar recetas/historial
+    // userMedia! para estudios
 
     private final EncounterService encounterService;
 
@@ -56,10 +58,10 @@ public class EncounterController {
 
     @Operation(summary = "Lists all Encounters for this Authenticated User")
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/list}")
+    @GetMapping("/list")
     ResponseEntity<Page<EncounterReadResponseDto>> readAllEncounter(
             @ParameterObject
-            @PageableDefault(page = 0, size = 10, sort = "encounter.encounterStatus")
+            @PageableDefault(page = 0, size = 10, sort = "encounterStatus")
             Pageable pageable) {
         Page<EncounterReadResponseDto> result = encounterService.readAll(pageable);
         return ResponseEntity.ok(result);
@@ -75,7 +77,7 @@ public class EncounterController {
 
     @Operation(summary = "Deletes an Encounter")
     @PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
-    @PutMapping("/{id}")
+    @DeleteMapping("/{id}")
     ResponseEntity<Void> deleteEncounter(@PathVariable Long id) {
         encounterService.delete(id);
         return ResponseEntity.noContent().build();

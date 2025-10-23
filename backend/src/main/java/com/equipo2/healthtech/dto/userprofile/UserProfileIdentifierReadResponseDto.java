@@ -1,10 +1,11 @@
-package com.equipo2.healthtech.dto.user;
+package com.equipo2.healthtech.dto.userprofile;
 
 import com.equipo2.healthtech.model.userProfile.IdentifierType;
 
-public record UserIdentifierReadResponseDto(
+public record UserProfileIdentifierReadResponseDto(
+        Long id,
         String system,
         String value,
         IdentifierType type,
-        Long userId
+        Long userProfileId
 ) { }

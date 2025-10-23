@@ -7,6 +7,8 @@ CREATE TABLE encounters (
     appointment_id BIGINT,
     patient_id BIGINT NOT NULL,
     notes TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
     CONSTRAINT fk_encounter_reason_code FOREIGN KEY (reason_code_id)
         REFERENCES encounter_codes(id) ON DELETE SET NULL,
     CONSTRAINT fk_encounter_diagnosis_code FOREIGN KEY (diagnosis_code_id)
@@ -14,7 +16,7 @@ CREATE TABLE encounters (
     CONSTRAINT fk_encounter_appointment FOREIGN KEY (appointment_id)
         REFERENCES appointments(id) ON DELETE SET NULL,
     CONSTRAINT fk_encounter_patient FOREIGN KEY (patient_id)
-        REFERENCES patients(id) ON DELETE CASCADE
+        REFERENCES patients(user_id) ON DELETE CASCADE
 );
 
 -- Indexes for faster lookups

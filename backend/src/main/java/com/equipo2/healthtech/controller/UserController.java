@@ -1,12 +1,13 @@
 package com.equipo2.healthtech.controller;
 
 import com.equipo2.healthtech.dto.identifier.IdentifierCreateRequestDto;
-import com.equipo2.healthtech.dto.identifier.IdentifierReadResponseDto;
 import com.equipo2.healthtech.dto.relatedperson.RelatedPersonCreateRequestDto;
+import com.equipo2.healthtech.dto.relatedperson.RelatedPersonIdentifierReadResponseDto;
 import com.equipo2.healthtech.dto.relatedperson.RelatedPersonReadResponseDto;
 import com.equipo2.healthtech.dto.user.UserReadResponseDto;
 import com.equipo2.healthtech.dto.user.UserUpdatePasswordRequestDto;
 import com.equipo2.healthtech.dto.userprofile.UserProfileCreateRequestDto;
+import com.equipo2.healthtech.dto.userprofile.UserProfileIdentifierReadResponseDto;
 import com.equipo2.healthtech.dto.userprofile.UserProfileReadResponseDto;
 import com.equipo2.healthtech.dto.userprofile.UserProfileUpdateRequestDto;
 import com.equipo2.healthtech.service.UserProfileService;
@@ -78,14 +79,14 @@ public class UserController {
     @Operation(summary = "Creates/adds an Identifier to User Profile")
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/profile/identifiers/create")
-    public ResponseEntity<IdentifierReadResponseDto> createUserProfileIdentifier(@RequestBody @Valid IdentifierCreateRequestDto request) {
-        IdentifierReadResponseDto dto = userProfileService.createUserProfileIdentifier(request);
+    public ResponseEntity<UserProfileIdentifierReadResponseDto> createUserProfileIdentifier(@RequestBody @Valid IdentifierCreateRequestDto request) {
+        UserProfileIdentifierReadResponseDto dto = userProfileService.createUserProfileIdentifier(request);
         return ResponseEntity.ok(dto);
     }
 
     @Operation(summary = "Deletes Identifier from User Profile")
     @PreAuthorize("isAuthenticated()")
-    @PutMapping("/profile/identifiers/{id}")
+    @DeleteMapping("/profile/identifiers/{id}")
     public ResponseEntity<Void> deleteUserProfileIdentifier(@PathVariable Long id) {
         userProfileService.deleteUserProfileIdentifier(id);
         return ResponseEntity.noContent().build();
@@ -111,8 +112,8 @@ public class UserController {
 
     @Operation(summary = "Deletes a Related Person")
     @PreAuthorize("isAuthenticated()")
-    @PutMapping("/profile/related-persons/{id}")
-    public ResponseEntity<Void> delteRelatedPerson(@PathVariable Long id) {
+    @DeleteMapping("/profile/related-persons/{id}")
+    public ResponseEntity<Void> deleteRelatedPerson(@PathVariable Long id) {
         userProfileService.deleteRelatedPerson(id);
         return ResponseEntity.noContent().build();
     }
@@ -122,14 +123,14 @@ public class UserController {
     @Operation(summary = "Creates/adds an Identifier to Related Person")
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/profile/related-persons/{id}/identifiers/create")
-    public ResponseEntity<IdentifierReadResponseDto> createRelatedPersonIdentifier(@PathVariable Long id, @RequestBody @Valid IdentifierCreateRequestDto request, UriComponentsBuilder uriBuilder) {
-        IdentifierReadResponseDto dto = userProfileService.createRelatedPersonIdentifier(id, request);
+    public ResponseEntity<RelatedPersonIdentifierReadResponseDto> createRelatedPersonIdentifier(@PathVariable Long id, @RequestBody @Valid IdentifierCreateRequestDto request, UriComponentsBuilder uriBuilder) {
+        RelatedPersonIdentifierReadResponseDto dto = userProfileService.createRelatedPersonIdentifier(id, request);
         return ResponseEntity.ok(dto);
     }
 
     @Operation(summary = "Deletes Identifier from Related Person")
     @PreAuthorize("isAuthenticated()")
-    @PutMapping("/profile/related-persons/{id}/identifiers/{identifierId}")
+    @DeleteMapping("/profile/related-persons/{id}/identifiers/{identifierId}")
     public ResponseEntity<Void> deleteRelatedPersonIdentifier(@PathVariable Long id, @PathVariable Long identifierId) {
         userProfileService.deleteRelatedPersonIdentifier(id, identifierId);
         return ResponseEntity.noContent().build();

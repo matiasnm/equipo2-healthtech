@@ -8,14 +8,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-@Entity
-@Table(name = "encounters")
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
-@EqualsAndHashCode(callSuper = false)
-public class Encounter extends AuditableEntity {
-
 /*
 Recurso             Rol principal
 Appointment         Es la cita programada (planeada). No hay todavía acto clínico.
@@ -31,6 +23,15 @@ Appointment
       ├── diagnosis (EncounterDiagnosis)
       └── notes (text)
 */
+
+@Entity
+@Table(name = "encounters")
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+@EqualsAndHashCode(callSuper = false)
+public class Encounter extends AuditableEntity {
+
     @Id()
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
