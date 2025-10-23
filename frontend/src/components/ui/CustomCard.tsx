@@ -17,6 +17,7 @@ interface CustomCardProps {
   phoneNumberLink?: string;
   whatsappLink?: string;
   calendarLink?: string;
+  onClose?: () => void;
 }
  
 export const CustomCard = ({
