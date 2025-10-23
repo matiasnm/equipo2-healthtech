@@ -97,7 +97,7 @@ public class AppointmentController {
 
     @Operation(summary = "Deletes an Appointment")
     @PreAuthorize("hasAnyRole('ADMIN','SUPERADMIN')")
-    @PostMapping("/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAppointment(
             @PathVariable Long id) {
         appointmentService.delete(id);
