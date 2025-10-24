@@ -1,5 +1,6 @@
 package com.equipo2.healthtech.config;
 
+import io.swagger.v3.oas.models.tags.Tag;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.servers.Server;
@@ -9,6 +10,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+
+import java.util.List;
 
 @Configuration
 @AllArgsConstructor
@@ -57,6 +60,17 @@ public class SpringDoc {
                                                         .bearerFormat("JWT")
                                                         .in(SecurityScheme.In.HEADER)
                                         )
-                        );
+                        )
+                        .tags(List.of(
+                                new Tag().name("1️⃣ Login"),
+                                new Tag().name("2️⃣ Users"),
+                                new Tag().name("3️⃣ Practitioners"),
+                                new Tag().name("4️⃣ Patients"),
+                                new Tag().name("5️⃣ Encounters"),
+                                new Tag().name("6️⃣ Appointments"),
+                                new Tag().name("7️⃣ Codes"),
+                                new Tag().name("8️⃣ Metadata"),
+                                new Tag().name("9\uFE0F⃣ Test")
+                        ));
         }
 }

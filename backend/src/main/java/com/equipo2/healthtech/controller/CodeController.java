@@ -9,6 +9,7 @@ import com.equipo2.healthtech.model.practitioner.PractitionerRoleSpecialityCode;
 import com.equipo2.healthtech.repository.EncounterCodeRepository;
 import com.equipo2.healthtech.repository.PractitionerRoleCodeRepository;
 import com.equipo2.healthtech.repository.PractitionerSpecialityCodeRepository;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/codes")
 @RequiredArgsConstructor
+@Tag(name = "7️⃣ Codes")
 public class CodeController {
 
     private final PractitionerRoleCodeRepository practitionerRoleCodeRepository;
