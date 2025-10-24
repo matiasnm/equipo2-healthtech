@@ -12,6 +12,7 @@ import com.equipo2.healthtech.model.userProfile.IdentifierType;
 import com.equipo2.healthtech.model.userProfile.MediaType;
 import com.equipo2.healthtech.model.userProfile.RelatedPersonType;
 import com.equipo2.healthtech.service.ClinicService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/metadata")
 @AllArgsConstructor
 @Slf4j
+@Tag(name = "8️⃣ Metadata")
 public class MetadataController {
 
     private final ClinicService clinicService;

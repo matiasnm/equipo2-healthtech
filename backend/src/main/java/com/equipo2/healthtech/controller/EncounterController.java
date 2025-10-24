@@ -1,13 +1,12 @@
 package com.equipo2.healthtech.controller;
 
-import com.equipo2.healthtech.dto.appointment.AppointmentReadDetailResponseDto;
-import com.equipo2.healthtech.dto.appointment.AppointmentReadResponseDto;
 import com.equipo2.healthtech.dto.encounter.EncounterCreateRequestDto;
 import com.equipo2.healthtech.dto.encounter.EncounterReadResponseDto;
 import com.equipo2.healthtech.dto.encounter.EncounterUpdateRequestDto;
 import com.equipo2.healthtech.service.EncounterService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,10 +26,11 @@ import java.net.URI;
 @SecurityRequirement(name = "bearer-key")
 @AllArgsConstructor
 @Slf4j
+@Tag(name = "5️⃣ Encounters")
 public class EncounterController {
 
     // ENDPOINT DE PRACTITIONER rOLES PARA SABER QUE ESPECIALISTAS HAY!
-    // endpoint para entrada del practitioner deberia obtener sus encunter y appointmens,
+    // endpoint para entrada del practitioner deberia obtener sus encunter y appointmens, y su pacientes de generalpractitioner
     // armar un query que le traiga sus pacientes?
     // cargar codigos que vamos a usar solamente y ya para practitioners!
     // Accounts?

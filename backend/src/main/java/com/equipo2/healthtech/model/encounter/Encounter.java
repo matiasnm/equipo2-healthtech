@@ -21,7 +21,7 @@ Appointment
 └── Encounter
       ├── reason (CodeableConcept)
       ├── diagnosis (EncounterDiagnosis)
-      └── notes (text)
+      └── notes (text) // redunda Observation, Procedure, MedicationStatement
 */
 
 @Entity
