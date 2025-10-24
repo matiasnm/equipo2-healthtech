@@ -1,11 +1,12 @@
-import HeroClinic from "../components/home/HeroClinic";
-import InfoStats from "../components/home/InfoStats";
-import Departments from "../components/home/Departments";
-import TopSpecialistsCarousel from "../components/home/TopSpecialistsCarousel";
-import NewsSection from "../components/home/NewsSection";
+
+import HeroClinic from "../components/Home/HeroClinic";
 import HomeNavbar from "../components/home/HomeNavbar";
 import { Footer } from "../components/ui";
 import { useEffect } from "react";
+import InfoStats from "../components/Home/InfoStats";
+import Departments from "../components/Home/Departaments";
+import TopSpecialistsCarousel from "../components/Home/TopSpecialistsCarousel";
+import NewsSection from "../components/Home/NewsSection";
 
 const Home = () => {
   useEffect(() => {
