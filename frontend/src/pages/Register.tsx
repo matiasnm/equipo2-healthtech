@@ -9,7 +9,7 @@ import { ROUTES } from '../routes/routes';
 import { registerSchema, RegisterFormData } from '../schemas/register.schema';
 import { useRegister } from '../hooks/useRegister';
 import { Card, Input, Button, Layout, Navbar } from '../components/ui';
-import { inferRoleFromEmail } from '../utils/auth.utils.ts';
+import { inferRoleFromEmail } from '../utils/auth.utils';
 
 const Register = () => {
   const navigate = useNavigate();

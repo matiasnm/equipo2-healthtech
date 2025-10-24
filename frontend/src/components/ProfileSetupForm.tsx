@@ -92,14 +92,13 @@ const ProfileSetupForm = () => {
           label="Género"
           name="gender"
           register={register}
-          variant="full"
-          error={!!errors.gender}
           errorMessage={errors.gender?.message}
           options={[
             { label: 'Masculino', value: 'MALE' },
             { label: 'Femenino', value: 'FEMALE' },
             { label: 'Otro', value: 'OTHER' },
           ]}
+          variant="simple"
         />
 
         <Input 
@@ -114,8 +113,6 @@ const ProfileSetupForm = () => {
           label="Tipo de documento"
           name="identifiers.0.type"
           register={register}
-          variant="full"
-          error={!!errors.identifiers?.[0]?.type}
           errorMessage={errors.identifiers?.[0]?.type?.message}
           options={[
             { label: 'DNI', value: 'NATIONAL_ID' },
@@ -124,7 +121,8 @@ const ProfileSetupForm = () => {
             { label: 'Carnet de obra social', value: 'HEALTH_CARD' },
             { label: 'Otro', value: 'OTHER' },
           ]}
-        />
+          variant="simple"
+        /> 
         
       {selectedType === 'HEALTH_CARD' || selectedType === 'OTHER' ? (
         <Input

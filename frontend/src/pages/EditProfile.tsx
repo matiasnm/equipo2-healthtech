@@ -90,7 +90,7 @@ const EditProfile = () => {
     <Layout>
       <Navbar />
       <Card className="max-w-md mx-auto my-8 space-y-4">
-        <h2 className="text-xl font-bold">Editar perfil</h2>
+        <h2 className="text-xl font-bold pb-3">Editar perfil</h2>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Input
@@ -125,16 +125,16 @@ const EditProfile = () => {
                 label="Género"
                 name={field.name}
                 value={field.value}
-                onChange={field.onChange} 
+                onChange={(e) => field.onChange(e.target.value)} 
                 onBlur={field.onBlur}
-                ref={field.ref}
                 errorMessage={fieldState.error?.message}
                 options={[
-                  { label: `Actual: ${field.value}`, value: '' },
                   { label: 'Femenino', value: 'FEMALE' },
                   { label: 'Masculino', value: 'MALE' },
                   { label: 'Otro', value: 'OTHER' },
                 ]}
+                variant="editable"
+                placeholder={profile?.gender}
               />
             )}
           />
@@ -155,20 +155,20 @@ const EditProfile = () => {
                 placeholder={profile?.birthday}
               />
             )}
-          />
+          /> 
 
           <Input
             label="Número de documento"
             value={profile?.identifiers?.[0]?.value ?? ''}
             disabled
-            className="px-3 py-2.5 text-lg font-[var(--font-poppins)] rounded-lg border border-[var(--color-primary)] bg-[var(--color-secondary)] text-bold]"
+            className="px-3 py-2.5 text-lg font-[var(--font-poppins)] rounded-lg border border-[var(--color-primary)] bg-[var(--color-secondary-ligth)] text-bold]"
           />
 
           <Input
             label="Sistema de identificación"
             value={profile?.identifiers?.[0]?.system ?? ''}
             disabled
-            className="px-3 py-2.5 text-lg font-[var(--font-poppins)] rounded-lg border border-[var(--color-primary)] bg-[var(--color-secondary)] text-bold]"
+            className="px-3 py-2.5 text-lg font-[var(--font-poppins)] rounded-lg border border-[var(--color-primary)] bg-[var(--color-secondary-ligth)] text-bold]"
           />
 
           <Button type="submit" variant="accent" className="w-full">Guardar cambios</Button>

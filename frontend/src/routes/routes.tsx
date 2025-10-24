@@ -14,7 +14,7 @@ export const ROUTES = {
   ENCOUNTER: '/encounter',
   PROFILE: '/profile',
   PROFILE_SETUP: '/profile/setup',
-  EDIT_PROFILE: '/perfil/editar',
+  EDIT_PROFILE: '/profile/edit',
   ACCOUNT: '/account',
   APPOINTMENTS: '/appointments',
   PRACTITIONERS: '/practitioners',

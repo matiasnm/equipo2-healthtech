@@ -50,7 +50,7 @@ const Profile = () => {
             disabled
           />
 
-          <Input
+          <Input 
             label="Teléfono"
             value={profile.phone}
             disabled
