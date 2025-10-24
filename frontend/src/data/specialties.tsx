@@ -66,5 +66,26 @@ export const specialties: Specialty[] = [
     gradientClass: "bg-gradient-psiquiatría",
     linkTo: "#psiquiatría",
   },
+  {
+    name: "Oftalmología",
+    imageUrl: "https://images.pexels.com/photos/5752281/pexels-photo-5752281.jpeg",
+    icon: <GiEyeTarget />,
+    gradientClass: "bg-gradient-oftalmología",
+    linkTo: "#oftalmología",
+  },
+  {
+    name: "Endocrinología",
+    imageUrl: "https://images.pexels.com/photos/7653118/pexels-photo-7653118.jpeg",
+    icon: <GiChemicalDrop />,
+    gradientClass: "bg-gradient-endocrinología",
+    linkTo: "#endocrinología",
+  },
+  {
+    name: "Dermatología",
+    imageUrl: "https://images.pexels.com/photos/14438367/pexels-photo-14438367.jpeg",
+    icon: <GiSoap />,
+    gradientClass: "bg-gradient-dermatología",
+    linkTo: "#dermatología",
+  },
 ];
 
