@@ -46,7 +46,7 @@ export const PrivateRoutes: PrivateRoute[] = [
     path: ROUTES.PROFILE,
     element: (
       <ProtectedRoute allowedRoles={['admin', 'practitioner', 'patient']}>
-        <Profile />
+        <Account initialTab={'profile'} />
       </ProtectedRoute>
     ),
     allowedRoles: ['admin', 'practitioner', 'patient'],
@@ -80,7 +80,7 @@ export const PrivateRoutes: PrivateRoute[] = [
     path: ROUTES.ACCOUNT,
     element: (
       <ProtectedRoute allowedRoles={['admin', 'practitioner', 'patient']}>
-        <Account />
+        <Account initialTab={'account'} />
       </ProtectedRoute>
     ),
     allowedRoles: ['admin', 'practitioner', 'patient'],
