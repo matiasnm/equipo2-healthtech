@@ -1,3 +1,4 @@
+
 export const inferRoleFromEmail = (email: string): "admin" | "practitioner" | "patient" => {
   if (!email) return "patient";
 
@@ -12,6 +13,6 @@ export const inferRoleFromEmail = (email: string): "admin" | "practitioner" | "p
   }
 
   return "patient";
-};
 
+};
 

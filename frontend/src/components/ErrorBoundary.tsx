@@ -1,43 +1,22 @@
-import { Component, ReactNode } from "react";
 
-interface ErrorBoundaryProps {
-  children: ReactNode;
-  fallback?: ReactNode;
-}
+import { Component, ReactNode } from 'react';
 
-interface ErrorBoundaryState {
-  hasError: boolean;
-  error?: Error;
-}
+type Props = { children: ReactNode };
+type State = { hasError: boolean };
 
-export default class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
-  constructor(props: ErrorBoundaryProps) {
-    super(props);
-    this.state = { hasError: false };
-  }
+class ErrorBoundary extends Component<Props, State> {
+  state = { hasError: false };
 
-  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
-    return { hasError: true, error };
-  }
-
-  componentDidCatch(error: Error, errorInfo: any) {
-    console.error("ErrorBoundary atrapó un error:", error, errorInfo);
-    
+  static getDerivedStateFromError() {
+    return { hasError: true };
   }
 
   render() {
-    const { hasError, error } = this.state;
-    const { fallback, children } = this.props;
-
-    if (hasError) {
-      return fallback ?? (
-        <div className="p-6 bg-red-50 border border-red-300 rounded text-red-800">
-          <h2 className="text-lg font-bold mb-2">Algo salió mal.</h2>
-          <pre className="text-sm whitespace-pre-wrap">{error?.message}</pre>
-        </div>
-      );
+    if (this.state.hasError) {
+      return <div>Ocurrió un error inesperado. Por favor, recargá la página.</div>;
     }
-
-    return children;
+    return this.props.children;
   }
 }
+
+export default ErrorBoundary;

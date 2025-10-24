@@ -1,5 +1,7 @@
 @import "primereact/resources/themes/lara-light-blue/theme.css";
 @import "primereact/resources/primereact.min.css";
+@import "slick-carousel/slick/slick.css";
+@import "slick-carousel/slick/slick-theme.css";
 
 
 :root{
@@ -99,6 +101,11 @@ html, body, #root {
     filter: blur(0);
   }
 }
+
+html {
+  scroll-behavior: smooth;
+}
+
 
 .bg-sunset-gradient {
   background-attachment: fixed;
