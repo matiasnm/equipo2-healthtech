@@ -9,11 +9,11 @@ type Specialist = {
 };
 
 const specialists: Specialist[] = [
-  { id: 1, name: 'Dra. Ana López', specialty: 'Cardiología', photo: '/imgs/doctors/ana-lopez.png', bio: 'Experta en cardiopatías y prevención.' },
-  { id: 2, name: 'Dr. Martín Pérez', specialty: 'Neurología', photo: '/imgs/doctors/martin-perez.png', bio: 'Neuro diagnóstico avanzado.' },
-  { id: 3, name: 'Dra. Sofía Ruiz', specialty: 'Dermatología', photo: '/imgs/doctors/sofia-ruiz.png', bio: 'Cuidado integral de la piel.' },
-  { id: 4, name: 'Dr. Juan García', specialty: 'Pediatría', photo: '/imgs/doctors/juan-garcia.png', bio: 'Atención pediátrica humana.' },
-  { id: 5, name: 'Dra. Paula Méndez', specialty: 'Ginecología', photo: '/imgs/doctors/paula-mendez.png', bio: 'Salud integral de la mujer.' },
+  { id: 1, name: 'Dra. Ana López', specialty: 'Cardiología', photo: 'https://img.mbst.com.ar/panfamanager/health/doctors/ana-lopez.png', bio: 'Experta en cardiopatías y prevención.' },
+  { id: 2, name: 'Dr. Martín Pérez', specialty: 'Neurología', photo: 'https://img.mbst.com.ar/panfamanager/health/doctors/martin-perez.png', bio: 'Neuro diagnóstico avanzado.' },
+  { id: 3, name: 'Dra. Sofía Ruiz', specialty: 'Dermatología', photo: 'https://img.mbst.com.ar/panfamanager/health/doctors/sofia-ruiz.png', bio: 'Cuidado integral de la piel.' },
+  { id: 4, name: 'Dr. Juan García', specialty: 'Pediatría', photo: 'https://img.mbst.com.ar/panfamanager/health/doctors/juan-garcia.png', bio: 'Atención pediátrica humana.' },
+  { id: 5, name: 'Dra. Paula Méndez', specialty: 'Ginecología', photo: 'https://img.mbst.com.ar/panfamanager/health/doctors/paula-mendez.png', bio: 'Salud integral de la mujer.' },
 ];
 
 const TopSpecialistsCarousel: React.FC = () => {
