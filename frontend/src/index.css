@@ -118,7 +118,7 @@ html {
   background-image:
     linear-gradient(180deg,
       white 10%,
-      #ecc74d4a 40%,
+     /* #ecc74d4a 40%,*/
       #919dfed4 60%,
       #0076b6c5 90%,
       #004e6db8 100%

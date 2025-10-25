@@ -1,5 +1,6 @@
 import privateAPI from './api/privateAPI';
 import type { PractitionerRoleCreatePayload } from '../types/practitioner.types';
+import { practitionersSchema } from "../schemas/practitioner.schema";
 
 // Obtener practitioner por ID
 export const getPractitionerById = (id: number) =>
@@ -18,6 +19,8 @@ export const getSpecialties = () =>
   privateAPI.get('/api/v1/specialties/list').then((res) => res.data);
 
 // Obtener profesionales activos
-export const getPractitioners = () =>
-  privateAPI.get('/api/v1/practitioners/list').then((res) => res.data.content);
+export const getPractitioners = async () => {
+  const res = await privateAPI.get("/api/v1/practitioners/list");
+  return practitionersSchema.parse(res.data);
+};
 

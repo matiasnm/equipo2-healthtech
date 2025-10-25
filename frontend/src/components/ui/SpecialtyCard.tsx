@@ -24,7 +24,7 @@ export const SpecialtyCard = ({
       {/* Fondo degradado */}
       <div className={`absolute inset-0 ${gradientClass}`} />
 
-      {/* Imagen superpuesta */}
+      {/* Imagen superpuesta */} 
       <img
         src={imageUrl}
         alt={name}
