@@ -1,5 +1,6 @@
+import { SpecialtyGrid } from '../ui';
 import React from 'react';
-import { SpecialtyGrid } from "../ui/SpecialtyGrid";
+
 
 const Departments: React.FC = () => {
   return (
