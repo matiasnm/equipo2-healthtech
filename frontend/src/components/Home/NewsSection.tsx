@@ -9,9 +9,9 @@ type News = {
 };
 
 const news: News[] = [
-    { id: 1, title: 'Nueva sala de diagnóstico por imágenes', excerpt: 'Incorporamos equipamiento de última generación para estudios más precisos.', image: '/imgs/news/newlestter1.jpg', date: 'Oct 2025' },
-    { id: 2, title: 'Campaña de vacunación', excerpt: 'Ampliamos horarios y stock para vacunas estacionales.', image: '/imgs/news/newlestter2.webp', date: 'Sep 2025' },
-    { id: 3, title: 'Charlas de salud comunitaria', excerpt: 'Ciclos abiertos a la comunidad sobre prevención y hábitos saludables.', image: '/imgs/news/newlestter3.jpeg', date: 'Ago 2025' },
+    { id: 1, title: 'Nueva sala de diagnóstico por imágenes', excerpt: 'Incorporamos equipamiento de última generación para estudios más precisos.', image: 'https://img.mbst.com.ar/panfamanager/health/news/newlestter1.jpg', date: 'Oct 2025' },
+    { id: 2, title: 'Campaña de vacunación', excerpt: 'Ampliamos horarios y stock para vacunas estacionales.', image: 'https://img.mbst.com.ar/panfamanager/health/news/newlestter2.webp', date: 'Sep 2025' },
+    { id: 3, title: 'Charlas de salud comunitaria', excerpt: 'Ciclos abiertos a la comunidad sobre prevención y hábitos saludables.', image: 'https://img.mbst.com.ar/panfamanager/health/news/newlestter3.jpeg', date: 'Ago 2025' },
 ];
 
 const NewsSection: React.FC = () => {

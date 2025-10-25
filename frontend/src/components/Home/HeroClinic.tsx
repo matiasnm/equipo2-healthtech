@@ -24,7 +24,7 @@ const HeroClinic: React.FC = () => {
         </div>
         <div className="relative">
           <img
-            src="/imgs/TECSALUD-20230830-Primera-clinica-Healthec-by-TecSalud-FACHADA-jpg.webp"
+            src="https://img.mbst.com.ar/panfamanager/health/TECSALUD-20230830-Primera-clinica-Healthec-by-TecSalud-FACHADA-jpg.webp"
             alt="Clínica Health Tech"
             className="w-full h-64 md:h-80 object-cover rounded-xl shadow-lg"
           />

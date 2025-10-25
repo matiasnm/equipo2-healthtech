@@ -1,5 +1,5 @@
 import { Footer } from "../components/ui";
-import HomeNavbar from "../components/home/HomeNavbar";
+import HomeNavbar from "../components/Home/HomeNavbar";
 import { Link } from "react-router-dom";
 import { useEffect } from "react";
 
@@ -20,7 +20,7 @@ const About = () => {
           </p>
           <div className="grid md:grid-cols-2 gap-8 lg:gap-12 mt-8 md:mt-10 items-start">
             <img
-              src="/imgs/about/clinic.webp"
+              src="https://img.mbst.com.ar/panfamanager/health/about/clinic.webp"
               alt="Nuestra clínica"
               className="w-full h-56 sm:h-64 md:h-72 lg:h-96 object-cover rounded-xl shadow"
             />

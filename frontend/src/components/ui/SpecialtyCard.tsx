@@ -1,4 +1,3 @@
-import { slugify } from "../../utils/slugify";
 
 interface SpecialtyCardProps {
   name: string;

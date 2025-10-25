@@ -4,7 +4,6 @@ import ProtectedRoute from '../ProtectedRoute';
 import Encounter from '../../pages/Encounter';
 import Profile from '../../pages/Profile';
 import ProfileSetupForm from '../../components/ProfileSetupForm';
-import EditProfile from '../../pages/EditProfile';
 import { ROUTES } from '../../routes/routes';
 import ErrorBoundary from '../../components/ErrorBoundary';
 import Account from '../../pages/Account';
@@ -14,7 +13,7 @@ import Practitioners from '../../pages/Practitioners';
 
 const LazyDashboard = lazy(() => import('../../pages/Dashboard'));
 const LazyProfileSetupForm = lazy(() => import('../../components/ProfileSetupForm'));
-const LazyEditProfile = lazy(() => import('../../pages/EditProfile'));
+// const LazyEditProfile = lazy(() => import('../../pages/EditProfile'));
 
 type PrivateRoute = { 
   path: string;
@@ -47,7 +46,7 @@ export const PrivateRoutes: PrivateRoute[] = [
     path: ROUTES.PROFILE,
     element: (
       <ProtectedRoute allowedRoles={['admin', 'practitioner', 'patient']}>
-        <Profile />
+        <Account initialTab={'profile'} />
       </ProtectedRoute>
     ),
     allowedRoles: ['admin', 'practitioner', 'patient'],
@@ -71,9 +70,7 @@ export const PrivateRoutes: PrivateRoute[] = [
   path: ROUTES.EDIT_PROFILE,
   element: (
     <ProtectedRoute allowedRoles={['admin', 'practitioner', 'patient']}>
-      <Suspense fallback={<div>Cargando perfil...</div>}>
-        <LazyEditProfile />
-      </Suspense>
+      <Profile />
     </ProtectedRoute>
   ),
   allowedRoles: ['admin', 'practitioner', 'patient'],
@@ -83,7 +80,7 @@ export const PrivateRoutes: PrivateRoute[] = [
     path: ROUTES.ACCOUNT,
     element: (
       <ProtectedRoute allowedRoles={['admin', 'practitioner', 'patient']}>
-        <Account />
+        <Account initialTab={'account'} />
       </ProtectedRoute>
     ),
     allowedRoles: ['admin', 'practitioner', 'patient'],
