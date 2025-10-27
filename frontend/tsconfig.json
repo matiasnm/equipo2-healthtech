@@ -1,5 +1,5 @@
-{
-  "compilerOptions": {
+  {
+    "compilerOptions": {
     "target": "ESNext",
     "module": "es2020",
     "jsx": "react-jsx",
