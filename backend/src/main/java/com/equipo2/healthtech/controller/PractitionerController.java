@@ -54,7 +54,7 @@ public class PractitionerController {
     }
 
     @Operation(summary = "Sets/Updates the Practitioner Role")
-    @PreAuthorize("hasAnyRole('PRACTITIONER', 'ADMIN', 'SUPERADMIN')")
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/practitioner-roles/{id}")
     public ResponseEntity<PractitionerRoleReadResponseDto> setPractitionerRole(@PathVariable Long id, @RequestBody @Valid PractitionerRoleCreateRequestDto request) {
         return ResponseEntity.ok(practitionerService.setPractitionerRole(id, request));

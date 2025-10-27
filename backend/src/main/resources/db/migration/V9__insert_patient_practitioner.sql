@@ -100,6 +100,15 @@ UPDATE practitioners
 SET practitioner_profile_id = 1
 WHERE user_id = 3;
 
+INSERT INTO practitioner_roles (role_code_id, speciality_code_id)
+VALUES
+    ( 1, 1); -- speciality_code_id GOES FROM 1 TO 22...
+
+-- Suppose the returned id is 1
+UPDATE practitioners
+SET practitioner_role_id = 1
+WHERE user_id = 3;
+
 
 -- Create User
 INSERT INTO users (
