@@ -37,7 +37,7 @@ public class AppointmentManagerService {
             return appointmentRepository.save(newAppointment);
         }
 
-        throw new ConflictAppointmentsException("Rescheduled Failed. No dates available.");
+        throw new ConflictAppointmentsException("Scheduled Failed. No dates available.");
     }
 
     private void handleConflicts(Appointment highPriorityAppointment, List<Appointment> conflicts) {

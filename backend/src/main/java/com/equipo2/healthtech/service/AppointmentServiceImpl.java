@@ -158,8 +158,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointment.setPatient(patient);
         appointment.setPractitioners(practitioners);
 
-        Appointment saved = appointmentManagerService.scheduleAppointment(appointment);
-        //Appointment saved = appointmentRepository.save(appointment);
+        //Appointment saved = appointmentManagerService.scheduleAppointment(appointment);
+        Appointment saved = appointmentRepository.save(appointment);
         log.info("CREATE -> APPOINTMENT ID: {}", saved.getId());
         return saved.getId();
     }
