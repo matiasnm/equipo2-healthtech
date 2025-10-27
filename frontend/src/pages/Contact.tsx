@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import HomeNavbar from "../components/home/HomeNavbar";
+import HomeNavbar from "../components/Home/HomeNavbar";
 import { Footer } from "../components/ui";
 import { Phone, PhoneCall, Headset, MapPin } from "lucide-react";
 
