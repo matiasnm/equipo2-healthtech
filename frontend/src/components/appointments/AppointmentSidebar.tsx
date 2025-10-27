@@ -35,12 +35,7 @@ const AppointmentSidebar = ({
         <h2 className="text-xl font-semibold text-[var(--color-primary)]">
           Turnos del día
         </h2>
-        <button
-          onClick={onCreate}
-          className="bg-[var(--color-accent)] text-white px-3 py-1 rounded-md hover:bg-[var(--color-accent-hover)]"
-        >
-          + Nueva cita
-        </button>
+
       </div>
 
       <div className="relative pl-8">

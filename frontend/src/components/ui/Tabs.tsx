@@ -17,7 +17,7 @@ const Tabs = ({ tabs, initialTab }: TabsProps) => {
     const [activeTab, setActiveTab] = useState<string>(initialTab);
     return (
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className='className="max-w-5xl mx-auto my-8'>
+            <div className="max-w-5xl mx-auto my-8">
 
                 <Header tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
 
@@ -38,9 +38,9 @@ const Tabs = ({ tabs, initialTab }: TabsProps) => {
 const Header = ({ tabs, activeTab, setActiveTab }: { tabs: ItemTab[]; activeTab: string; setActiveTab: (key: string) => void }) => {
     return (
         <div className="flex items-center gap-2 border-b">
-            {tabs.map((tab, i) => (
+            {tabs.map((tab) => (
                 <button
-                    key={i}
+                    key={tab.key}
                     className={`px-4 py-2 -mb-px border-b-2 text-sm sm:text-base ${activeTab === tab.key ? 'border-primary text-primary' : 'border-transparent text-gray-500'}`}
                     onClick={() => setActiveTab(tab.key)}
                 >
