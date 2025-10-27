@@ -1,4 +1,4 @@
-import { Button, Input, Navbar, Footer, MFAModal, Layout, CustomCard, Card, SpecialtyGrid } from '../components/ui/index';
+import { Button, Input, CompactCard, Navbar, Footer, MFAModal, Layout, CustomCard, Card, SpecialtyGrid } from '../components/ui/index';
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -6,7 +6,7 @@ import { useState } from 'react';
 
 export const Components = () => {
   const [showModal, setShowModal] = useState(false);
-
+ 
   const triggerToasts = () => {
     toast.success('✅ Éxito: operación completada');
     toast.error('❌ Error: algo salió mal');
@@ -38,6 +38,31 @@ export const Components = () => {
         </section>
 
         {/* Cards */}
+
+                {/* Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <CompactCard
+            imageUrl="/images/panacea.jpg"
+            name="Dra. Panacea"
+            specialty="Neumonología"
+          />
+          <CompactCard
+            imageUrl="/images/panacea.jpg"
+            name="Dra. Panacea"
+            specialty="Neumonología"
+          />
+          <CompactCard
+            imageUrl="/images/panacea.jpg"
+            name="Dra. Panacea"
+            specialty="Neumonología"
+          />
+          <CompactCard
+            imageUrl="/images/panacea.jpg"
+            name="Dra. Panacea"
+            specialty="Neumonología"
+          />
+        </div>
+
         <CustomCard
             variant="default"
             imageUrl="/images/panacea.jpg"

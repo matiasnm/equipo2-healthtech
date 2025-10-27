@@ -1,6 +1,6 @@
 
 import HeroClinic from "../components/Home/HeroClinic";
-import HomeNavbar from "../components/home/HomeNavbar";
+import HomeNavbar from "../components/Home/HomeNavbar";
 import { Footer } from "../components/ui";
 import { useEffect } from "react";
 import InfoStats from "../components/Home/InfoStats";
