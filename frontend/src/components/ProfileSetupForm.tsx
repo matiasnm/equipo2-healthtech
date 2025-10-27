@@ -63,124 +63,150 @@ const ProfileSetupForm = () => {
 
   return (
     <Layout>
-      <Card className="max-w-md mx-auto my-8">
-      <h2 className="text-xl font-bold mb-4">Completá tu perfil</h2>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-5xl mx-auto my-8">
+          <header className="mb-6">
+            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">Completá tu perfil</h2>
+            <p className="text-sm text-gray-500 mt-1">Necesitamos algunos datos para activar tu cuenta</p>
+          </header>
 
-        <Input 
-        label="Nombre completo" 
-        {...register('fullName')} 
-        error={!!errors.fullName} 
-        errorMessage={errors.fullName?.message} 
-        />
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Formulario principal */}
+            <Card className="p-6 sm:p-8 lg:col-span-2">
+              <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="md:col-span-2">
+                  <Input 
+                    label="Nombre completo" 
+                    placeholder="Ej: Juan Pérez"
+                    disabled={isPending}
+                    {...register('fullName')} 
+                    error={!!errors.fullName} 
+                    errorMessage={errors.fullName?.message} 
+                  />
+                </div>
 
-        <Input 
-        label="Teléfono" 
-        {...register('phone')} 
-        error={!!errors.phone} 
-        errorMessage={errors.phone?.message} 
-        />
+                <Input 
+                  label="Teléfono" 
+                  placeholder="Ej: +54 11 5555-5555"
+                  disabled={isPending}
+                  {...register('phone')} 
+                  error={!!errors.phone} 
+                  errorMessage={errors.phone?.message} 
+                />
 
-        <Input 
-        label="Dirección" 
-        {...register('address')} 
-        error={!!errors.address} 
-        errorMessage={errors.address?.message} 
-        />
+                <Input 
+                  label="Dirección" 
+                  placeholder="Ej: Av. Siempre Viva 742"
+                  disabled={isPending}
+                  {...register('address')} 
+                  error={!!errors.address} 
+                  errorMessage={errors.address?.message} 
+                />
 
-        <Select
-          label="Género"
-          name="gender"
-          register={register}
-          variant="full"
-          error={!!errors.gender}
-          errorMessage={errors.gender?.message}
-          options={[
-            { label: 'Masculino', value: 'MALE' },
-            { label: 'Femenino', value: 'FEMALE' },
-            { label: 'Otro', value: 'OTHER' },
-          ]}
-        />
+                <Select
+                  label="Género"
+                  name="gender"
+                  register={register}
+                  errorMessage={errors.gender?.message ?? ''}
+                  options={[
+                    { label: 'Masculino', value: 'MALE' },
+                    { label: 'Femenino', value: 'FEMALE' },
+                    { label: 'Otro', value: 'OTHER' },
+                  ]}
+                  variant="simple"
+                />
 
-        <Input 
-        label="Fecha de nacimiento" 
-        type="date" 
-        {...register('birthday')} 
-        error={!!errors.birthday} 
-        errorMessage={errors.birthday?.message} 
-        />
+                <Input 
+                  label="Fecha de nacimiento" 
+                  type="date" 
+                  disabled={isPending}
+                  {...register('birthday')} 
+                  error={!!errors.birthday} 
+                  errorMessage={errors.birthday?.message} 
+                />
 
-        <Select
-          label="Tipo de documento"
-          name="identifiers.0.type"
-          register={register}
-          variant="full"
-          error={!!errors.identifiers?.[0]?.type}
-          errorMessage={errors.identifiers?.[0]?.type?.message}
-          options={[
-            { label: 'DNI', value: 'NATIONAL_ID' },
-            { label: 'Pasaporte', value: 'PASSPORT' },
-            { label: 'Licencia de conducir', value: 'DRIVER_LICENSE' },
-            { label: 'Carnet de obra social', value: 'HEALTH_CARD' },
-            { label: 'Otro', value: 'OTHER' },
-          ]}
-        />
-        
-      {selectedType === 'HEALTH_CARD' || selectedType === 'OTHER' ? (
-        <Input
-          label="Sistema de identificación"
-          {...register('identifiers.0.system')}
-          error={!!errors.identifiers?.[0]?.system}
-          errorMessage={errors.identifiers?.[0]?.system?.message}
-        />
-      ) : ( 
-        <Input
-          label="Sistema de identificación"
-          defaultValue={systemByType[selectedType]}
-          disabled
-        />
+                <Select
+                  label="Tipo de documento"
+                  name="identifiers.0.type"
+                  register={register}
+                  errorMessage={errors.identifiers?.[0]?.type?.message ?? ''}
+                  options={[
+                    { label: 'DNI', value: 'NATIONAL_ID' },
+                    { label: 'Pasaporte', value: 'PASSPORT' },
+                    { label: 'Licencia de conducir', value: 'DRIVER_LICENSE' },
+                    { label: 'Carnet de obra social', value: 'HEALTH_CARD' },
+                    { label: 'Otro', value: 'OTHER' },
+                  ]}
+                  variant="simple"
+                /> 
 
-      )}
+                {selectedType === 'HEALTH_CARD' || selectedType === 'OTHER' ? (
+                  <Input
+                    label="Sistema de identificación"
+                    disabled={isPending}
+                    {...register('identifiers.0.system')}
+                    error={!!errors.identifiers?.[0]?.system}
+                    errorMessage={errors.identifiers?.[0]?.system?.message}
+                  />
+                ) : ( 
+                  <Input
+                    label="Sistema de identificación"
+                    defaultValue={systemByType[selectedType]}
+                    disabled
+                  />
+                )}
 
-      <Input
-            label="Número de documento"
-            {...register('identifiers.0.value')}
-            error={!!errors.identifiers?.[0]?.value}
-            errorMessage={errors.identifiers?.[0]?.value?.message}
-      /> 
+                <Input
+                  label="Número de documento"
+                  placeholder="Ej: 12.345.678"
+                  disabled={isPending}
+                  {...register('identifiers.0.value')}
+                  error={!!errors.identifiers?.[0]?.value}
+                  errorMessage={errors.identifiers?.[0]?.value?.message}
+                /> 
 
+                <div className="md:col-span-2">
+                  <Input
+                    type="checkbox"
+                    label="Confirmo que los datos son correctos"
+                    disabled={isPending}
+                    {...register('confirmation')}
+                    error={!!errors.confirmation}
+                    errorMessage={errors.confirmation?.message}
+                  />
+                </div>
 
+                <div className="md:col-span-2 pt-2">
+                  <Button type="submit" disabled={isPending} className="w-full md:w-auto">
+                    {isPending ? 'Guardando...' : 'Guardar perfil'}
+                  </Button>
+                </div>
+              </form>
+            </Card>
 
-      {/*Resumen visual del perfil */}
-      <div className="bg-gray-50 border rounded-lg p-4 text-sm text-gray-700 space-y-2">
-        <p><strong>Nombre completo:</strong> {watch('fullName')}</p>
-        <p><strong>Teléfono:</strong> {watch('phone')}</p>
-        <p><strong>Dirección:</strong> {watch('address')}</p>
-        <p><strong>Género:</strong> {watch('gender')}</p>
-        <p><strong>Fecha de nacimiento:</strong> {watch('birthday')}</p>
+            {/* Resumen y ayuda */}
+            <Card className="p-6 sm:p-8 h-fit">
+              <h3 className="text-lg font-semibold mb-4">Revisá tus datos</h3>
+              <div className="bg-gray-50 border rounded-lg p-4 text-sm text-gray-700 space-y-2">
+                <p><strong>Nombre completo:</strong> {watch('fullName') || '-'}</p>
+                <p><strong>Teléfono:</strong> {watch('phone') || '-'}</p>
+                <p><strong>Dirección:</strong> {watch('address') || '-'}</p>
+                <p><strong>Género:</strong> {watch('gender') || '-'}</p>
+                <p><strong>Fecha de nacimiento:</strong> {watch('birthday') || '-'}</p>
+                <p><strong>Tipo de documento:</strong> {watch('identifiers.0.type') || '-'}</p>
+                <p><strong>Número de documento:</strong> {watch('identifiers.0.value') || '-'}</p>
+                <p><strong>Sistema de identificación:</strong> {watch('identifiers.0.system') || systemByType[selectedType] || '-'}</p>
+              </div>
 
-        <p><strong>Tipo de documento:</strong> {watch('identifiers.0.type')}</p>
-        <p><strong>Número de documento:</strong> {watch('identifiers.0.value')}</p>
-        <p><strong>Sistema de identificación:</strong> {watch('identifiers.0.system')}</p>
+              <div className="mt-4 text-xs text-gray-500 space-y-1">
+                <p>• Estos datos se usarán para tus turnos y facturación.</p>
+                <p>• Podrás editarlos más adelante desde tu perfil.</p>
+              </div>
+            </Card>
+          </div>
+        </div>
       </div>
-
-
-      <Input
-        type="checkbox"
-        label="Confirmo que los datos son correctos"
-        {...register('confirmation')}
-        error={!!errors.confirmation}
-        errorMessage={errors.confirmation?.message}
-      />
-
-  
-
-        <Button type="submit" disabled={isPending}>
-          {isPending ? 'Guardando...' : 'Guardar perfil'}
-        </Button>
-      </form>
-    </Card>
-  </Layout>
+    </Layout>
   );
 };
 

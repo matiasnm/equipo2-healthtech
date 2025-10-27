@@ -1,13 +1,26 @@
-import API from './api';
+import privateAPI from './api/privateAPI';
+import type { PractitionerRoleCreatePayload } from '../types/practitioner.types';
+import { practitionersSchema } from "../schemas/practitioner.schema";
 
-export const getPractitionerById = (id: string) =>
-  API.get(`/api/v1/practitioners/${id}`);
+// Obtener practitioner por ID
+export const getPractitionerById = (id: number) =>
+  privateAPI.get(`/api/v1/practitioners/${id}`).then((res) => res.data);
 
+// Obtener practitioner actual 
 export const getCurrentPractitioner = () =>
-  API.get('/api/v1/practitioners/me');
+  privateAPI.get('/api/v1/practitioners/me').then((res) => res.data);
 
-export const getAllPractitioners = () =>
-  API.get('/api/v1/practitioners/list');
+// Asignar rol y especialidad a practitioner
+export const setPractitionerRole = (id: number, data: PractitionerRoleCreatePayload) =>
+  privateAPI.post(`/api/v1/practitioners/practitioner-roles/${id}`, data).then((res) => res.data);
 
-export const setPractitionerRole = (id: string, data: any) =>
-  API.post(`/api/v1/practitioners/practitioner-roles/${id}`, data);
+// Obtener especialidades
+export const getSpecialties = () =>
+  privateAPI.get('/api/v1/specialties/list').then((res) => res.data);
+
+// Obtener profesionales activos
+export const getPractitioners = async () => {
+  const res = await privateAPI.get("/api/v1/practitioners/list");
+  return practitionersSchema.parse(res.data);
+};
+

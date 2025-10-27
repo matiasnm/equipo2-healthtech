@@ -1,11 +1,14 @@
 @import "primereact/resources/themes/lara-light-blue/theme.css";
 @import "primereact/resources/primereact.min.css";
+@import "slick-carousel/slick/slick.css";
+@import "slick-carousel/slick/slick-theme.css";
 
 
 :root{
   --color-primary: #0077B6;
   --color-primary-hover: #00627C; 
   --color-secondary: #b8c0ff;
+  --color-secondary-ligth: #d9ddfd;
   --color-secondary-hover: #a2adff;
   --color-accent: #d4af37;
   --color-accent-hover: #d1a30c;
@@ -100,12 +103,22 @@ html, body, #root {
   }
 }
 
+
+html {
+  scroll-behavior: smooth;
+}
+
+.animate-cloud {
+  animation: cloudFade 0.6s ease-out forwards;
+}
+
+
 .bg-sunset-gradient {
   background-attachment: fixed;
   background-image:
     linear-gradient(180deg,
       white 10%,
-      #ecc74d4a 40%,
+     /* #ecc74d4a 40%,*/
       #919dfed4 60%,
       #0076b6c5 90%,
       #004e6db8 100%

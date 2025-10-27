@@ -1,4 +1,3 @@
-import ProfileSetupForm from "components/ProfileSetupForm";
 
 export const ROUTES = {
   // Public Routes
@@ -8,17 +7,19 @@ export const ROUTES = {
   ABOUT: '/about',
   COMPONENTS: '/components',
   NOTFOUND: '*',
-
+  CONTACT: '/contact',
+  
   // Private Routes
   DASHBOARD: '/dashboard',
-  ENCOUNTER: '/encounter',
+  PATIENTS: '/patients',  
+  SETUP_PROFILE: 'setup/profile',  
   PROFILE: '/profile',
-  PROFILE_SETUP: '/profile/setup',
-  EDIT_PROFILE: '/perfil/editar',
+  EDIT_PROFILE: 'edit/profile',  
+  CREATE_APPOINTMENT: 'create/appointment', 
+  PRACTITIONERS: '/practitioners',   
+  APPOINTMENTS: '/appointments',  
+  ENCOUNTER: '/encounter',
   ACCOUNT: '/account',
-  APPOINTMENTS: '/appointments',
-  PRACTITIONERS: '/practitioners',
-  PATIENTS: '/patients',
   SETTINGS: '/settings',
   
 } as const;

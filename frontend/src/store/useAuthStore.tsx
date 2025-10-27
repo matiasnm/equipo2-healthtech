@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { fetchUser, logoutUser } from '../services/auth';
 import type { User } from '../types/user.types';
 import { inferRoleFromEmail } from '../utils/auth.utils';
-
+ 
 interface AuthState {
   user: User | null;
   role: User['role'] | null;
