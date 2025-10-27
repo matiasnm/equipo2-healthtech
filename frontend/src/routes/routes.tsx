@@ -1,4 +1,3 @@
-
 export const ROUTES = {
   // Public Routes
   HOME: '/',
