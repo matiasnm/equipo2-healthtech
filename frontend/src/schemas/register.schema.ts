@@ -5,6 +5,7 @@ export const registerSchema = z
       
     email: z
       .string()
+      .trim()
       .min(1, 'El email es obligatorio')
       .email('Ingresá un email válido'),
 
@@ -12,7 +13,9 @@ export const registerSchema = z
       .string()
       .min(6, 'La contraseña debe tener al menos 6 caracteres'),
 
-    confirmPassword: z.string(),
+    confirmPassword: z
+      .string()
+      .min(6, 'Repetí la contraseña (mínimo 6 caracteres)'),
 
     // El rol se infiere automáticamente
     role: z.enum(['PATIENT', 'PRACTITIONER', 'ADMIN']).optional(),

@@ -8,9 +8,9 @@ export const editProfileSchema = z.object({
   birthday: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, {
   message: "La fecha debe tener el formato YYYY-MM-DD",
   }).optional(),
-  documentType: z.string().min(2).optional(),
-  documentValue: z.string().min(4).optional(),
-  documentSystem: z.string().min(4).optional(),
+  // documentType: z.string().min(2).optional(),
+  // documentValue: z.string().min(4).optional(),
+  // documentSystem: z.string().min(4).optional(),
 });
 
 export type EditProfileFormData = z.infer<typeof editProfileSchema>;
