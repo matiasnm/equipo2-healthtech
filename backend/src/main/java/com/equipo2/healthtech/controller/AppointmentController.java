@@ -2,6 +2,7 @@ package com.equipo2.healthtech.controller;
 
 import com.equipo2.healthtech.dto.appointment.*;
 import com.equipo2.healthtech.dto.practitioner.PractitionerReadSummaryResponseDto;
+import com.equipo2.healthtech.dto.practitioner.PractitionerRoleReadResponseDto;
 import com.equipo2.healthtech.model.appointment.AppointmentStatus;
 import com.equipo2.healthtech.model.practitioner.Practitioner;
 import com.equipo2.healthtech.service.AppointmentService;
@@ -104,6 +105,13 @@ public class AppointmentController {
             @PathVariable Long id) {
         appointmentService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Lists all Practitioner Roles available")
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/available-practitioner-roles")
+    public ResponseEntity<List<PractitionerRoleReadResponseDto>> getPractitionerRoles() {
+        return ResponseEntity.ok(appointmentService.getAvailablePractitionerRoles());
     }
 
 }

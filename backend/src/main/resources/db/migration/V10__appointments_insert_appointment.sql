@@ -21,7 +21,7 @@ CREATE TABLE appointment_practitioners (
 
 -- 1️⃣ Insert appointment
 INSERT INTO appointments (patient_id, start_time, end_time, status, created_at, updated_at)
-VALUES (2, now(), now() + interval '30 minutes', 'SCHEDULED', now(), now())
+VALUES (2, now(), now() + interval '30 minutes', 'COMPLETED', now(), now())
 RETURNING id;
 
 -- Suppose returned id = 1

@@ -1,19 +1,23 @@
 package com.equipo2.healthtech.service;
 
 import com.equipo2.healthtech.dto.practitioner.PractitionerReadSummaryResponseDto;
+import com.equipo2.healthtech.dto.practitioner.PractitionerRoleReadResponseDto;
 import com.equipo2.healthtech.exception.NoResultsException;
 import com.equipo2.healthtech.dto.appointment.*;
 import com.equipo2.healthtech.mapper.AppointmentMapper;
+import com.equipo2.healthtech.mapper.PractitionerRoleMapper;
 import com.equipo2.healthtech.mapper.UserMapper;
 import com.equipo2.healthtech.model.appointment.*;
 import com.equipo2.healthtech.model.patient.Patient;
 import com.equipo2.healthtech.model.practitioner.Practitioner;
+import com.equipo2.healthtech.model.practitioner.PractitionerRole;
 import com.equipo2.healthtech.model.practitioner.PractitionerSpecifications;
 import com.equipo2.healthtech.model.user.Role;
 import com.equipo2.healthtech.model.user.User;
 import com.equipo2.healthtech.repository.AppointmentRepository;
 import com.equipo2.healthtech.repository.PatientRepository;
 import com.equipo2.healthtech.repository.PractitionerRepository;
+import com.equipo2.healthtech.repository.PractitionerRoleRepository;
 import com.equipo2.healthtech.security.SecurityUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,9 +43,11 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final AppointmentRepository appointmentRepository;
     private final PatientRepository patientRepository;
     private final PractitionerRepository practitionerRepository;
+    private final PractitionerRoleRepository practitionerRoleRepository;
     private final SecurityUtils securityUtils;
     private final AppointmentMapper appointmentMapper;
     private final UserMapper userMapper;
+    private final PractitionerRoleMapper practitionerRoleMapper;
 
 
     public boolean canAccessAppointment(Appointment appointment) {
@@ -250,6 +256,12 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         return practitioners.stream()
                 .map(userMapper::toPractitionerReadSummaryResponseDto)
+                .toList();
+    }
+
+    public List<PractitionerRoleReadResponseDto> getAvailablePractitionerRoles() {
+        return practitionerRoleRepository.findAll().stream()
+                .map(practitionerRoleMapper::toPractitionerRoleReadResponseDto)
                 .toList();
     }
 

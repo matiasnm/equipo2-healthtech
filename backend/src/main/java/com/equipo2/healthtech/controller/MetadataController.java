@@ -11,7 +11,7 @@ import com.equipo2.healthtech.model.user.Role;
 import com.equipo2.healthtech.model.userProfile.IdentifierType;
 import com.equipo2.healthtech.model.userProfile.MediaType;
 import com.equipo2.healthtech.model.userProfile.RelatedPersonType;
-import com.equipo2.healthtech.service.ClinicService;
+import com.equipo2.healthtech.service.MetadataService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,11 +27,11 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "8️⃣ Metadata")
 public class MetadataController {
 
-    private final ClinicService clinicService;
+    private final MetadataService metadatacService;
 
     @GetMapping
     public ResponseEntity<MetadataResponseDto> getMetadata() {
-        ClinicReadResponseDto clinicDto = clinicService.read(1L);
+        ClinicReadResponseDto clinicDto = metadatacService.read(1L);
         MetadataResponseDto response = new MetadataResponseDto(
                 clinicDto,
                 Role.values(),

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/test")
-@Tag(name = "9\uFE0F⃣ Test")
+@Tag(name = "1️⃣0\uFE0F⃣ Test")
 public class TestController {
 
     @GetMapping
