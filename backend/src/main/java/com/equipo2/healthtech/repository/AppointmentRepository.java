@@ -1,6 +1,7 @@
 package com.equipo2.healthtech.repository;
 
 import com.equipo2.healthtech.model.appointment.Appointment;
+import com.equipo2.healthtech.model.practitioner.Practitioner;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -44,8 +45,20 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
       AND a.status = 'SCHEDULED'
       AND (:startTime < a.endTime AND :endTime > a.startTime)
     """)
-    List<Appointment> findConflictingAppointments(
+    boolean existsConflictingAppointments(
             @Param("practitionerId") Long practitionerId,
+            @Param("startTime") OffsetDateTime startTime,
+            @Param("endTime") OffsetDateTime endTime);
+
+    @Query("""
+    SELECT DISTINCT a FROM Appointment a
+    JOIN a.practitioners p
+    WHERE p IN :practitioners
+      AND a.startTime < :endTime
+      AND a.endTime > :startTime
+    """)
+    List<Appointment> findConflicts(
+            @Param("practitioners") List<Practitioner> practitioners,
             @Param("startTime") OffsetDateTime startTime,
             @Param("endTime") OffsetDateTime endTime);
 }
