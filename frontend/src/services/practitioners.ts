@@ -23,4 +23,3 @@ export const getPractitioners = async () => {
   const res = await privateAPI.get("/api/v1/practitioners/list");
   return practitionersSchema.parse(res.data);
 };
-

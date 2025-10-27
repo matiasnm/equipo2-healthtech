@@ -1,10 +1,6 @@
 package com.equipo2.healthtech.controller;
 
-import com.equipo2.healthtech.dto.practitioner.PractitionerReadResponseDto;
-import com.equipo2.healthtech.dto.practitioner.PractitionerReadSummaryResponseDto;
-import com.equipo2.healthtech.dto.practitioner.PractitionerRoleCreateRequestDto;
-import com.equipo2.healthtech.dto.practitioner.PractitionerRoleReadResponseDto;
-import com.equipo2.healthtech.repository.PractitionerRepository;
+import com.equipo2.healthtech.dto.practitioner.*;
 import com.equipo2.healthtech.service.PractitionerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -19,13 +15,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/practitioners")
 @SecurityRequirement(name = "bearer-key")
 @AllArgsConstructor
 @Slf4j
 public class PractitionerController {
-//PRACTITIONER NOT FOUND?
+
     private final PractitionerService practitionerService;
 
     @Operation(summary = "Gets all active/valid Practitioners")
@@ -53,11 +51,27 @@ public class PractitionerController {
         return ResponseEntity.ok(practitionerService.readMe());
     }
 
-    @Operation(summary = "Sets the Practitioner Role")
+    @Operation(summary = "Sets/Updates the Practitioner Role")
     @PreAuthorize("hasAnyRole('PRACTITIONER', 'ADMIN', 'SUPERADMIN')")
     @PostMapping("/practitioner-roles/{id}")
-    public ResponseEntity<PractitionerRoleReadResponseDto> createPractitionerRole(@PathVariable Long id, @RequestBody @Valid PractitionerRoleCreateRequestDto request) {
-        return ResponseEntity.ok(practitionerService.createPractitionerRole(id, request));
+    public ResponseEntity<PractitionerRoleReadResponseDto> setPractitionerRole(@PathVariable Long id, @RequestBody @Valid PractitionerRoleCreateRequestDto request) {
+        return ResponseEntity.ok(practitionerService.setPractitionerRole(id, request));
+    }
+
+    @Operation(summary = "Sets/Updates the Practitioner Profile")
+    @PreAuthorize("hasAnyRole('PRACTITIONER', 'ADMIN', 'SUPERADMIN')")
+    @PostMapping("/practitioner-roles/profile/{id}")
+    public ResponseEntity<PractitionerProfileReadResponseDto> setPractitionerProfile(@PathVariable Long id, @RequestBody @Valid PractitionerProfileCreateRequestDto request) {
+        return ResponseEntity.ok(practitionerService.setPractitionerProfile(id, request));
+    }
+
+    @Operation(summary = "Sets the Practitioner Availability")
+    @PreAuthorize("hasAnyRole('PRACTITIONER', 'ADMIN', 'SUPERADMIN')")
+    @PostMapping("/{id}/unavailability")
+    public ResponseEntity<List<PractitionerUnavailabilityReadResponseDto>> setPractitionerProfile(
+            @PathVariable Long id,
+            @RequestBody @Valid List<PractitionerUnavailabilityCreateRequestDto> requests) {
+        return ResponseEntity.ok(practitionerService.setPractitionerUnavailability(id, requests));
     }
 
 }

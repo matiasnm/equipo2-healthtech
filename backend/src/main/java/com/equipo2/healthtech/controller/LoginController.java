@@ -9,6 +9,7 @@ import com.equipo2.healthtech.service.MfaService;
 import com.equipo2.healthtech.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,7 @@ import java.net.URI;
 @RequestMapping("/api/v1/auth")
 @AllArgsConstructor
 @Slf4j
+@Tag(name = "1️⃣ Login")
 public class LoginController {
 
     private final LoginService loginService;

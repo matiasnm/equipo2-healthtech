@@ -1,7 +1,6 @@
 import js from '@eslint/js'
 import globals from 'globals'
 import tsParser from '@typescript-eslint/parser';
-import type { FlatConfig } from 'eslint';
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 import importPlugin from 'eslint-plugin-import';
@@ -56,4 +55,4 @@ const config = defineConfig([
     },
   },
 ])
-export default config as FlatConfig;
+export default config;

@@ -15,4 +15,3 @@ export const inferRoleFromEmail = (email: string): "admin" | "practitioner" | "p
   return "patient";
 
 };
-
