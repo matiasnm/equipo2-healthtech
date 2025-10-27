@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Navbar, Layout } from "../components/ui";
-import { AppointmentSidebar } from "../components/appointments/AppointmentSidebar";
+import  AppointmentSidebar from "../components/appointments/AppointmentSidebar";
 import { AppointmentCalendar } from "../components/appointments/AppointmentCalendar";
 import AppointmentForm from "../components/appointments/AppointmentForm";
 

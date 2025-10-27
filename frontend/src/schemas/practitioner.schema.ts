@@ -39,6 +39,9 @@ export const practitionerSummarySchema = z.object({
 
 export const practitionersSchema = z.array(practitionerSummarySchema);
 
+export const practitionersResponseSchema = z.object({
+  data: practitionersSchema,
+});
 // Tipos derivados automáticamente
 export type PractitionerSummary = z.infer<typeof practitionerSummarySchema>;
 export type PractitionerList = z.infer<typeof practitionersSchema>;

@@ -28,15 +28,17 @@ fetchAppointments: async () => {
     }
   },
 
-    fetchByPractitioner: async (id) => {
-    set({ loading: true, error: null });
-    try {
-      const data = await getAppointmentsByPractitioner(id);
-      set({ appointments: data, loading: false });
-    } catch (err: any) {
-      set({ error: err.message || "Error al filtrar por profesional", loading: false });
-    }
-  },
+fetchByPractitioner: async (id) => {
+  set({ loading: true, error: null });
+  try {
+    const data = await getAppointmentsByPractitioner(id);
+    const valid = data.filter((apt) => apt.startTime && apt.endTime && !isNaN(Date.parse(apt.startTime)));
+    set({ appointments: valid, loading: false });
+  } catch (err: any) {
+    set({ error: err.message || "Error al filtrar por profesional", loading: false });
+  }
+},
+
 
   create: async (data) => {
     set({ loading: true });
