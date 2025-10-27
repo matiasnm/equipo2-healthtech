@@ -1,16 +1,19 @@
 import { useEffect, useState } from "react";
 import { Layout, Navbar } from "../components/ui";
-import { useAppointments } from "../hooks/useAppointments";
 import { usePractitioners } from "../hooks/usePractitioners";
+import { useAppointments } from "../hooks/useAppointments";
 import { CompactCard } from "../components/ui/CompactCard";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { useEncounterHistory } from "../hooks/useEncounterHistory";
 
 export default function Encounter() {
   const [activeTab, setActiveTab] = useState<"historial" | "doctores" | "documentos">("historial");
   const [selectedPractitionerId, setSelectedPractitionerId] = useState<number | null>(null);
 
-  const { appointments, fetchAppointments } = useAppointments();
+  const { fetchAppointments } = useAppointments(); // ✅ extraído correctamente
+  const { items: history } = useEncounterHistory();
+
   const {
     data: practitioners = [],
     fetchPractitioners,
@@ -30,59 +33,49 @@ export default function Encounter() {
 
         {/* Tabs */}
         <div className="flex gap-4">
-          <button
-            onClick={() => setActiveTab("historial")}
-            className={`px-4 py-2 rounded-md font-medium ${
-              activeTab === "historial"
-                ? "bg-[var(--color-accent)] text-white"
-                : "bg-white text-[var(--color-primary)]"
-            }`}
-          >
-            Historial
-          </button>
-          <button
-            onClick={() => setActiveTab("doctores")}
-            className={`px-4 py-2 rounded-md font-medium ${
-              activeTab === "doctores"
-                ? "bg-[var(--color-accent)] text-white"
-                : "bg-white text-[var(--color-primary)]"
-            }`}
-          >
-            Mis doctores
-          </button>
-          <button
-            onClick={() => setActiveTab("documentos")}
-            className={`px-4 py-2 rounded-md font-medium ${
-              activeTab === "documentos"
-                ? "bg-[var(--color-accent)] text-white"
-                : "bg-white text-[var(--color-primary)]"
-            }`}
-          >
-            Documentos
-          </button>
+          {["historial", "doctores", "documentos"].map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab as typeof activeTab)}
+              className={`px-4 py-2 rounded-md font-medium ${
+                activeTab === tab
+                  ? "bg-[var(--color-accent)] text-white"
+                  : "bg-white text-[var(--color-primary)]"
+              }`}
+            >
+              {tab.charAt(0).toUpperCase() + tab.slice(1)}
+            </button>
+          ))}
         </div>
+
+        {/* Debug JSON */}
+        {activeTab === "historial" && (
+          <pre className="text-xs bg-white p-2 rounded-md overflow-x-auto">
+            {JSON.stringify(history, null, 2)}
+          </pre>
+        )}
 
         {/* Content */}
         <section className="bg-white/50 backdrop-blur-md rounded-xl p-6 shadow-md border border-[var(--color-accent)]">
           {activeTab === "historial" && (
-            appointments.length === 0 ? (
+            history.length === 0 ? (
               <div className="text-sm text-muted italic">No hay encuentros registrados por el momento.</div>
             ) : (
               <ul className="space-y-6">
-                {appointments.map((apt) => (
-                  <li key={apt.id} className="border-b pb-4">
+                {history.map((item) => (
+                  <li key={item.appointmentId} className="border-b pb-4">
                     <div className="flex justify-between items-center">
                       <div>
                         <div className="font-medium text-[var(--color-primary)]">
-                          {apt.patientProfile?.fullName ?? "Paciente"}
+                          {item.patient?.fullName ?? "Paciente"}
                         </div>
                         <div className="text-sm text-muted">
-                          {format(new Date(apt.startTime), "PPPPp", { locale: es })}
+                          {format(new Date(item.startTime), "PPPPp", { locale: es })}
                         </div>
-                        <div className="text-xs text-[var(--color-accent)]">{apt.status}</div>
+                        <div className="text-xs text-[var(--color-accent)]">{item.status}</div>
                       </div>
                       <a
-                        href={`/appointments/${apt.id}`}
+                        href={`/appointments/${item.appointmentId}`}
                         className="text-[var(--color-accent)] hover:underline text-sm"
                       >
                         Ver cita
@@ -113,12 +106,12 @@ export default function Encounter() {
           )}
 
           {activeTab === "documentos" && (
-            appointments.flatMap((apt) => apt.documents ?? []).length === 0 ? (
+            history.flatMap((item) => item.documents).length === 0 ? (
               <div className="text-sm text-muted italic">No hay documentos disponibles para descargar.</div>
             ) : (
               <ul className="space-y-4">
-                {appointments
-                  .flatMap((apt) => apt.documents ?? [])
+                {history
+                  .flatMap((item) => item.documents)
                   .map((doc) => (
                     <li key={doc.id}>
                       <a
@@ -138,7 +131,3 @@ export default function Encounter() {
     </Layout>
   );
 }
-
-
-
-

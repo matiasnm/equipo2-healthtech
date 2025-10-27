@@ -4,16 +4,22 @@ export type AppointmentCreatePayload = {
   startTime: string; 
   endTime: string;   
   status?: AppointmentStatus;
-  teleconsultationUrl?: string | undefined;
+  teleconsultationUrl?: string;
 };
 
 export type AppointmentUpdatePayload = AppointmentCreatePayload;
 
-export type AppointmentStatus = 'SCHEDULED' | 'CANCELLED' | 'COMPLETED' | 'NO_SHOW';
+export type AppointmentStatus = 'SCHEDULED' | 'CANCELLED' | 'COMPLETED' | 'NO_SHOW' | "PENDING" | "CONFIRMED";
 
 export type AvailablePractitionersRequest = {
   startTime: string;
   endTime: string;
+};
+
+export type Document = {
+  id: string;
+  name: string;
+  downloadUrl: string;
 };
 
 export type Appointment = {
@@ -23,14 +29,23 @@ export type Appointment = {
   startTime: string;
   endTime: string;
   status: AppointmentStatus;
-  teleconsultationUrl?: string | undefined;
-  patientProfile?: {
-    fullName: string;
-  };
-  practitionerProfiles?: {
-    fullName: string;
-  }[];
+  teleconsultationUrl?: string;
+  patientProfile?: PatientProfile | null;
+  practitionerProfile?: PractitionerProfile | null; 
+  documents?: Document[]; 
 };
+
+export type PatientProfile = {
+  id: number;
+  fullName: string;
+};
+
+export type PractitionerProfile = {
+  id: number;
+  fullName: string;
+  photoUrl?: string;
+};
+
 
 
 
