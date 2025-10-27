@@ -48,6 +48,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final AppointmentMapper appointmentMapper;
     private final UserMapper userMapper;
     private final PractitionerRoleMapper practitionerRoleMapper;
+    private final AppointmentManagerService appointmentManagerService;
 
 
     public boolean canAccessAppointment(Appointment appointment) {
@@ -114,9 +115,8 @@ public class AppointmentServiceImpl implements AppointmentService {
             return false;
         }
 
-        List<Appointment> conflicts = appointmentRepository.findConflictingAppointments(
-                practitioner.getId(), start, end);
-        if (!conflicts.isEmpty()) {
+        boolean conflicts = appointmentRepository.existsConflictingAppointments(practitioner.getId(), start, end);
+        if (conflicts) {
             log.info("PRACTITIONER id: {} -> APPOINTMENT CONFLICT", practitioner.getId());
             return false;
         }
@@ -158,6 +158,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointment.setPatient(patient);
         appointment.setPractitioners(practitioners);
 
+        //Appointment saved = appointmentManagerService.scheduleAppointment(appointment);
         Appointment saved = appointmentRepository.save(appointment);
         log.info("CREATE -> APPOINTMENT ID: {}", saved.getId());
         return saved.getId();

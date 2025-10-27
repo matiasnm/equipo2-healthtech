@@ -1,5 +1,7 @@
 CREATE TYPE appointment_status AS ENUM ('SCHEDULED', 'CANCELLED', 'COMPLETED', 'NO_SHOW');
 
+CREATE TYPE appointment_priority AS ENUM ('LOW', 'NORMAL', 'HIGH', 'EMERGENCY');
+
 CREATE TABLE appointments (
     id BIGSERIAL PRIMARY KEY,
     patient_id BIGINT NOT NULL REFERENCES patients(user_id),
@@ -7,6 +9,7 @@ CREATE TABLE appointments (
     end_time TIMESTAMP WITH TIME ZONE NOT NULL,
     status appointment_status NOT NULL,
     teleconsultation_url VARCHAR(255),
+    priority appointment_priority NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT now()
     --google_event_id VARCHAR(255)
@@ -20,8 +23,8 @@ CREATE TABLE appointment_practitioners (
 
 
 -- 1️⃣ Insert appointment
-INSERT INTO appointments (patient_id, start_time, end_time, status, created_at, updated_at)
-VALUES (2, now(), now() + interval '30 minutes', 'COMPLETED', now(), now())
+INSERT INTO appointments (patient_id, start_time, end_time, status, priority, created_at, updated_at)
+VALUES (2, now(), now() + interval '30 minutes', 'COMPLETED', 'NORMAL', now(), now())
 RETURNING id;
 
 -- Suppose returned id = 1
