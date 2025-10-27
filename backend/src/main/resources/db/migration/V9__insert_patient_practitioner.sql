@@ -109,6 +109,10 @@ UPDATE practitioners
 SET practitioner_role_id = 1
 WHERE user_id = 3;
 
+-- Add General Practitioner to Patient id=2
+UPDATE patients
+SET practitioner_id = 3
+WHERE user_id = 2;
 
 -- Create User
 INSERT INTO users (

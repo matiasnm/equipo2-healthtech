@@ -47,7 +47,7 @@ public class SpringDoc {
     |-------------------|----------|----------------|----------------------------------------------------|
     | **admin@ht.com**  | admin    | [ADMIN]        | status = true                                      |
     | **patient1@ht.com** | patient | [PATIENT]      | status = true                                      |
-    | **doctor1@ht.com** | doctor  | [PRACTITIONER] | status = true; practitionerRole = null             |
+    | **doctor1@ht.com** | doctor  | [PRACTITIONER] | status = true              |
     """))
                         // Security
                         .addSecurityItem(new SecurityRequirement().addList("bearer-key"))
