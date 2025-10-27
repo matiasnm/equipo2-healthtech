@@ -10,6 +10,8 @@ export const createAppointmentSchema = z.object({
   endTime: z.string().refine((val) => !isNaN(Date.parse(val)), {
     message: 'Fecha de fin inválida',
   }),
+  status: z.enum(['SCHEDULED', 'CANCELLED', 'COMPLETED', 'NO_SHOW']),
+  teleconsultationUrl: z.string().url().optional(),
 });
 
 export type CreateAppointmentFormData = z.infer<typeof createAppointmentSchema>;
