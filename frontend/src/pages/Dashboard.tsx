@@ -1,10 +1,14 @@
+import { useAuthStore } from "../store/useAuthStore";
 import { Layout, Navbar } from "../components/ui";
+import PractitionerDashboard from "./PractitionerDashboard";
 
 const Dashboard = () => {
+  const { role } = useAuthStore();
   return (
     <Layout>
       <Navbar />
-      <div>Dashboard</div>
+      {role === "PRACTITIONER" && <PractitionerDashboard />}
+      {/* <div>Dashboard</div> */}
     </Layout>
   );
 };
