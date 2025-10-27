@@ -8,7 +8,6 @@ const privateAPI = axios.create({
   },
 });
 
-// Agrega token si existe
 privateAPI.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {

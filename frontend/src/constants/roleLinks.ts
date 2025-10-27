@@ -2,7 +2,7 @@ import { NavLink } from '../types/navigation';
 
 export const roleBasedLinks: Record<string, NavLink[]> = {
 
-  admin: [
+  ADMIN: [
     { label: 'Reportes', to: '/dashboard' },
     { label: 'Pacientes', to: '/patients' },
     { label: 'Agenda', to: '/appointments' },
@@ -10,27 +10,33 @@ export const roleBasedLinks: Record<string, NavLink[]> = {
     { label: 'Profesionales', to: '/practitioners' },
     { label: 'Mi cuenta', to: '/account' },
     { label: 'Registro', to: '/encounter' },
+  ], 
 
-  ],
-  practitioner: [
+  PRACTITIONER: [
     { label: 'Reportes', to: '/dashboard' },
     { label: 'Pacientes', to: '/patients' },
     { label: 'Agenda', to: '/appointments' },
     { label: 'Perfil', to: '/profile' },
     { label: 'Profesionales', to: '/practitioners' },
     { label: 'Mi cuenta', to: '/account' },
-
   ],
-  patient: [
+
+  PATIENT: [
     { label: 'Perfil', to: '/profile' },
     { label: 'Profesionales', to: '/practitioners' },
     { label: 'Mi cuenta', to: '/account' },
     { label: 'Registro', to: '/encounter' },
-
   ],
-  public: [
+
+
+  PUBLIC: [
     { label: 'Inicio', to: '/' },
+    { label: 'Nuestros servicios', to: '/#servicios' },
     { label: 'Sobre Nosotros', to: '/About' },
+    { label: 'Login', to: '/login' },
+    { label: 'Register', to: '/register' },
+    { label: 'Contacto', to: '/contact' },
+    
   ],
   
 };

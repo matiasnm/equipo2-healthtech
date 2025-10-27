@@ -18,6 +18,5 @@ public interface UserService {
     Page<UserReadResponseDto> readAll(Pageable pageable);
     void updatePassword(UserUpdatePasswordRequestDto request);
     void delete(Long id) ;
-
     Optional<User> findUserByEmail(String email);
 }

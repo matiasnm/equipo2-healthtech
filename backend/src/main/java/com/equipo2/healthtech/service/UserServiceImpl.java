@@ -6,14 +6,14 @@ import com.equipo2.healthtech.dto.user.UserUpdatePasswordRequestDto;
 import com.equipo2.healthtech.exception.EmailAlreadyExistsException;
 import com.equipo2.healthtech.exception.InvalidPasswordException;
 import com.equipo2.healthtech.exception.NoResultsException;
+import com.equipo2.healthtech.mapper.IdentifierMapper;
+import com.equipo2.healthtech.mapper.RelatedPersonMapper;
 import com.equipo2.healthtech.mapper.UserMapper;
 import com.equipo2.healthtech.model.patient.Patient;
 import com.equipo2.healthtech.model.practitioner.Practitioner;
 import com.equipo2.healthtech.model.user.Role;
 import com.equipo2.healthtech.model.user.User;
-import com.equipo2.healthtech.repository.PatientRepository;
-import com.equipo2.healthtech.repository.PractitionerRepository;
-import com.equipo2.healthtech.repository.UserRepository;
+import com.equipo2.healthtech.repository.*;
 import com.equipo2.healthtech.security.SecurityUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -73,18 +73,18 @@ public class UserServiceImpl implements UserService {
             case PATIENT -> {
                 Patient patient = userMapper.toPatient(request);
                 patient.setPassword(passwordEncoder.encode(request.password()));
-                user = patientRepository.save(patient); // saves in users + patients table
+                user = patientRepository.saveAndFlush(patient); // saves in users + patients table
             }
             case PRACTITIONER -> {
                 Practitioner practitioner = userMapper.toPractitioner(request);
                 practitioner.setPassword(passwordEncoder.encode(request.password()));
-                user = practitionerRepository.save(practitioner); // saves in users + practitioners table
+                user = practitionerRepository.saveAndFlush(practitioner); // saves in users + practitioners table
             }
             default -> {
                 // plain User for other roles (ADMIN, SUPER_ADMIN, etc.)
                 user = userMapper.toUser(request);
                 user.setPassword(passwordEncoder.encode(request.password()));
-                user = userRepository.save(user);
+                user = userRepository.saveAndFlush(user);
             }
         }
         return user.getId();

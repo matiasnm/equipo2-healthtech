@@ -125,6 +125,26 @@ public class GlobalExceptionHandler {
         return problemDetail;
     }
 
+    @ExceptionHandler(ConflictAppointmentsException.class)
+    ProblemDetail handleConflictAppointmentsException(ConflictAppointmentsException e) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, e.getMessage());
+        problemDetail.setTitle("Overlapping Appointments");
+        problemDetail.setType(URI.create("/"));
+        problemDetail.setProperty("errorCategory", "Business");
+        problemDetail.setProperty("timestamp", Instant.now());
+        return problemDetail;
+    }
+
+    @ExceptionHandler(ConflictEncounterException.class)
+    ProblemDetail handleConflictEncounterException(ConflictEncounterException e) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, e.getMessage());
+        problemDetail.setTitle("Error creating Encounter");
+        problemDetail.setType(URI.create("/"));
+        problemDetail.setProperty("errorCategory", "Business");
+        problemDetail.setProperty("timestamp", Instant.now());
+        return problemDetail;
+    }
+
     @ExceptionHandler(NoResultsException.class)
     ProblemDetail handleNoResultsException(NoResultsException e) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());

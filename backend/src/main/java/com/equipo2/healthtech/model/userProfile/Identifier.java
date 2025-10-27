@@ -29,11 +29,11 @@ public class Identifier {
     @Enumerated(EnumType.STRING)
     private IdentifierType type;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = true)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_profile_id", nullable = true)
     private UserProfile userProfile;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "related_person_id", nullable = true)
     private RelatedPerson relatedPerson;
 }

@@ -1,4 +1,5 @@
 import { FaTwitter, FaYoutube, FaFacebook } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 export const Footer = () => {
   return (
@@ -35,8 +36,8 @@ export const Footer = () => {
         <div className="flex flex-col md:flex-row md:w-[50%] justify-center gap-8 text-sm">
           <div className="flex flex-col gap-1">
             <span className="font-bold uppercase text-[var(--color-inverted)] pb-1">Compañía</span>
-            <a href="#nosotros" className="hover:underline">Sobre nosotros</a>
-            <a href="#contacto" className="hover:underline">Contacto</a>
+          <Link to="/about" className="hover:underline">Sobre nosotros</Link>
+          <Link to="/contact" className="hover:underline">Contacto</Link>
           </div>
         </div>
       </div>

@@ -14,7 +14,7 @@ import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = {UserProfileMapper.class, PractitionerRoleMapper.class}, unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring", uses = {UserProfileMapper.class, PractitionerRoleMapper.class, PractitionerProfileMapper.class, PractitionerUnavailabilityMapper.class}, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface UserMapper {
 
     User toUser(UserCreateRequestDto userDto);
@@ -23,12 +23,15 @@ public interface UserMapper {
 
     List<UserReadResponseDto> toUserReadResponseDto(List<User> user);
 
-    @Mapping(source = "userProfile", target = "practitionerProfile")
+    @Mapping(source = "userProfile", target = "userProfile")
     @Mapping(source = "practitionerRole", target = "practitionerRole")
+    @Mapping(source = "practitionerProfile", target = "practitionerProfile")
+    @Mapping(source = "unavailability", target = "unavailability")
     PractitionerReadResponseDto toPractitionerReadResponseDto(Practitioner practitioner);
 
-    @Mapping(source = "userProfile", target = "practitionerProfile")
+    @Mapping(source = "userProfile", target = "userProfile")
     @Mapping(source = "practitionerRole", target = "practitionerRole")
+    @Mapping(source = "practitionerProfile", target = "practitionerProfile")
     PractitionerReadSummaryResponseDto toPractitionerReadSummaryResponseDto(Practitioner practitioner);
 
     Patient toPatient(UserCreateRequestDto userDto);

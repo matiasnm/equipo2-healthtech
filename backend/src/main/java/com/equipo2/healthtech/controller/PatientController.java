@@ -3,6 +3,7 @@ package com.equipo2.healthtech.controller;
 import com.equipo2.healthtech.service.PatientService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @SecurityRequirement(name = "bearer-key")
 @AllArgsConstructor
 @Slf4j
+@Tag(name = "4️⃣ Patients")
 public class PatientController {
 
     private final PatientService patientService;

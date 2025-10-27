@@ -1,11 +1,12 @@
 export { Button } from './Button';
 export { Input } from './Input';
-export {Select} from './Select';
-export {DatePicker} from './DatePicker';
 export { Layout } from './Layout';
 export { CustomCard } from './CustomCard';
+export { CompactCard } from './CompactCard';
 export { Card } from './Card';
-export { PractitionerCard } from './PractitionerCard';
+export { SpecialtyCarousel } from './SpecialtyCarousel';
+export { Select } from './Select';
+export { DatePicker } from './DatePicker';
 export {SpecialtyGrid} from './SpecialtyGrid';
 export { default as MFAModal } from './modals/MFAModal';
 export { Navbar } from './Navbar';

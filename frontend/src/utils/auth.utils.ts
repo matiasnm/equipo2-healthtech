@@ -1,15 +1,17 @@
-import type { User } from '../types/user.types';
 
-const ADMIN_EMAILS = ['admin@ht.com', 'suport@ht.com'];
+export const inferRoleFromEmail = (email: string): "admin" | "practitioner" | "patient" => {
+  if (!email) return "patient";
 
-export const inferRoleFromEmail = (email: string): User['role'] => {
-  const domain = email.split('@')[1];
+  const normalized = email.trim().toLowerCase();
 
-  if (domain === '@ht.com') {
-    return ADMIN_EMAILS.includes(email.toLowerCase())
-      ? 'ADMIN'
-      : 'PRACTITIONER';
+  if (normalized.endsWith("admin@ht.com") || normalized.endsWith("support@ht.com")) {
+    return "admin";
   }
 
-  return 'PATIENT';
+  if (normalized.endsWith("@ht.com")) {
+    return "practitioner";
+  }
+
+  return "patient";
+
 };
