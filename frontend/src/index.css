@@ -75,9 +75,48 @@
   background-image: linear-gradient(to bottom right, #a633d4, #b978d3);
 }
 
+/* Calendario */
+
+.rbc-month-view {
+  border: none;
+}
+
+.rbc-day-bg {
+  border: 2px solid #ffffff98; 
+}
+
+.rbc-header {
+  border-bottom: 1px solid #d3a542a1;
+  color: var(--color-primary);
+  font-weight: 500;
+}
+
+.rbc-time-slot {
+  border-top: 1px solid #ffffff4d;
+  height: 20px;
+}
+.rbc-month-row {
+  min-height: 120px;
+  overflow: hidden;
+}
+.rbc-event {
+  margin: 1px 0;
+}
+
+.rbc-date-cell {
+  padding: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+
+/*Toastify*/
 .Toastify__toast-container {
   z-index: 9999 !important;
 }
+
 
 html, body, #root {
   margin: 0;
@@ -85,7 +124,6 @@ html, body, #root {
   height: 100%;
   width: 100%;
 }
-
 
 
 /*Animaciones*/ 
