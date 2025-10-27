@@ -7,6 +7,7 @@ import ProfileSetupForm from '../../components/ProfileSetupForm';
 import { ROUTES } from '../../routes/routes';
 import ErrorBoundary from '../../components/ErrorBoundary';
 import Account from '../../pages/Account';
+import AppointmentForm from '../../components/appointments/AppointmentForm';
 import CreateAppointment from '../../pages/CreateAppointment';
 import Appointments from '../../pages/Appointments';
 import Patients from '../../pages/Patients';
@@ -116,6 +117,16 @@ export const PrivateRoutes: PrivateRoute[] = [
       </ProtectedRoute>
     ),
     allowedRoles: ['patient'],
+  },
+
+    {
+    path: ROUTES.APPOINTMENT_FORM,
+    element: (
+      <ProtectedRoute allowedRoles={[' practitioner']}>
+        <AppointmentForm />
+      </ProtectedRoute>
+    ),
+    allowedRoles: [' practitioner'],
   },
 
   {
