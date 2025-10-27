@@ -18,7 +18,20 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class Patient extends User {
-
+/*
+Patient
+ ├── Encounter (visita)
+ │    ├── Reason (motivo)
+ │    ├── Diagnosis (diagnóstico)
+ │    ├── Observation (signos vitales, resultados)
+ │    ├── Procedure (tratamientos, intervenciones)
+ │    ├── MedicationStatement / MedicationRequest
+ │    └── Notes (resumen clínico)
+ ├── AllergyIntolerance
+ ├── Condition (enfermedades crónicas, antecedentes)
+ ├── Immunization
+ └── DocumentReference (archivos, estudios, imágenes, etc.)
+*/
     @ManyToOne(fetch = FetchType.LAZY, optional = true, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "practitioner_id", nullable = true)
     @ToString.Exclude
@@ -26,5 +39,8 @@ public class Patient extends User {
 
     @OneToMany(mappedBy = "patient", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Appointment> appointments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "patient", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Encounter> encounters = new ArrayList<>();
 
 }

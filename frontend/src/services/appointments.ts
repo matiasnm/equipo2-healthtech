@@ -33,4 +33,3 @@ export const getAvailabilityByPractitioner = async (id: number) => {
   });
   return res.data;
 };
-
