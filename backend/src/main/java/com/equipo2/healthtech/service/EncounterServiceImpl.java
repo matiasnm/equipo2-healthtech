@@ -35,9 +35,7 @@ public class EncounterServiceImpl implements EncounterService {
 
     private void validateReferences(EncounterCreateRequestDto dto) {
         Appointment appointment = appointmentService.getAppointment(dto.appointmentId());
-        if (!appointmentService.canAccessAppointment(appointment)) {
-            throw new AccessDeniedException("User is not authorized to create encounter for this appointment");
-        }
+        appointmentService.assertCanAccessAppointment(appointment);
         if (encounterRepository.existsByAppointmentId(dto.appointmentId())) {
             throw ConflictEncounterException.of("Appointment " + dto.appointmentId() + " is already linked to an encounter");
         }
@@ -88,9 +86,7 @@ public class EncounterServiceImpl implements EncounterService {
     public void update(Long id, EncounterUpdateRequestDto request) {
         Encounter encounter = getEncounter(id);
         Appointment appointment = encounter.getAppointment();
-        if (!appointmentService.canAccessAppointment(appointment)) {
-            throw new AccessDeniedException("You are not allowed to update this encounter");
-        }
+        appointmentService.assertCanAccessAppointment(appointment);
         encounterMapper.updateEncounterFromDto(request, encounter);
         getValidCode(request.diagnosisCodeId());
         getValidCode(request.reasonCodeId());

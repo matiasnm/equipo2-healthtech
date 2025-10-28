@@ -27,15 +27,13 @@ public interface AppointmentService {
 
     public void delete(Long id);
 
-    public boolean isPractitionerAvailable(Practitioner practitioner, OffsetDateTime start, OffsetDateTime end);
-
-    public Practitioner getValidPractitioner(Long id);
-
     public List<PractitionerReadSummaryResponseDto> getAvailablePractitioners(AppointmentAvailabilityRequestDto request);
 
-    public boolean canAccessAppointment(Appointment appointment);
+    public void assertCanAccessAppointment(Appointment appointment);
 
     public Appointment getAppointment(Long id);
 
     public List<PractitionerRoleReadResponseDto> getAvailablePractitionerRoles();
+
+    public Practitioner findAvailablePractitioner(Long id, OffsetDateTime start, OffsetDateTime end);
 }
