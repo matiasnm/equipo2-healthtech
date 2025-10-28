@@ -23,7 +23,7 @@ public class PdfServiceImpl implements PdfService {
 
     private final EncounterService encounterService;
     private final AppointmentService appointmentService;
-    private final MetadataService metadataService;
+    private final ClinicService metadataService;
     private final UserService userService;
 
     public byte[] generatePdf(Long patientId, Long encounterId) {

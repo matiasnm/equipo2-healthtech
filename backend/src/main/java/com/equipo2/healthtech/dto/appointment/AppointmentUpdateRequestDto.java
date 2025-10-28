@@ -1,5 +1,6 @@
 package com.equipo2.healthtech.dto.appointment;
 
+import com.equipo2.healthtech.model.appointment.AppointmentPriority;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.OffsetDateTime;
@@ -11,6 +12,8 @@ public record AppointmentUpdateRequestDto(
 
         @NotNull(message = "At least one practitioner is required")
         List<Long> practitionerIds,
+
+        AppointmentPriority priority,
 
         @NotNull(message = "Incomplete attribute: 'startTime'")
         OffsetDateTime startTime,

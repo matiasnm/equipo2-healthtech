@@ -109,14 +109,30 @@ public class AppointmentServiceImpl implements AppointmentService {
         Specification<Practitioner> spec = PractitionerSpecifications.isActiveAndConfigured()
                 .and(PractitionerSpecifications.isAvailableBetween(start, end))
                 .and((root, query, cb) -> root.get("id").in(practitionerIds));
-        List<Practitioner> practitioners = practitionerRepository.findAll(spec);
-        if (practitioners.isEmpty()) {
-            throw NoResultsException.of("One or more practitioners are not available or found");
+
+        List<Practitioner> availablePractitioners = practitionerRepository.findAll(spec);
+        List<Long> availableIds = availablePractitioners.stream()
+                .map(Practitioner::getId)
+                .toList();
+
+        List<Long> unavailableIds = practitionerIds.stream()
+                .filter(id -> !availableIds.contains(id))
+                .toList();
+
+        log.info("🩺 Requested practitioners: {}", practitionerIds);
+        log.info("✅ Available practitioners: {}", availableIds);
+        log.info("❌ Unavailable practitioners: {}", unavailableIds);
+
+        if (availablePractitioners.isEmpty()) {
+            log.warn("No practitioners available between {} and {}", start, end);
+            throw NoResultsException.of("No practitioners available for the selected time window");
         }
-        for (Practitioner practitioner : practitioners) {
-            ensureNoConflictingAppointments(practitioner.getId(), start, end);
+
+        if (!unavailableIds.isEmpty()) {
+            log.info("Proceeding with {} available practitioners ({} unavailable)",
+                    availablePractitioners.size(), unavailableIds.size());
         }
-        return practitioners;
+        return availablePractitioners;
     }
 
     @Override
@@ -151,6 +167,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
         OffsetDateTime start = request.startTime();
         OffsetDateTime end = request.endTime();
+
         List<Practitioner> practitioners = findAvailablePractitioners(request.practitionerIds(), start, end);
 
         Appointment appointment = appointmentMapper.toAppointment(request);
@@ -195,7 +212,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         OffsetDateTime start = request.startTime();
         OffsetDateTime end = request.endTime();
         List<Practitioner> practitioners = findAvailablePractitioners(request.practitionerIds(), start, end);
-
+    // USAR APPOINTMEN MANAGER
         appointment.setStartTime(request.startTime());
         appointment.setEndTime(request.endTime());
         appointment.setPatient(getValidPatient(request.patientId()));

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class MetadataServiceImpl implements MetadataService {
+public class ClinicServiceImpl implements ClinicService {
 
     private final ClinicRepository clinicRepository;
     private final ClinicMapper clinicMapper;

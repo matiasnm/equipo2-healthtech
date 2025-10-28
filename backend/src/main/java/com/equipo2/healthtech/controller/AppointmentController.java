@@ -84,8 +84,6 @@ public class AppointmentController {
             @PathVariable Long id,
             @Valid @RequestBody AppointmentAvailabilityRequestDto request) {
         Practitioner practitioner = appointmentService.findAvailablePractitioner(id, request.startTime(), request.endTime());
-        //conflcto con appointments?
-        //boolean available = appointmentService.isPractitionerAvailable(practitioner, request.startTime(), request.endTime());
         return ResponseEntity.ok(practitioner.isStatus());
     }
 

@@ -43,7 +43,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     JOIN a.practitioners p
     WHERE p.id = :practitionerId
       AND a.status = 'SCHEDULED'
-      AND (:startTime < a.endTime AND :endTime > a.startTime)
+      AND (a.startTime < :endTime AND a.endTime > :startTime)
     """)
     boolean existsConflictingAppointments(
             @Param("practitionerId") Long practitionerId,
@@ -54,8 +54,8 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     SELECT DISTINCT a FROM Appointment a
     JOIN a.practitioners p
     WHERE p IN :practitioners
-      AND a.startTime < :endTime
-      AND a.endTime > :startTime
+      AND a.status = 'SCHEDULED'
+      AND (a.startTime < :endTime AND a.endTime > :startTime)
     """)
     List<Appointment> findConflicts(
             @Param("practitioners") List<Practitioner> practitioners,
