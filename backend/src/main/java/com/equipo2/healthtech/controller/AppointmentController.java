@@ -83,9 +83,10 @@ public class AppointmentController {
     public ResponseEntity<Boolean> isPractitionerAvailable(
             @PathVariable Long id,
             @Valid @RequestBody AppointmentAvailabilityRequestDto request) {
-        Practitioner practitioner = appointmentService.getValidPractitioner(id);
-        boolean available = appointmentService.isPractitionerAvailable(practitioner, request.startTime(), request.endTime());
-        return ResponseEntity.ok(available);
+        Practitioner practitioner = appointmentService.findAvailablePractitioner(id, request.startTime(), request.endTime());
+        //conflcto con appointments?
+        //boolean available = appointmentService.isPractitionerAvailable(practitioner, request.startTime(), request.endTime());
+        return ResponseEntity.ok(practitioner.isStatus());
     }
 
     @Operation(summary = "Get ALL available practitioners upon Dto (dates/remote/speciality)")

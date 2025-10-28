@@ -5,6 +5,7 @@ import com.equipo2.healthtech.model.appointment.Appointment;
 import com.equipo2.healthtech.model.appointment.AppointmentPriority;
 import com.equipo2.healthtech.repository.AppointmentRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +15,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AppointmentManagerService {
 
     private final AppointmentRepository appointmentRepository;
@@ -27,6 +29,7 @@ public class AppointmentManagerService {
                 newAppointment.getStartTime(),
                 newAppointment.getEndTime()
         );
+        log.info("CONFLICTS -> {}", conflicts);
 
         if (conflicts.isEmpty()) {
             return appointmentRepository.save(newAppointment);
