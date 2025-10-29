@@ -22,7 +22,7 @@ public record AppointmentCreateRequestDto(
         @NotNull(message = "Incomplete attribute: 'startTime'")
         @Schema(
                 description = "End date and time of the appointment (format: yyyy-MM-dd'T'HH:mmXXX)",
-                example = "2025-10-29T16:21:54-03:00"
+                example = "2025-10-29T16:21-03:00"
         )
         OffsetDateTime startTime,
 
@@ -30,7 +30,7 @@ public record AppointmentCreateRequestDto(
         @NotNull(message = "Incomplete attribute: 'endTime'")
         @Schema(
                 description = "End date and time of the appointment (format: yyyy-MM-dd'T'HH:mmXXX)",
-                example = "2025-10-29T16:21:54-03:00"
+                example = "2025-10-29T16:21-03:00"
         )
         OffsetDateTime endTime
 ) { }
