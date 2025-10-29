@@ -31,6 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -165,8 +166,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                 authUser.getRole() != Role.SUPER_ADMIN) {
             throw new AccessDeniedException("You are not allowed to create an appointment");
         }
-        OffsetDateTime start = request.startTime();
-        OffsetDateTime end = request.endTime();
+        OffsetDateTime start = request.startTime().truncatedTo(ChronoUnit.MINUTES);
+        OffsetDateTime end = request.endTime().truncatedTo(ChronoUnit.MINUTES);
 
         List<Practitioner> practitioners = findAvailablePractitioners(request.practitionerIds(), start, end);
 
@@ -196,7 +197,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     public Page<AppointmentReadResponseDto> readAll(Pageable pageable) {
         User user = securityUtils.getAuthenticatedUser();
         Page<Appointment> appointments = switch (user.getRole()) {
-            case ADMIN, SUPER_ADMIN -> appointmentRepository.findAll(pageable);
+            case ADMIN, SUPER_ADMIN -> appointmentRepository.findAllWithEagerRelations(pageable);
             case PRACTITIONER -> appointmentRepository.findAllByPractitionerId(user.getId(), pageable);
             case PATIENT -> appointmentRepository.findAllByPatientId(user.getId(), pageable);
             default -> throw new AccessDeniedException("You are not authorized to view appointments");
@@ -205,12 +206,36 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<AppointmentReadResponseDto> readAllByDate(
+            AppointmentByDateRequestDto request) {
+        Long practitionerId = null;
+        Long patientId = null;
+        User user = securityUtils.getAuthenticatedUser();
+        switch (user.getRole()) {
+            case PRACTITIONER -> practitionerId = user.getId();
+            case PATIENT -> patientId = user.getId();
+            case ADMIN, SUPER_ADMIN -> {}
+            default -> throw new AccessDeniedException("You are not authorized to view appointments");
+        }
+        List<Appointment> appointments = appointmentRepository.findAllFiltered(
+                request.startTime(),
+                request.endTime(),
+                practitionerId,
+                patientId
+        );
+        return appointments.stream()
+                .map(appointmentMapper::toAppointmentReadResponseDto)
+                .toList();
+    }
+
+    @Override
     @Transactional
     public void update(Long id, AppointmentUpdateRequestDto request) {
         Appointment appointment = getAppointment(id);
         this.assertCanAccessAppointment(appointment);
-        OffsetDateTime start = request.startTime();
-        OffsetDateTime end = request.endTime();
+        OffsetDateTime start = request.startTime().truncatedTo(ChronoUnit.MINUTES);
+        OffsetDateTime end = request.endTime().truncatedTo(ChronoUnit.MINUTES);
         List<Practitioner> practitioners = findAvailablePractitioners(request.practitionerIds(), start, end);
     // USAR APPOINTMEN MANAGER
         appointment.setStartTime(request.startTime());

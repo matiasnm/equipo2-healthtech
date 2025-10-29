@@ -45,18 +45,30 @@ public class AppointmentController {
     };
 
     @Operation(summary = "Gets an Appointment by id")
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}")
     public ResponseEntity<AppointmentReadDetailResponseDto> getAppointment(@PathVariable Long id) {
         return ResponseEntity.ok(appointmentService.read(id));
     }
 
     @Operation(summary = "Lists all Appointment for this Authenticated User")
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/list")
     public ResponseEntity<Page<AppointmentReadResponseDto>> readAllAppointment(
             @ParameterObject
             @PageableDefault(page = 0, size = 10, sort = "patient.userProfile.fullName")
             Pageable pageable) {
         return ResponseEntity.ok(appointmentService.readAll(pageable));
+    }
+
+    @Operation(summary = "Lists all Appointment for this Authenticated User by Date")
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/list/by-date")
+    public ResponseEntity<List<AppointmentReadResponseDto>> readAllAppointment(
+            @ParameterObject
+            @PageableDefault(page = 0, size = 10, sort = "patient.userProfile.fullName")
+            AppointmentByDateRequestDto request) {
+        return ResponseEntity.ok(appointmentService.readAllByDate(request));
     }
 
     @Operation(summary = "Updates an Appointment")

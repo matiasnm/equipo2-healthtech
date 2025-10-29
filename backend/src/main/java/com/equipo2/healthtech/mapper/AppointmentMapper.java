@@ -19,6 +19,7 @@ public interface AppointmentMapper {
 
     @Mapping(source = "patient.id", target = "patientId")
     @Mapping(source = "practitioners", target = "practitionerIds", qualifiedByName = "mapPractitionersToIds")
+    @Mapping(source = "patient.userProfile", target = "patientProfile")
     AppointmentReadResponseDto toAppointmentReadResponseDto(Appointment appointment);
 
     @Mapping(source = "patient.userProfile", target = "patientProfile")

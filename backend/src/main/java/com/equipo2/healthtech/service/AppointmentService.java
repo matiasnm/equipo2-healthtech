@@ -21,6 +21,8 @@ public interface AppointmentService {
 
     public Page<AppointmentReadResponseDto> readAll(Pageable pageable);
 
+    public List<AppointmentReadResponseDto> readAllByDate(AppointmentByDateRequestDto request);
+
     public void update(Long id, AppointmentUpdateRequestDto request);
 
     public void updateStatus(Long id, AppointmentStatus newStatus);
