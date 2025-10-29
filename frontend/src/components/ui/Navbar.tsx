@@ -64,7 +64,7 @@ export const Navbar = () => {
           ))}
 
           {/* Botones públicos */}
-          {safeRole === 'public' && (
+          {safeRole === 'PUBLIC' && (
             <>
               <li>
                 <Link to="/login" onClick={() => setOpen(false)} className="bg-[var(--color-accent)] text-white px-4 py-2 rounded hover:bg-[var(--color-accent-hover)] transition">
@@ -106,7 +106,7 @@ export const Navbar = () => {
             </li>
           ))}
 
-          {safeRole === 'public' && (
+          {safeRole === 'PUBLIC' && (
             <>
               <li>
                 <Link to="/login" onClick={() => setOpen(false)} className="block py-2">
