@@ -30,6 +30,7 @@ export type Appointment = {
   practitionerProfiles?: {
     fullName: string;
   }[];
+  channel: 'IN_PERSON' | 'VIDEO' | 'PHONE';
 };
 
 

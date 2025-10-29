@@ -11,6 +11,7 @@ export const getAppointmentsByPractitioner = async (): Promise<ResponseAppointme
   return response.data;
 };
 
+
 export const getAppointmentById = (id: string) =>
   privateAPI.get(`/api/v1/appointments/${id}`);
 
@@ -33,3 +34,9 @@ export const getAvailabilityByPractitioner = async (id: number) => {
   });
   return res.data;
 };
+
+export const getAppointments = async () => {
+  const res = await privateAPI.get('/api/v1/appointments/list');
+  return res.data;
+};
+

@@ -1,166 +1,147 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { getEncounterById, updateEncounter } from '../services/encounters';
-import { getAppointmentById } from '../services/appointments';
+import { Clipboard, Users, FileText } from 'lucide-react';
+import { useMedicalStore } from '../store/useMedicalStore';
+import { Navbar, Layout } from '../components/ui';
+import TopBar from '../components/TopBar';
+import EncounterHistory from '../components/EncounterHistory';
+import MyPractitioners from '../components/MyPractitioners';
+import MedicalFiles from '../components/MedicalFiles';
+import {
+  getEncounters,
+  getMyPractitioners,
+  getAppointments
+} from '../services/medical';
+import { EncounterSchema } from '../schemas/encounter.schema';
+import { practitionersSchema } from '../schemas/practitioner.schema';
+import { MedicalFile } from '../schemas/medicalFile.schema';
+import { EncounterView } from '../types/encounterView.types';
+import { z } from 'zod';
 
-const Encounter = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const [encounter, setEncounter] = useState<any>(null);
-  const [appointment, setAppointment] = useState<any>(null);
-  const [loading, setLoading] = useState(false);
-  const [saving, setSaving] = useState(false);
+type Section = 'encounters' | 'practitioners' | 'files';
+
+const sectionTabs: {
+  icon: React.ElementType;
+  label: string;
+  value: Section;
+}[] = [
+  { icon: Clipboard, label: 'Historial de encuentros', value: 'encounters' },
+  { icon: Users, label: 'Mis doctores', value: 'practitioners' },
+  { icon: FileText, label: 'Archivos médicos', value: 'files' },
+];
+
+export default function Encounter() {
+  const [activeSection, setActiveSection] = useState<Section>('encounters');
+
+  const {
+    setEncounters,
+    setPractitioners,
+    setFiles
+  } = useMedicalStore();
 
   useEffect(() => {
-    if (!id) return;
-    let mounted = true;
-    (async () => {
-      setLoading(true);
+    async function loadData() {
       try {
-        const res = await getEncounterById(id);
-        const data = res?.data ?? res;
-        if (!mounted) return;
-        setEncounter(data);
-        // si viene appointmentId, traer appointment para obtener teleconsultationUrl
-        const apptId = data?.appointmentId ?? data?.appointment?.id;
-        if (apptId) {
-          try {
-            const ar = await getAppointmentById(String(apptId));
-            const aData = ar?.data ?? ar;
-            if (mounted) setAppointment(aData);
-          } catch (err) {
-            console.warn('No se pudo obtener appointment', err);
-          }
-        }
-      } catch (err) {
-        console.error('Error fetching encounter', err);
-      } finally {
-        if (mounted) setLoading(false);
+        // Encuentros
+        const rawEncounters = await getEncounters();
+        const parsedEncounters = z.array(EncounterSchema).parse(rawEncounters);
+
+        const encounterViews: EncounterView[] = parsedEncounters.map((e) => ({
+          id: e.id,
+          date: e.notes.match(/\d{4}-\d{2}-\d{2}/)?.[0] ?? '',
+          practitioner: e.diagnosis.display.includes('Johnson') ? 'Dra. Sarah Johnson' : 'Profesional',
+          specialty: e.reason.display,
+          type: e.encounterClass,
+          status: e.encounterStatus,
+          notes: e.notes
+        }));
+
+        setEncounters(encounterViews);
+
+        // Archivos médicos
+        const files: MedicalFile[] = parsedEncounters.map((e) => ({
+          name: e.diagnosis.display,
+          type: e.encounterClass,
+          date: e.notes.match(/\d{4}-\d{2}-\d{2}/)?.[0] ?? '',
+          encounterId: e.id,
+          patientId: e.patientId
+        }));
+
+        setFiles(files);
+
+        // Profesionales y citas
+        const [rawPractitioners, appointments] = await Promise.all([
+          getMyPractitioners(),
+          getAppointments()
+        ]);
+
+        const parsedPractitioners = practitionersSchema.parse(rawPractitioners);
+
+        const practitioners = parsedPractitioners.map((p) => {
+          const appt = appointments.find((a) => a.practitionerIds.includes(p.id));
+          return {
+            name: p.practitionerProfile.fullName,
+            specialty: p.practitionerRole.specialityCode.display,
+            avatar: p.practitionerProfile.photoUrl ?? '/default-avatar.png',
+            nextAppt: appt?.startTime?.slice(0, 10) ?? '',
+            videoUrl: appt?.channel === 'VIDEO' ? '/videocall/${appt.id}': ''
+          };
+        });
+
+        setPractitioners(practitioners);
+      } catch (error) {
+        console.error('Error al cargar datos médicos:', error);
       }
-    })();
-    return () => {
-      mounted = false;
-    };
-  }, [id]);
-
-  const handleSave = async () => {
-    if (!id || !encounter) return;
-    setSaving(true);
-    try {
-      const payload = {
-        encounterStatus: encounter.encounterStatus,
-        encounterClass: encounter.encounterClass,
-        reasonCodeId: Number(encounter.reasonCodeId) || 0,
-        diagnosisCodeId: Number(encounter.diagnosisCodeId) || 0,
-        notes: encounter.notes ?? '',
-      };
-      await updateEncounter(id, payload);
-      alert('Encuentro actualizado');
-    } catch (err) {
-      console.error('Error updating encounter', err);
-      alert('No se pudo actualizar el encuentro');
-    } finally {
-      setSaving(false);
     }
-  };
 
-  if (loading) return <div className="p-6">Cargando encuentro...</div>;
-  if (!encounter) return <div className="p-6">Encuentro no encontrado</div>;
+    loadData();
+  }, [setEncounters, setFiles, setPractitioners]);
 
   return (
-    <div className="p-6 max-w-3xl mx-auto">
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-semibold">Encuentro #{id}</h1>
-        <div className="flex gap-2">
-          {appointment?.teleconsultationUrl && (
-            <a
-              href={appointment.teleconsultationUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="px-3 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
-            >
-              Abrir teleconsulta
-            </a>
-          )}
-          <button
-            onClick={() => navigate(-1)}
-            className="px-3 py-2 bg-[var(--color-accent)] text-white rounded-md hover:bg-[var(--color-accent-hover)]"
-          >
-            Volver
-          </button>
-        </div>
-      </div>
-
-      <div className="bg-white p-4 rounded-md shadow">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Estado</label>
-            <select
-              value={encounter.encounterStatus}
-              onChange={(e) => setEncounter({ ...encounter, encounterStatus: e.target.value })}
-              className="input w-full"
-            >
-              <option value="PLANNED">PLANNED</option>
-              <option value="IN_PROGRESS">IN_PROGRESS</option>
-              <option value="FINISHED">FINISHED</option>
-              <option value="CANCELLED">CANCELLED</option>
-            </select>
+    <>
+      <Navbar />
+      <Layout>
+        <TopBar />
+        <main className="px-4 sm:px-6 pb-6 max-w-screen-xl mx-auto w-full">
+          <div className="mb-6 text-center">
+            <h1 className="font-poppins font-semibold text-2xl sm:text-3xl text-[var(--color-primary)] mb-2 truncate">
+              Registro de encuentros médicos
+            </h1>
+            <p className="font-inter text-sm text-[var(--color-text)] max-w-md mx-auto">
+              Consultá tu historial, profesionales y archivos médicos descargables
+            </p>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Clase</label>
-            <select
-              value={encounter.encounterClass}
-              onChange={(e) => setEncounter({ ...encounter, encounterClass: e.target.value })}
-              className="input w-full"
-            >
-              <option value="IMP">IMP</option>
-              <option value="AMB">AMB</option>
-            </select>
+          <div className="flex flex-wrap justify-center gap-2 mb-6">
+            {sectionTabs.map((tab) => (
+              <button
+                key={tab.value}
+                type="button"
+                title={tab.label}
+                onClick={() => setActiveSection(tab.value)}
+                className={`flex items-center px-4 py-2 rounded-lg transition-all duration-200 ${
+                  activeSection === tab.value
+                    ? 'bg-[var(--color-accent-hover)] text-white'
+                    : 'bg-[var(--color-accent)] text-[var(--color-text)] hover:bg-[var(--color-accent-hover)]'
+                }`}
+              >
+                <tab.icon size={18} className="mr-2" />
+                <span className="text-sm font-medium">{tab.label}</span>
+              </button>
+            ))}
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Reason Code ID</label>
-            <input
-              type="number"
-              value={encounter.reasonCodeId ?? 0}
-              onChange={(e) => setEncounter({ ...encounter, reasonCodeId: Number(e.target.value) })}
-              className="input w-full"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Diagnosis Code ID</label>
-            <input
-              type="number"
-              value={encounter.diagnosisCodeId ?? 0}
-              onChange={(e) => setEncounter({ ...encounter, diagnosisCodeId: Number(e.target.value) })}
-              className="input w-full"
-            />
-          </div>
-
-          <div className="sm:col-span-2">
-            <label className="block text-sm font-medium text-gray-700">Notas</label>
-            <textarea
-              value={encounter.notes ?? ''}
-              onChange={(e) => setEncounter({ ...encounter, notes: e.target.value })}
-              className="input w-full h-32"
-            />
-          </div>
-        </div>
-
-        <div className="mt-4 flex gap-3">
-          <button
-            onClick={handleSave}
-            disabled={saving}
-            className={`px-4 py-2 rounded-md text-white ${saving ? 'bg-gray-400' : 'bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)]'}`}
-          >
-            {saving ? 'Guardando...' : 'Guardar encuentro'}
-          </button>
-        </div>
-      </div>
-    </div>
+          {activeSection === 'encounters' && <EncounterHistory />}
+          {activeSection === 'practitioners' && <MyPractitioners />}
+          {activeSection === 'files' && <MedicalFiles />}
+        </main>
+      </Layout>
+    </>
   );
-};
+}
 
-export default Encounter;
+
+
+
+
+
+
