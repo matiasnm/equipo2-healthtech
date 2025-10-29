@@ -33,8 +33,9 @@ public class SpringDoc {
                                 .description("""
     **a Healthy App...**
 
-    ### ⚙️ RULES
-1. If `status = false` → **UserProfile is null** (ALL USERS)  
+    ### ⚙️ RULES  
+    
+    1. If `status = false` → **UserProfile is null** (ALL USERS)  
     
     2.a Practitioners **must set a PractitionerRole** in order to be active!
     
