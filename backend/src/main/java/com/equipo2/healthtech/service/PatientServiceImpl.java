@@ -2,9 +2,11 @@ package com.equipo2.healthtech.service;
 
 import com.equipo2.healthtech.dto.patient.PatientFindByRequestDto;
 import com.equipo2.healthtech.dto.patient.PatientFindByResponseDto;
+import com.equipo2.healthtech.dto.practitioner.PractitionerReadSummaryResponseDto;
 import com.equipo2.healthtech.exception.ConflictGeneralPractitionerException;
 import com.equipo2.healthtech.exception.NoResultsException;
 import com.equipo2.healthtech.mapper.PatientMapper;
+import com.equipo2.healthtech.mapper.UserMapper;
 import com.equipo2.healthtech.model.patient.Patient;
 import com.equipo2.healthtech.model.practitioner.Practitioner;
 import com.equipo2.healthtech.model.practitioner.PractitionerSpecifications;
@@ -25,6 +27,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +41,7 @@ public class PatientServiceImpl implements PatientService {
     private final PractitionerRepository practitionerRepository;
     private final SecurityUtils securityUtils;
     private final PatientMapper patientMapper;
+    private final UserMapper userMapper;
 
     @Override
     public void setGeneralPractitioner(Long id, Long practitionerId) {
@@ -99,5 +103,16 @@ public class PatientServiceImpl implements PatientService {
                         ? patientMapper.toPatientSummaryFindByResponseDto(p)
                         : patientMapper.toPatientFullFindByResponseDto(p)
         );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<PractitionerReadSummaryResponseDto> getMyPractitioners(Pageable pageable) {
+        User authUser = securityUtils.getAuthenticatedUser();
+        if (authUser.getRole() != Role.PATIENT) {
+            throw new AccessDeniedException("Only Patients are allowed to access");
+        }
+        Page<Practitioner> practitioners = practitionerRepository.findDistinctByPatientId(authUser.getId(), pageable);
+        return practitioners.map(userMapper::toPractitionerReadSummaryResponseDto);
     }
 }
