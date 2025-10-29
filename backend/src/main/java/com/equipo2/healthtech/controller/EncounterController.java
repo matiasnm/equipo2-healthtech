@@ -29,12 +29,9 @@ import java.net.URI;
 @Tag(name = "5️⃣ Encounters")
 public class EncounterController {
 
-    // endpoint para entrada del practitioner
-    // deberia obtener sus encunter y appointmens,
-    // y su pacientes de generalpractitioner
-    // armar un query que le traiga sus pacientes?
+    // Practitioner deberia ver sus pacientes de generalpractitioner
     // Accounts?
-    // Campo para ordenar appoinments por prioridad?
+    // appoinments por prioridad?
     // Como llevar a cabo notificaciones?
     // Login con google? mfa?
     // integrar google meet?

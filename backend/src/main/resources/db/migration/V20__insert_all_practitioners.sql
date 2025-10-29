@@ -10,8 +10,17 @@ DECLARE
     v_full_name TEXT;
     v_office_code VARCHAR(2);
 
+    doctor_names TEXT[] := ARRAY[
+        'Dr. Juan García', 'Dra. María López', 'Dr. Carlos Rodríguez', 'Dra. Laura Fernández',
+        'Dr. Pablo González', 'Dra. Sofía Martínez', 'Dr. Diego Romero', 'Dra. Paula Sánchez',
+        'Dr. Andrés Pérez', 'Dra. Lucía Torres', 'Dr. Joaquín Díaz', 'Dra. Camila Herrera',
+        'Dr. Nicolás Castro', 'Dra. Valentina Ramos', 'Dr. Mateo Navarro', 'Dra. Julieta Molina',
+        'Dr. Tomás Ibáñez', 'Dra. Martina Campos', 'Dr. Santiago Vega', 'Dra. Emilia Duarte'
+        ];
+
 BEGIN
-    WHILE i <= 22 LOOP
+    WHILE i <= array_length(doctor_names, 1) LOOP
+
             INSERT INTO users (
                 email, password, role, status, blocked, active, mfa_required,
                 account_locked, credentials_expired, created_at, updated_at
@@ -25,7 +34,8 @@ BEGIN
 
             INSERT INTO practitioners (user_id) VALUES (v_user_id);
 
-            v_full_name := CONCAT('Dr. Médico ', i);
+            v_full_name := doctor_names[i];
+
             INSERT INTO user_profiles (user_id, full_name, gender, phone, address, birthday)
             VALUES (
                        v_user_id,
@@ -70,7 +80,8 @@ BEGIN
                 (v_user_id, 'MONDAY', '12:00:00+00', '16:00:00+00'),
                 (v_user_id, 'TUESDAY', '08:00:00+00', '12:00:00+00');
 
-            RAISE NOTICE '✅ Médico % creado con especialidad %', i, i;
+            RAISE NOTICE '✅ Médico creado: % (Especialidad %)', v_full_name, i;
+
             i := i + 1;
         END LOOP;
 END;

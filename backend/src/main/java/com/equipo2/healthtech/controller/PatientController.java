@@ -2,6 +2,7 @@ package com.equipo2.healthtech.controller;
 
 import com.equipo2.healthtech.dto.patient.PatientFindByRequestDto;
 import com.equipo2.healthtech.dto.patient.PatientFindByResponseDto;
+import com.equipo2.healthtech.dto.practitioner.PractitionerReadSummaryResponseDto;
 import com.equipo2.healthtech.service.PatientService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -37,5 +38,12 @@ public class PatientController {
     @GetMapping("/find-patients")
     public ResponseEntity<Page<PatientFindByResponseDto>> findByDto(PatientFindByRequestDto request, Pageable pageable) {
         return ResponseEntity.ok(patientService.findByDto(request, pageable));
+    }
+
+    @Operation(summary = "Gets my Practitioners")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN','PATIENT')")
+    @GetMapping("/my-practitioners")
+    public ResponseEntity<Page<PractitionerReadSummaryResponseDto>> getMyPractitioners(Pageable pageable) {
+        return ResponseEntity.ok(patientService.getMyPractitioners(pageable));
     }
 }

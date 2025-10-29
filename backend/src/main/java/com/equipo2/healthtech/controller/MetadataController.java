@@ -4,6 +4,7 @@ import com.equipo2.healthtech.dto.MetadataResponseDto;
 import com.equipo2.healthtech.dto.clinic.ClinicReadResponseDto;
 import com.equipo2.healthtech.model.account.TransactionType;
 import com.equipo2.healthtech.model.appointment.AppointmentChannel;
+import com.equipo2.healthtech.model.appointment.AppointmentPriority;
 import com.equipo2.healthtech.model.appointment.AppointmentStatus;
 import com.equipo2.healthtech.model.encounter.EncounterClass;
 import com.equipo2.healthtech.model.encounter.EncounterStatus;
@@ -11,7 +12,7 @@ import com.equipo2.healthtech.model.user.Role;
 import com.equipo2.healthtech.model.userProfile.IdentifierType;
 import com.equipo2.healthtech.model.userProfile.MediaType;
 import com.equipo2.healthtech.model.userProfile.RelatedPersonType;
-import com.equipo2.healthtech.service.MetadataService;
+import com.equipo2.healthtech.service.ClinicService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "8️⃣ Metadata")
 public class MetadataController {
 
-    private final MetadataService metadatacService;
+    private final ClinicService metadatacService;
 
     @GetMapping
     public ResponseEntity<MetadataResponseDto> getMetadata() {
@@ -40,6 +41,7 @@ public class MetadataController {
                 MediaType.values(),
                 EncounterStatus.values(),
                 EncounterClass.values(),
+                AppointmentPriority.values(),
                 AppointmentStatus.values(),
                 AppointmentChannel.values(),
                 TransactionType.values()
