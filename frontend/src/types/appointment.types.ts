@@ -33,4 +33,34 @@ export type Appointment = {
 };
 
 
+export type ResponseAppointmentList = {
+  content: Appointment[];
+  pageable: {
+    pageNumber: number;
+    pageSize: number;
+    sort: {
+      unsorted: boolean;
+      sorted: boolean;
+      empty: boolean;
+    },
+    offset: number;
+    paged: boolean;
+    unpaged: boolean;
+  },
+  totalElements: number;
+  totalPages: number;
+  last: boolean;
+  size: number;
+  number: number;
+  sort: {
+    unsorted: boolean;
+    sorted: boolean;
+    empty: boolean;
+  },
+  numberOfElements: number;
+  first: boolean;
+  empty: boolean;
+}
+
+
 

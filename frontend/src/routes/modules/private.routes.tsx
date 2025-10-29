@@ -123,20 +123,20 @@ export const PrivateRoutes: PrivateRoute[] = [
     path: ROUTES.APPOINTMENT_FORM,
     element: (
       <ProtectedRoute allowedRoles={[' practitioner']}>
-        <AppointmentForm />
+          <CreateAppointment />
       </ProtectedRoute>
     ),
     allowedRoles: [' practitioner'],
   },
 
   {
-    path: ROUTES.ENCOUNTER,
+    path: `${ROUTES.ENCOUNTER}/:id`,
     element: (
-      <ProtectedRoute allowedRoles={['admin', 'patient']}>
+      <ProtectedRoute allowedRoles={['admin', 'practitioner', 'patient']}>
         <Encounter />
       </ProtectedRoute>
     ),
-    allowedRoles: ['admin', 'patient'],
+    allowedRoles: ['admin', 'practitioner', 'patient'],
   },
 
   {
