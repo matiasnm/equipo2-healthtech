@@ -19,4 +19,14 @@ export type AvailablePractitionersRequest = {
   endTime: string;
 };
 
+export type Appointment = {
+  id: number;
+  practitionerIds: number[];
+  startTime: string;
+  endTime: string;
+  status: AppointmentStatus;
+  patientId: number;
+  channel?: string;
+};
+
 

@@ -1,3 +1,4 @@
+import type { CodeDescriptor } from './Common.types';
 
 export type PractitionerProfile = {
   id: number;
@@ -8,16 +9,21 @@ export type PractitionerProfile = {
   birthday: string;
 };
 
-export type CodeDescriptor = {
-  system: string;
-  code: string;
-  display: string;
-  definition: string;
-};
-
 export type PractitionerRole = {
   roleCode: CodeDescriptor;
   specialityCode: CodeDescriptor;
+};
+
+export type PractitionerDetail = {
+  id: number;
+  userProfile: PractitionerProfile;
+  practitionerProfile: {
+    experience: number;
+    studies: string;
+    officeCode: string;
+    remote: boolean;
+  };
+  practitionerRole: PractitionerRole;
 };
 
 export type PractitionerSummary = {
@@ -30,6 +36,7 @@ export type PractitionerRoleCreatePayload = {
   roleCodeId: number;
   specialityCodeId: number;
 };
+
 
 
 
