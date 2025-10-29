@@ -47,7 +47,7 @@ public class SpringDoc {
     |-------------------|----------|----------------|----------------------------------------------------|
     | **admin@ht.com**  | admin    | [ADMIN]        | status = true                                      |
     | **patient1@ht.com** | patient | [PATIENT]      | status = true                                      |
-    | **doctor1@ht.com** | doctor  | [PRACTITIONER] | status = true; practitionerRole = null             |
+    | **doctor1@ht.com** | doctor  | [PRACTITIONER] | status = true              |
     """))
                         // Security
                         .addSecurityItem(new SecurityRequirement().addList("bearer-key"))
@@ -70,7 +70,8 @@ public class SpringDoc {
                                 new Tag().name("6️⃣ Appointments"),
                                 new Tag().name("7️⃣ Codes"),
                                 new Tag().name("8️⃣ Metadata"),
-                                new Tag().name("9\uFE0F⃣ Test")
+                                new Tag().name("9\uFE0F⃣ Pdf"),
+                                new Tag().name("1️⃣0\uFE0F⃣ Test")
                         ));
         }
 }

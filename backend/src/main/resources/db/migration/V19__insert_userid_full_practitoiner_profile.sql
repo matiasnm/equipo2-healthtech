@@ -31,9 +31,9 @@ INSERT INTO practitioner_roles (role_code_id, speciality_code_id)
 VALUES
     ( 1, 2); -- speciality_code_id GOES FROM 1 TO 22...
 
--- Suppose the returned id is 1
+-- Suppose the returned id is 2
 UPDATE practitioners
-SET practitioner_role_id = 1
+SET practitioner_role_id = 2
 WHERE user_id = 5;
 
 INSERT INTO practitioner_unavailability (practitioner_id, day_of_week, start_time, end_time)

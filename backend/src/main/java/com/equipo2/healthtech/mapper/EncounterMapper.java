@@ -20,12 +20,14 @@ public interface EncounterMapper {
 
     @Mapping(source = "patient.id", target = "patientId")
     @Mapping(source = "appointment.id", target = "appointmentId")
+    @Mapping(source = "reasonCode", target = "reason")
+    @Mapping(source = "diagnosisCode", target = "diagnosis")
     EncounterReadResponseDto toEncounterReadResponseDto(Encounter encounter);
 
     @Mapping(source = "appointmentId", target = "appointment")
     @Mapping(source = "patientId", target = "patient")
-    @Mapping(target = "reasonCode.id", source = "reasonCodeId")
-    @Mapping(target = "diagnosisCode.id", source = "diagnosisCodeId")
+    @Mapping(source = "reasonCodeId", target = "reasonCode.id")
+    @Mapping(source = "diagnosisCodeId", target = "diagnosisCode.id")
     Encounter toEncounter(EncounterCreateRequestDto encounterCreateRequestDto);
 
     @Mapping(target = "reasonCode.id", source = "reasonCodeId")
@@ -61,5 +63,4 @@ public interface EncounterMapper {
             return code;
         }).toList();
     }
-
 }

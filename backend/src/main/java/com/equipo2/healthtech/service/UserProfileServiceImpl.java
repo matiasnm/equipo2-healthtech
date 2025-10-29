@@ -22,7 +22,6 @@ import com.equipo2.healthtech.repository.RelatedPersonRepository;
 import com.equipo2.healthtech.repository.UserProfileRepository;
 import com.equipo2.healthtech.repository.UserRepository;
 import com.equipo2.healthtech.security.SecurityUtils;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
