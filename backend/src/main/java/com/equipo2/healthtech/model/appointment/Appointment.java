@@ -40,6 +40,9 @@ public class Appointment extends AuditableEntity {
     )
     private List<Practitioner> practitioners = new ArrayList<>();
 
+    @Enumerated(EnumType.STRING)
+    private AppointmentPriority priority = AppointmentPriority.NORMAL;
+
     // Google Calendar API uses RFC 3339 timestamps, e.g.
     // 2025-10-06T14:00:00-03:00
     // This format includes an offset from UTC, which OffsetDateTime represents perfectly.

@@ -32,7 +32,7 @@ public class PractitionerSpecifications {
         return (root, query, cb) -> {
             if (startTime == null || endTime == null) return cb.conjunction();
 
-            // Convertir a UTC
+            // UTC
             OffsetDateTime startUtc = startTime.withOffsetSameInstant(ZoneOffset.UTC).truncatedTo(ChronoUnit.MINUTES);
             OffsetDateTime endUtc = endTime.withOffsetSameInstant(ZoneOffset.UTC).truncatedTo(ChronoUnit.MINUTES);
 
@@ -44,7 +44,7 @@ public class PractitionerSpecifications {
             log.info("START TIME UTC: {}", startUtcTime);
             log.info("END TIME UTC: {}", endUtcTime);
 
-            // Subquery para buscar si el practitioner tiene unavailability ese día/hora
+            // Unavailability Subquery
             Subquery<Long> sub = query.subquery(Long.class);
             Root<Unavailability> unav = sub.from(Unavailability.class);
 
@@ -56,7 +56,7 @@ public class PractitionerSpecifications {
                             cb.greaterThan(unav.get("endTime"), startUtcTime)
                     );
 
-            // Queremos practitioners que *NO* tengan unavailability en ese horario
+            // Practitioners whom *DO NOT* have Unavailability in that hours.
             return cb.not(cb.exists(sub));
         };
     }

@@ -2,6 +2,7 @@ package com.equipo2.healthtech.controller;
 
 import com.equipo2.healthtech.dto.appointment.*;
 import com.equipo2.healthtech.dto.practitioner.PractitionerReadSummaryResponseDto;
+import com.equipo2.healthtech.dto.practitioner.PractitionerRoleReadResponseDto;
 import com.equipo2.healthtech.model.appointment.AppointmentStatus;
 import com.equipo2.healthtech.model.practitioner.Practitioner;
 import com.equipo2.healthtech.service.AppointmentService;
@@ -44,18 +45,30 @@ public class AppointmentController {
     };
 
     @Operation(summary = "Gets an Appointment by id")
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}")
     public ResponseEntity<AppointmentReadDetailResponseDto> getAppointment(@PathVariable Long id) {
         return ResponseEntity.ok(appointmentService.read(id));
     }
 
     @Operation(summary = "Lists all Appointment for this Authenticated User")
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/list")
     public ResponseEntity<Page<AppointmentReadResponseDto>> readAllAppointment(
             @ParameterObject
             @PageableDefault(page = 0, size = 10, sort = "patient.userProfile.fullName")
             Pageable pageable) {
         return ResponseEntity.ok(appointmentService.readAll(pageable));
+    }
+
+    @Operation(summary = "Lists all Appointment for this Authenticated User by Date")
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/list/by-date")
+    public ResponseEntity<List<AppointmentReadResponseDto>> readAllAppointment(
+            @ParameterObject
+            @PageableDefault(page = 0, size = 10, sort = "patient.userProfile.fullName")
+            AppointmentByDateRequestDto request) {
+        return ResponseEntity.ok(appointmentService.readAllByDate(request));
     }
 
     @Operation(summary = "Updates an Appointment")
@@ -82,9 +95,8 @@ public class AppointmentController {
     public ResponseEntity<Boolean> isPractitionerAvailable(
             @PathVariable Long id,
             @Valid @RequestBody AppointmentAvailabilityRequestDto request) {
-        Practitioner practitioner = appointmentService.getValidPractitioner(id);
-        boolean available = appointmentService.isPractitionerAvailable(practitioner, request.startTime(), request.endTime());
-        return ResponseEntity.ok(available);
+        Practitioner practitioner = appointmentService.findAvailablePractitioner(id, request.startTime(), request.endTime());
+        return ResponseEntity.ok(practitioner.isStatus());
     }
 
     @Operation(summary = "Get ALL available practitioners upon Dto (dates/remote/speciality)")
@@ -104,6 +116,13 @@ public class AppointmentController {
             @PathVariable Long id) {
         appointmentService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Lists all Practitioner Roles available")
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/available-practitioner-roles")
+    public ResponseEntity<List<PractitionerRoleReadResponseDto>> getPractitionerRoles() {
+        return ResponseEntity.ok(appointmentService.getAvailablePractitionerRoles());
     }
 
 }

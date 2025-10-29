@@ -4,6 +4,7 @@ import com.equipo2.healthtech.dto.MetadataResponseDto;
 import com.equipo2.healthtech.dto.clinic.ClinicReadResponseDto;
 import com.equipo2.healthtech.model.account.TransactionType;
 import com.equipo2.healthtech.model.appointment.AppointmentChannel;
+import com.equipo2.healthtech.model.appointment.AppointmentPriority;
 import com.equipo2.healthtech.model.appointment.AppointmentStatus;
 import com.equipo2.healthtech.model.encounter.EncounterClass;
 import com.equipo2.healthtech.model.encounter.EncounterStatus;
@@ -27,11 +28,11 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "8️⃣ Metadata")
 public class MetadataController {
 
-    private final ClinicService clinicService;
+    private final ClinicService metadatacService;
 
     @GetMapping
     public ResponseEntity<MetadataResponseDto> getMetadata() {
-        ClinicReadResponseDto clinicDto = clinicService.read(1L);
+        ClinicReadResponseDto clinicDto = metadatacService.read(1L);
         MetadataResponseDto response = new MetadataResponseDto(
                 clinicDto,
                 Role.values(),
@@ -40,6 +41,7 @@ public class MetadataController {
                 MediaType.values(),
                 EncounterStatus.values(),
                 EncounterClass.values(),
+                AppointmentPriority.values(),
                 AppointmentStatus.values(),
                 AppointmentChannel.values(),
                 TransactionType.values()

@@ -30,6 +30,8 @@ public class SecurityConfig {
 
     private static final String[] PUBLIC_URLS = {
             "/api/v1/test/**",
+            "/api/v1/metada",
+            "/api/v1/codes/**",
             "/api/v1/auth/login",
             "/api/v1/auth/mfa/verify",
             "/api/v1/auth/mfa/enable",

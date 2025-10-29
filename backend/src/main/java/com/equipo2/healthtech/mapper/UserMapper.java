@@ -1,5 +1,6 @@
 package com.equipo2.healthtech.mapper;
 
+import com.equipo2.healthtech.dto.patient.PatientFindByResponseDto;
 import com.equipo2.healthtech.dto.practitioner.PractitionerReadResponseDto;
 import com.equipo2.healthtech.dto.practitioner.PractitionerReadSummaryResponseDto;
 import com.equipo2.healthtech.dto.user.UserCreateRequestDto;

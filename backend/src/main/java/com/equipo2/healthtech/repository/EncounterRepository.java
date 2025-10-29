@@ -19,6 +19,8 @@ public interface EncounterRepository extends JpaRepository<Encounter, Long> {
     JOIN FETCH e.appointment a
     JOIN FETCH a.practitioners pr
     JOIN FETCH e.patient p
+    LEFT JOIN FETCH e.reasonCode rc
+    LEFT JOIN FETCH e.diagnosisCode dc
     WHERE e.id = :id
     """)
     Optional<Encounter> findByIdWithRelations(@Param("id") Long id);
@@ -28,6 +30,8 @@ public interface EncounterRepository extends JpaRepository<Encounter, Long> {
     SELECT DISTINCT e FROM Encounter e
     JOIN e.appointment a
     JOIN a.practitioners pr
+    LEFT JOIN FETCH e.reasonCode rc
+    LEFT JOIN FETCH e.diagnosisCode dc
     WHERE pr.id = :practitionerId
     """)
     Page<Encounter> findAllByPractitionerId(@Param("practitionerId") Long practitionerId, Pageable pageable);

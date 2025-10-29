@@ -1,9 +1,12 @@
 package com.equipo2.healthtech.service;
 
 import com.equipo2.healthtech.dto.practitioner.PractitionerReadSummaryResponseDto;
+import com.equipo2.healthtech.dto.practitioner.PractitionerRoleReadResponseDto;
+import com.equipo2.healthtech.exception.ConflictAppointmentsException;
 import com.equipo2.healthtech.exception.NoResultsException;
 import com.equipo2.healthtech.dto.appointment.*;
 import com.equipo2.healthtech.mapper.AppointmentMapper;
+import com.equipo2.healthtech.mapper.PractitionerRoleMapper;
 import com.equipo2.healthtech.mapper.UserMapper;
 import com.equipo2.healthtech.model.appointment.*;
 import com.equipo2.healthtech.model.patient.Patient;
@@ -14,6 +17,7 @@ import com.equipo2.healthtech.model.user.User;
 import com.equipo2.healthtech.repository.AppointmentRepository;
 import com.equipo2.healthtech.repository.PatientRepository;
 import com.equipo2.healthtech.repository.PractitionerRepository;
+import com.equipo2.healthtech.repository.PractitionerRoleRepository;
 import com.equipo2.healthtech.security.SecurityUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
-import java.time.OffsetTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,20 +43,28 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final AppointmentRepository appointmentRepository;
     private final PatientRepository patientRepository;
     private final PractitionerRepository practitionerRepository;
+    private final PractitionerRoleRepository practitionerRoleRepository;
     private final SecurityUtils securityUtils;
     private final AppointmentMapper appointmentMapper;
     private final UserMapper userMapper;
+    private final PractitionerRoleMapper practitionerRoleMapper;
+    private final AppointmentManagerService appointmentManagerService;
 
 
-    public boolean canAccessAppointment(Appointment appointment) {
+    private boolean canAccessAppointment(Appointment appointment) {
         User user = securityUtils.getAuthenticatedUser();
-        return switch (user.getRole()) {
+        return !switch (user.getRole()) {
             case ADMIN, SUPER_ADMIN -> true;
             case PATIENT -> appointment.getPatient().getId().equals(user.getId());
-            case PRACTITIONER ->
-                    appointment.getPractitioners().stream().anyMatch(p -> p.getId().equals(user.getId()));
+            case PRACTITIONER -> appointment.getPractitioners().stream().anyMatch(p -> p.getId().equals(user.getId()));
             default -> false;
         };
+    }
+
+    public void assertCanAccessAppointment(Appointment appointment) {
+        if (this.canAccessAppointment(appointment)) {
+            throw new AccessDeniedException("Access denied");
+        }
     }
 
     public Appointment getAppointment(Long id) {
@@ -94,40 +106,52 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .orElseThrow(() -> NoResultsException.of("Practitioner not found or inactive for Id: " + id));
     }
 
+    public List<Practitioner> findAvailablePractitioners(List<Long> practitionerIds, OffsetDateTime start, OffsetDateTime end) {
+        Specification<Practitioner> spec = PractitionerSpecifications.isActiveAndConfigured()
+                .and(PractitionerSpecifications.isAvailableBetween(start, end))
+                .and((root, query, cb) -> root.get("id").in(practitionerIds));
+
+        List<Practitioner> availablePractitioners = practitionerRepository.findAll(spec);
+        List<Long> availableIds = availablePractitioners.stream()
+                .map(Practitioner::getId)
+                .toList();
+
+        List<Long> unavailableIds = practitionerIds.stream()
+                .filter(id -> !availableIds.contains(id))
+                .toList();
+
+        log.info("🩺 Requested practitioners: {}", practitionerIds);
+        log.info("✅ Available practitioners: {}", availableIds);
+        log.info("❌ Unavailable practitioners: {}", unavailableIds);
+
+        if (availablePractitioners.isEmpty()) {
+            log.warn("No practitioners available between {} and {}", start, end);
+            throw NoResultsException.of("No practitioners available for the selected time window");
+        }
+
+        if (!unavailableIds.isEmpty()) {
+            log.info("Proceeding with {} available practitioners ({} unavailable)",
+                    availablePractitioners.size(), unavailableIds.size());
+        }
+        return availablePractitioners;
+    }
+
     @Override
-    public boolean isPractitionerAvailable(Practitioner practitioner, OffsetDateTime start, OffsetDateTime end) {
-        boolean hasUnavailability = practitioner.getUnavailability().stream()
-                .anyMatch(u -> overlaps(
-                        u.getStartTime(),
-                        u.getEndTime(),
-                        start.toOffsetTime(),
-                        end.toOffsetTime())
-                );
-        if (hasUnavailability) {
-            log.info("PRACTITIONER id: {} -> UNAVAILABILITY", practitioner.getId());
-            return false;
-        }
-
-        List<Appointment> conflicts = appointmentRepository.findConflictingAppointments(
-                practitioner.getId(), start, end);
-        if (!conflicts.isEmpty()) {
-            log.info("PRACTITIONER id: {} -> APPOINTMENT CONFLICT", practitioner.getId());
-            return false;
-        }
-        return true;
+    public Practitioner findAvailablePractitioner(Long practitionerId, OffsetDateTime start, OffsetDateTime end) {
+        Specification<Practitioner> spec = PractitionerSpecifications.isActiveAndConfigured()
+                .and(PractitionerSpecifications.isAvailableBetween(start, end))
+                .and((root, query, cb) -> cb.equal(root.get("id"), practitionerId));
+        Practitioner practitioner = practitionerRepository.findOne(spec)
+                .orElseThrow(() -> NoResultsException.of("Practitioner not available or inactive"));
+        ensureNoConflictingAppointments(practitioner.getId(), start, end);
+        return practitioner;
     }
 
-    private void arePractitionersAvailable(List<Practitioner> practitioners, OffsetDateTime start, OffsetDateTime end) {
-        for (Practitioner practitioner : practitioners) {
-            if (!isPractitionerAvailable(practitioner, start, end)) {
-                throw new IllegalStateException("Practitioner with ID: " + practitioner.getId() +
-                        " is not available in the requested time slot.");
-            }
+    private void ensureNoConflictingAppointments(Long id, OffsetDateTime start, OffsetDateTime end) {
+        if (appointmentRepository.existsConflictingAppointments(id, start, end)) {
+            log.info("PRACTITIONER id: {} -> APPOINTMENT CONFLICT", id);
+            throw ConflictAppointmentsException.of("Appointment Conflict for Practitioner Id: " + id);
         }
-    }
-
-    private boolean overlaps(OffsetTime uStart, OffsetTime uEnd, OffsetTime start, OffsetTime end) {
-        return start.isBefore(uEnd) && end.isAfter(uStart);
     }
 
     @Override
@@ -142,17 +166,17 @@ public class AppointmentServiceImpl implements AppointmentService {
                 authUser.getRole() != Role.SUPER_ADMIN) {
             throw new AccessDeniedException("You are not allowed to create an appointment");
         }
+        OffsetDateTime start = request.startTime().truncatedTo(ChronoUnit.MINUTES);
+        OffsetDateTime end = request.endTime().truncatedTo(ChronoUnit.MINUTES);
 
-        List<Practitioner> practitioners = getValidPractitioners(request.practitionerIds());
-        OffsetDateTime start = request.startTime();
-        OffsetDateTime end = request.endTime();
-        arePractitionersAvailable(practitioners, start, end);
+        List<Practitioner> practitioners = findAvailablePractitioners(request.practitionerIds(), start, end);
 
         Appointment appointment = appointmentMapper.toAppointment(request);
         appointment.setPatient(patient);
         appointment.setPractitioners(practitioners);
 
-        Appointment saved = appointmentRepository.save(appointment);
+        Appointment saved = appointmentManagerService.scheduleAppointment(appointment);
+        //Appointment saved = appointmentRepository.save(appointment);
         log.info("CREATE -> APPOINTMENT ID: {}", saved.getId());
         return saved.getId();
     }
@@ -161,9 +185,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Transactional(readOnly = true)
     public AppointmentReadDetailResponseDto read(Long id) {
         Appointment appointment = getAppointment(id);
-        if (!canAccessAppointment(appointment)) {
-            throw new AccessDeniedException("You are not allowed to view this appointment");
-        }
+        this.assertCanAccessAppointment(appointment);
         log.info("READ -> APPOINTMENT ID: {}", appointment.getId());
         log.info("    |-> APPOINTMENT PATIENT: {}", appointment.getPatient().getEmail());
         log.info("    |-> APPOINTMENT PRACTITIONERS: {}", appointment.getPractitioners().stream().map(Practitioner::getEmail).collect(Collectors.toList()));
@@ -175,7 +197,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     public Page<AppointmentReadResponseDto> readAll(Pageable pageable) {
         User user = securityUtils.getAuthenticatedUser();
         Page<Appointment> appointments = switch (user.getRole()) {
-            case ADMIN, SUPER_ADMIN -> appointmentRepository.findAll(pageable);
+            case ADMIN, SUPER_ADMIN -> appointmentRepository.findAllWithEagerRelations(pageable);
             case PRACTITIONER -> appointmentRepository.findAllByPractitionerId(user.getId(), pageable);
             case PATIENT -> appointmentRepository.findAllByPatientId(user.getId(), pageable);
             default -> throw new AccessDeniedException("You are not authorized to view appointments");
@@ -184,18 +206,38 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<AppointmentReadResponseDto> readAllByDate(
+            AppointmentByDateRequestDto request) {
+        Long practitionerId = null;
+        Long patientId = null;
+        User user = securityUtils.getAuthenticatedUser();
+        switch (user.getRole()) {
+            case PRACTITIONER -> practitionerId = user.getId();
+            case PATIENT -> patientId = user.getId();
+            case ADMIN, SUPER_ADMIN -> {}
+            default -> throw new AccessDeniedException("You are not authorized to view appointments");
+        }
+        List<Appointment> appointments = appointmentRepository.findAllFiltered(
+                request.startTime(),
+                request.endTime(),
+                practitionerId,
+                patientId
+        );
+        return appointments.stream()
+                .map(appointmentMapper::toAppointmentReadResponseDto)
+                .toList();
+    }
+
+    @Override
     @Transactional
     public void update(Long id, AppointmentUpdateRequestDto request) {
         Appointment appointment = getAppointment(id);
-        if (!canAccessAppointment(appointment)) {
-            throw new AccessDeniedException("You are not allowed to update this appointment");
-        }
-
-        List<Practitioner> practitioners = getValidPractitioners(request.practitionerIds());
-        OffsetDateTime start = request.startTime();
-        OffsetDateTime end = request.endTime();
-        arePractitionersAvailable(practitioners, start, end);
-
+        this.assertCanAccessAppointment(appointment);
+        OffsetDateTime start = request.startTime().truncatedTo(ChronoUnit.MINUTES);
+        OffsetDateTime end = request.endTime().truncatedTo(ChronoUnit.MINUTES);
+        List<Practitioner> practitioners = findAvailablePractitioners(request.practitionerIds(), start, end);
+    // USAR APPOINTMEN MANAGER
         appointment.setStartTime(request.startTime());
         appointment.setEndTime(request.endTime());
         appointment.setPatient(getValidPatient(request.patientId()));
@@ -210,9 +252,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     public void updateStatus(Long id, AppointmentStatus newStatus)
             throws NoResultsException, AccessDeniedException {
         Appointment appointment = getAppointment(id);
-        if (!canAccessAppointment(appointment)) {
-            throw new AccessDeniedException("You are not allowed to modify this appointment");
-        }
+        this.assertCanAccessAppointment(appointment);
 
         appointment.setStatus(newStatus);
         appointmentRepository.save(appointment);
@@ -250,6 +290,12 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         return practitioners.stream()
                 .map(userMapper::toPractitionerReadSummaryResponseDto)
+                .toList();
+    }
+
+    public List<PractitionerRoleReadResponseDto> getAvailablePractitionerRoles() {
+        return practitionerRoleRepository.findAll().stream()
+                .map(practitionerRoleMapper::toPractitionerRoleReadResponseDto)
                 .toList();
     }
 
