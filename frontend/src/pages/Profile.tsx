@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Layout, Navbar, Card, Input, Button, Footer, Select, DatePicker } from '../components/ui';
+import { Layout, Navbar, Card, Input, Button, Footer, Select, DatePicker, Loading } from '../components/ui';
 import { useUserProfile } from '../hooks/useUserProfile';
 import { ROUTES } from '../routes/routes';
 import { FiEdit, FiX, FiSave } from 'react-icons/fi';
@@ -69,7 +69,6 @@ const Profile = () => {
   }, [profile, reset]);
 
   const onSubmit = async (data: EditProfileFormData) => {
-    console.log('EditProfile - onSubmit called with data:', data);
     if (!profile) return;
     const mergedData = {
       fullName: data.fullName || profile.fullName,
@@ -133,36 +132,7 @@ const Profile = () => {
 
   if (isLoading || !profile) {
     return (
-      <Layout>
-        <Navbar />
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-5xl mx-auto my-8 animate-pulse">
-            <div className="h-8 w-48 bg-gray-200 rounded mb-6" />
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <Card className="p-6 lg:col-span-2 space-y-4">
-                <div className="h-6 w-40 bg-gray-200 rounded" />
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                  <div className="h-12 bg-gray-100 rounded" />
-                  <div className="h-12 bg-gray-100 rounded" />
-                  <div className="h-12 bg-gray-100 rounded md:col-span-2" />
-                  <div className="h-12 bg-gray-100 rounded" />
-                  <div className="h-12 bg-gray-100 rounded" />
-                  <div className="h-12 bg-gray-100 rounded md:col-span-2" />
-                </div>
-              </Card>
-              <Card className="p-6">
-                <div className="h-6 w-56 bg-gray-200 rounded mb-4" />
-                <div className="space-y-3">
-                  <div className="h-12 bg-gray-100 rounded" />
-                  <div className="h-12 bg-gray-100 rounded" />
-                  <div className="h-10 bg-gray-200 rounded" />
-                </div>
-              </Card>
-            </div>
-          </div>
-        </div>
-        <Footer />
-      </Layout>
+      <Loading fullScreen text="Cargando perfil..." />
     );
   }
   return (

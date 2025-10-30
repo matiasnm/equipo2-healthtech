@@ -9,6 +9,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 import { getEncounterByAppointmentId } from "../../services/encounters";
+import { Loading } from '../ui';
 const localizer = dateFnsLocalizer({
   format,
   parse,
@@ -41,7 +42,6 @@ export const AppointmentCalendar = ({ date, setDate, practitionerId }: Props) =>
       if (maybe.appointments && Array.isArray(maybe.appointments)) return maybe.appointments;
       return [];
     };
-    console.log('Appointments from store:', appointments);
     const source = normalize(appointments);
     return source.map((a: any) => ({
       ...a,
@@ -257,7 +257,6 @@ export const AppointmentCalendar = ({ date, setDate, practitionerId }: Props) =>
               navigate(`/encounter/practitioner/${existingId}`);
               return;
             }
-            console.log('Ya existe un encounter para esta cita pero no se obtuvo id', existing);
           } catch (e) {
             console.warn('No se pudo obtener encounter existente tras 409', e);
           }
@@ -340,7 +339,9 @@ export const AppointmentCalendar = ({ date, setDate, practitionerId }: Props) =>
             <div className="mt-3 border-t pt-3">
               <h4 className="text-sm font-semibold">Paciente</h4>
               {loadingPatient ? (
-                <p className="text-sm text-gray-500">Cargando paciente...</p>
+                <div className="py-2">
+                  <Loading size="sm" text="Cargando paciente..." />
+                </div>
               ) : patient ? (
                 <div className="text-sm text-gray-700">
                   <p className="font-medium">{patient.fullName}</p>

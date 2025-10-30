@@ -1,7 +1,7 @@
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router-dom';
-import { Layout, Navbar, Card, Input, Button, Footer, Select, DatePicker } from '../components/ui';
+import { Layout, Navbar, Card, Input, Button, Footer, Select, DatePicker, Loading } from '../components/ui';
 import { editProfileSchema, EditProfileFormData } from '../schemas/editProfile.schema';
 import { updatePasswordSchema, UpdatePasswordFormData } from '../schemas/updatePassword.schema';
 import { useUserProfile } from '../hooks/useUserProfile';
@@ -79,9 +79,15 @@ const EditProfile = () => {
     return (
       <Layout>
         <Navbar />
-        <Card className="max-w-md mx-auto my-8">
-          <p>Cargando datos del perfil...</p>
-        </Card>
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-md mx-auto my-8">
+            <Card className="p-6">
+              <div className="flex items-center justify-center py-8">
+                <Loading text="Cargando datos del perfil..." />
+              </div>
+            </Card>
+          </div>
+        </div>
       </Layout>
     );
   }

@@ -13,6 +13,7 @@ import Appointments from '../../pages/Appointments';
 import Patients from '../../pages/Patients';
 import Practitioners from '../../pages/Practitioners';
 import { EncounterPractitioner } from '../../pages/EncounterPractitioner'
+import { Loading } from '../../components/ui';
 
 const LazyDashboard = lazy(() => import('../../pages/Dashboard'));
 const LazyProfileSetupForm = lazy(() => import('../../components/ProfileSetupForm'));
@@ -29,7 +30,7 @@ export const PrivateRoutes: PrivateRoute[] = [
     path: ROUTES.DASHBOARD,
     element: (
       <ProtectedRoute allowedRoles={['admin', 'practitioner']}>
-        <Suspense fallback={<div>Cargando dashboard...</div>}>
+        <Suspense fallback={<Loading fullScreen text='cargando....' />}>
           <LazyDashboard />
         </Suspense>
       </ProtectedRoute>
@@ -69,7 +70,7 @@ export const PrivateRoutes: PrivateRoute[] = [
     path: ROUTES.SETUP_PROFILE,
     element: (
       <ProtectedRoute allowedRoles={['admin', 'practitioner', 'patient']}>
-        <Suspense fallback={<div>Cargando perfil...</div>}>
+        <Suspense fallback={<Loading fullScreen text='cargando perfil...' />}>
           <ErrorBoundary>
             <LazyProfileSetupForm />
           </ErrorBoundary>

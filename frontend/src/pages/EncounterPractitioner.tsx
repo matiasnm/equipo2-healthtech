@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { getEncounterReasonDiagnosisCodes } from '../services/codes';
 import { Select } from '../components/ui/Select';
 import { Button } from '../components/ui/Button';
-import { Layout, Navbar } from '../components/ui';
+import { Layout, Navbar, Loading } from '../components/ui';
 import { toast } from 'react-toastify';
 
 export const EncounterPractitioner = () => {
@@ -90,7 +90,19 @@ export const EncounterPractitioner = () => {
     }
   };
 
-  if (loading) return <div className="p-6">Cargando encuentro...</div>;
+  if (loading)
+    return (
+      <Layout>
+        <Navbar />
+        <div className="p-6 max-w-3xl mx-auto">
+          <div className="bg-white p-4 rounded-md shadow">
+            <div className="flex items-center justify-center py-8">
+              <Loading text="Cargando encuentro..." />
+            </div>
+          </div>
+        </div>
+      </Layout>
+    );
   if (!encounter) return <div className="p-6">Encuentro no encontrado</div>;
 
   return (
