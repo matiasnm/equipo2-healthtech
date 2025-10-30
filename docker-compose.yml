@@ -3,27 +3,21 @@ services:
     image: postgres:15
     container_name: postgres-db
     env_file:
-      - .env.dev
+      - .env
     ports:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
       - health-net
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER}" ]
-      interval: 5s
-      timeout: 5s
-      retries: 5
 
   flyway:
     env_file:
-      - .env.dev
+      - .env
     image: flyway/flyway:9
     command: -url=${FLYWAY_URL} -user=${FLYWAY_USER} -password=${FLYWAY_PASSWORD} clean
     depends_on:
-      db:
-        condition: service_healthy
+      - db
     networks:
       - health-net
 
@@ -32,10 +26,9 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     depends_on:
-      db:
-        condition: service_healthy
+      - db
     env_file:
-      - .env.dev
+      - .env
     ports:
       - "8010:8080"
     networks:
