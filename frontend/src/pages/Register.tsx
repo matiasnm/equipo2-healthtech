@@ -56,7 +56,7 @@ const Register = () => {
 
       // Redirección según estado
       if (!loggedUser.status) {
-        navigate(ROUTES.SETUP_PROFILE);
+        navigate(`/${ROUTES.SETUP_PROFILE}`);
       } else {
         navigate(ROUTES.PROFILE);
       }
