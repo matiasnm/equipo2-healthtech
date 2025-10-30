@@ -2,7 +2,7 @@ import privateAPI from './api/privateAPI';
 import type { Appointment, AppointmentCreatePayload, AppointmentUpdatePayload, AppointmentStatus, ResponseAppointmentList, } from "../types/appointment.types";
 
 export const getAllAppointments = async () => {
-  const res = await privateAPI.get('/api/v1/appointments');
+  const res = await privateAPI.get('/api/v1/appointments/list');
   return res.data;
 };
 

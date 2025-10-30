@@ -129,7 +129,7 @@ export const PrivateRoutes: PrivateRoute[] = [
     allowedRoles: ['practitioner'],
   },
   {
-    path: `${ROUTES.ENCOUNTER}/:id`,
+    path: `${ROUTES.ENCOUNTER}`,
     element: (
       <ProtectedRoute allowedRoles={['admin', 'practitioner', 'patient']}>
         <Encounter />

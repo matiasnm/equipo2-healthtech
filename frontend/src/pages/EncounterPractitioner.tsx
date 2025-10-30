@@ -77,8 +77,8 @@ export const EncounterPractitioner = () => {
         encounterClass: encounter.encounterClass,
         notes: encounter.notes ?? '',
       };
-      if (encounter.reasonCodeId) payload.reason = { id: Number(encounter.reasonCodeId) };
-      if (encounter.diagnosisCodeId) payload.diagnosis = { id: Number(encounter.diagnosisCodeId) };
+      if (encounter.reasonCodeId) payload.reasonCodeId = Number(encounter.reasonCodeId) ;
+      if (encounter.diagnosisCodeId) payload.diagnosisCodeId = Number(encounter.diagnosisCodeId) ;
 
       await updateEncounter(id, payload);
       toast.success('Encuentro actualizado');
@@ -127,8 +127,13 @@ export const EncounterPractitioner = () => {
               options={[
                 { value: 'PLANNED', label: 'Programado' },
                 { value: 'IN_PROGRESS', label: 'En curso' },
-                { value: 'FINISHED', label: 'Finalizado' },
+                { value: 'COMPLETED', label: 'Completado' },
                 { value: 'CANCELLED', label: 'Cancelado' },
+                { value: 'ON_HOLD', label: 'En espera' },
+                { value: 'DISCONTINUED', label: 'Interrumpido' },
+                { value: 'DISCHARGED', label: 'Egresado' },
+                { value: 'ENTERED_IN_ERROR', label: 'Error de registro' },
+                { value: 'UNKNOWN', label: 'Desconocido' },
               ]}
             />
           </div>
