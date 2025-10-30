@@ -1,6 +1,7 @@
 package com.equipo2.healthtech.service;
 
 import com.equipo2.healthtech.dto.appointment.*;
+import com.equipo2.healthtech.dto.encounter.EncounterReadResponseDto;
 import com.equipo2.healthtech.dto.practitioner.PractitionerReadSummaryResponseDto;
 import com.equipo2.healthtech.dto.practitioner.PractitionerRoleReadResponseDto;
 import com.equipo2.healthtech.model.appointment.Appointment;
@@ -38,4 +39,6 @@ public interface AppointmentService {
     public List<PractitionerRoleReadResponseDto> getAvailablePractitionerRoles();
 
     public Practitioner findAvailablePractitioner(Long id, OffsetDateTime start, OffsetDateTime end);
+
+    public EncounterReadResponseDto fetchEncounter(Long id);
 }

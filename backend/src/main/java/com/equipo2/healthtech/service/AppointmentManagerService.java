@@ -1,18 +1,12 @@
 package com.equipo2.healthtech.service;
 
 import com.equipo2.healthtech.exception.ConflictAppointmentsException;
-import com.equipo2.healthtech.exception.NoResultsException;
 import com.equipo2.healthtech.model.appointment.Appointment;
 import com.equipo2.healthtech.model.appointment.AppointmentPriority;
 import com.equipo2.healthtech.model.appointment.AppointmentStatus;
-import com.equipo2.healthtech.model.practitioner.Practitioner;
-import com.equipo2.healthtech.model.practitioner.PractitionerSpecifications;
-import com.equipo2.healthtech.model.user.User;
 import com.equipo2.healthtech.repository.AppointmentRepository;
-import com.equipo2.healthtech.repository.PractitionerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +21,6 @@ public class AppointmentManagerService {
 
     private final AppointmentRepository appointmentRepository;
     private final NotificationService notificationService;
-    private final PractitionerRepository practitionerRepository;
 
     private void switchAppointments(Appointment appointment1, Appointment appointment2) {}
     private void shiftAppointment(Appointment appointment, Long hours) {}
