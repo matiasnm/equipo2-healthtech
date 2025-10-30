@@ -1,18 +1,21 @@
 package com.equipo2.healthtech.service;
 
-import com.equipo2.healthtech.dto.encounter.EncounterCreateRequestDto;
-import com.equipo2.healthtech.dto.encounter.EncounterReadResponseDto;
-import com.equipo2.healthtech.dto.encounter.EncounterUpdateRequestDto;
+import com.equipo2.healthtech.dto.encounter.*;
+import com.equipo2.healthtech.dto.userprofile.UserProfileReadSummaryResponseDto;
 import com.equipo2.healthtech.exception.ConflictEncounterException;
 import com.equipo2.healthtech.exception.NoResultsException;
 import com.equipo2.healthtech.mapper.EncounterMapper;
+import com.equipo2.healthtech.mapper.UserProfileMapper;
 import com.equipo2.healthtech.model.appointment.Appointment;
 import com.equipo2.healthtech.model.encounter.Encounter;
 import com.equipo2.healthtech.model.encounter.EncounterCode;
+import com.equipo2.healthtech.model.patient.Patient;
+import com.equipo2.healthtech.model.user.Role;
 import com.equipo2.healthtech.model.user.User;
 import com.equipo2.healthtech.repository.EncounterCodeRepository;
 import com.equipo2.healthtech.repository.EncounterRepository;
 import com.equipo2.healthtech.security.SecurityUtils;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -32,6 +35,7 @@ public class EncounterServiceImpl implements EncounterService {
     private final SecurityUtils securityUtils;
     private final AppointmentService appointmentService;
     private final EncounterCodeRepository encounterCodeRepository;
+    private final UserProfileMapper userProfileMapper;
 
     private void validateReferences(EncounterCreateRequestDto dto) {
         Appointment appointment = appointmentService.getAppointment(dto.appointmentId());
@@ -79,6 +83,25 @@ public class EncounterServiceImpl implements EncounterService {
             default -> throw new AccessDeniedException("You are not authorized to view encounters");
         };
         return encounters.map(encounterMapper::toEncounterReadResponseDto);
+    }
+
+    public EncounterWithPatientProfileDto readAllByPatientId(Long id, Pageable pageable) {
+        User user = securityUtils.getAuthenticatedUser();
+        if (user.getRole().equals(Role.PATIENT)) throw new AccessDeniedException("You are not authorized");
+        Page<Encounter> encounters = encounterRepository.findAllByPatientId(id, pageable);
+        if (encounters.isEmpty()) {
+            throw new EntityNotFoundException("No encounters found for patient Id: " + id);
+        }
+
+        // Get patient from any encounter (since all belong to same patient)
+        Patient patient = encounters.stream()
+                .map(Encounter::getPatient)
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException("Patient not found for encounters"));
+        UserProfileReadSummaryResponseDto patientProfile = userProfileMapper.toUserProfileReadSummaryResponseDto(patient.getUserProfile());
+        return new EncounterWithPatientProfileDto(
+                patientProfile,
+                encounters.map(encounterMapper::toEncounterWithAppointmentReadSummaryDto));
     }
 
     @Override
