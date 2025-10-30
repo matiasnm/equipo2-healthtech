@@ -8,7 +8,8 @@ import { useAppointments } from "../../hooks/useAppointments";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
-
+import { getEncounterByAppointmentId } from "../../services/encounters";
+import { Loading } from '../ui';
 const localizer = dateFnsLocalizer({
   format,
   parse,
@@ -41,7 +42,6 @@ export const AppointmentCalendar = ({ date, setDate, practitionerId }: Props) =>
       if (maybe.appointments && Array.isArray(maybe.appointments)) return maybe.appointments;
       return [];
     };
-    console.log('Appointments from store:', appointments);
     const source = normalize(appointments);
     return source.map((a: any) => ({
       ...a,
@@ -80,6 +80,10 @@ export const AppointmentCalendar = ({ date, setDate, practitionerId }: Props) =>
       mounted = false;
     };
   }, [calendarEvents]);
+
+  useEffect(() => {
+  }, [appointments])
+  
 
   // eventos que realmente pasamos al calendar — usamos patientNames si hace falta
   const displayedEvents = useMemo(() => {
@@ -244,9 +248,20 @@ export const AppointmentCalendar = ({ date, setDate, practitionerId }: Props) =>
       } catch (err: any) {
         console.error('Error creando encounter', err);
         if (err.status === 409) {
-          console.log('Ya existe un encounter para esta cita');
+          try {
+            const resp = await getEncounterByAppointmentId(String(event.id));
+            const existing = resp?.data ?? resp;
+            const existingId = existing?.id ?? existing?.encounterId ?? existing?.data?.id;
+            if (existingId) {
+              // navegar al encuentro existente
+              navigate(`/encounter/practitioner/${existingId}`);
+              return;
+            }
+          } catch (e) {
+            console.warn('No se pudo obtener encounter existente tras 409', e);
+          }
         }
-  toast.error('No se pudo iniciar la consulta. Intentá nuevamente.');
+        toast.error('No se pudo iniciar la consulta. Intentá nuevamente.');
       }
     })();
   };
@@ -254,9 +269,18 @@ export const AppointmentCalendar = ({ date, setDate, practitionerId }: Props) =>
   const handleChangeStatus = async (id: string, status: string) => {
     try {
       await changeStatus(id, status as any);
+      // refrescar la lista filtrada por profesional para mantener la vista consistente
+      if (practitionerId) {
+        try {
+          await fetchByPractitioner(practitionerId);
+        } catch (e) {
+          console.warn('Error refetching appointments by practitioner', e);
+        }
+      }
       setSelectedEvent(null);
     } catch (err: any) {
       console.error(err);
+      toast.error('No se pudo cambiar el estado. Intentá nuevamente.');
     }
   };
 
@@ -315,7 +339,9 @@ export const AppointmentCalendar = ({ date, setDate, practitionerId }: Props) =>
             <div className="mt-3 border-t pt-3">
               <h4 className="text-sm font-semibold">Paciente</h4>
               {loadingPatient ? (
-                <p className="text-sm text-gray-500">Cargando paciente...</p>
+                <div className="py-2">
+                  <Loading size="sm" text="Cargando paciente..." />
+                </div>
               ) : patient ? (
                 <div className="text-sm text-gray-700">
                   <p className="font-medium">{patient.fullName}</p>
@@ -377,32 +403,37 @@ export const AppointmentCalendar = ({ date, setDate, practitionerId }: Props) =>
 };
 
 function getStatusColor(status: string) {
-  switch (status.toLowerCase()) {
-    case "scheduled":
-      return "var(--color-accent)";
-    case "completed":
-      return "var(--color-success)";
-    case "cancelled":
-      return "var(--color-error)";
-    case "no_show":
-      return "var(--color-warning)";
-    default:
-      return "var(--color-secondary)";
-  }
+  const s = (status ?? '').toString().toLowerCase();
+  if (s === 'scheduled' || s === 'planned') return 'var(--color-accent)';
+  if (s === 'completed' || s === 'discharged') return 'var(--color-success)';
+  if (s === 'cancelled' || s === 'discontinued') return 'var(--color-error)';
+  if (s === 'no_show' || s === 'no-show') return 'var(--color-warning)';
+  if (s === 'in_progress' || s === 'in-progress') return 'var(--color-primary)';
+  return 'var(--color-secondary)';
 }
 
 
 const statusLabel = (status: string) => {
-  switch (status.toLowerCase()) {
-    case "scheduled":
-      return "Programado";
-    case "completed":
-      return "Completado";
-    case "cancelled":
-      return "Cancelado";
-    case "no_show":
-      return "Ausente";
+  const s = (status ?? '').toString().toLowerCase();
+  switch (s) {
+    case 'scheduled':
+    case 'planned':
+      return 'Programado';
+    case 'in_progress':
+    case 'in-progress':
+      return 'En curso';
+    case 'completed':
+    case 'discharged':
+      return 'Completado';
+    case 'cancelled':
+    case 'discontinued':
+      return 'Cancelado';
+    case 'no_show':
+    case 'no-show':
+      return 'Ausente';
+    case 'on_hold':
+      return 'En espera';
     default:
-      return status;
-  } 
+      return status ?? '';
+  }
 };

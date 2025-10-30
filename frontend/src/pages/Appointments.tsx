@@ -26,13 +26,13 @@ export default function Appointments() {
         <section className="w-full p-4">
           <div className="flex items-center justify-between mb-4">
             <h1 className="text-xl font-semibold text-[var(--color-primary)]">Citas</h1>
-            <button
+            {/* <button
               onClick={() => setShowForm(true)}
               aria-label="Nueva cita"
               className="bg-[var(--color-accent)] text-white px-4 py-2 rounded-md hover:bg-[var(--color-accent-hover)]"
             >
               + Nueva cita
-            </button>
+            </button> */}
           </div>
 
           {showForm ? (

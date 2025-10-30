@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { usePractitioners } from "../../hooks/usePractitioners";
 import { specialties } from "../../data/specialties";
-import { PractitionerCard, CustomCard} from "../ui";
+import { PractitionerCard } from "./PractitionerCard";
+import { CustomCard } from "./CustomCard";
+import { Loading } from "./Loading";
 import { slugify } from "../../utils/slugify";
 import { PractitionerSummary } from "../../types/practitioner.types";
 
@@ -24,7 +26,11 @@ export const PractitionersList = () => {
   }));
 
   if (isLoading) {
-    return <p className="px-4 py-6">Cargando profesionales...</p>;
+    return (
+      <section className="px-4 py-6">
+        <Loading />
+      </section>
+    );
   }
 
   return (

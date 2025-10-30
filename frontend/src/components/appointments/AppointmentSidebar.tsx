@@ -3,6 +3,7 @@ import { es } from "date-fns/locale";
 import { useAppointments } from "../../hooks/useAppointments";
 import { CalendarClockIcon } from "lucide-react";
 import { GiPreviousButton, GiNextButton } from "react-icons/gi";
+import { Loading } from "../ui";
 
 type SidebarProps = {
   date: Date;
@@ -41,7 +42,11 @@ const AppointmentSidebar = ({
       <div className="relative pl-8">
         <div className="absolute left-10 top-0 bottom-0 w-0.5 bg-[var(--color-accent)] rounded-full" />
 
-        {loading && <p className="text-sm text-muted">Cargando turnos...</p>}
+        {loading && (
+          <div className="py-2">
+            <Loading text="Cargando turnos..." size="sm" />
+          </div>
+        )}
 
         <ul className="space-y-10">
           {filteredAppointments.map((apt) => (

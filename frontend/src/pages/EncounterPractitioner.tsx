@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { getEncounterReasonDiagnosisCodes } from '../services/codes';
 import { Select } from '../components/ui/Select';
 import { Button } from '../components/ui/Button';
-import { Layout, Navbar } from '../components/ui';
+import { Layout, Navbar, Loading } from '../components/ui';
 import { toast } from 'react-toastify';
 
 export const EncounterPractitioner = () => {
@@ -77,8 +77,8 @@ export const EncounterPractitioner = () => {
         encounterClass: encounter.encounterClass,
         notes: encounter.notes ?? '',
       };
-      if (encounter.reasonCodeId) payload.reason = { id: Number(encounter.reasonCodeId) };
-      if (encounter.diagnosisCodeId) payload.diagnosis = { id: Number(encounter.diagnosisCodeId) };
+      if (encounter.reasonCodeId) payload.reasonCodeId = Number(encounter.reasonCodeId) ;
+      if (encounter.diagnosisCodeId) payload.diagnosisCodeId = Number(encounter.diagnosisCodeId) ;
 
       await updateEncounter(id, payload);
       toast.success('Encuentro actualizado');
@@ -90,7 +90,19 @@ export const EncounterPractitioner = () => {
     }
   };
 
-  if (loading) return <div className="p-6">Cargando encuentro...</div>;
+  if (loading)
+    return (
+      <Layout>
+        <Navbar />
+        <div className="p-6 max-w-3xl mx-auto">
+          <div className="bg-white p-4 rounded-md shadow">
+            <div className="flex items-center justify-center py-8">
+              <Loading text="Cargando encuentro..." />
+            </div>
+          </div>
+        </div>
+      </Layout>
+    );
   if (!encounter) return <div className="p-6">Encuentro no encontrado</div>;
 
   return (
@@ -127,8 +139,13 @@ export const EncounterPractitioner = () => {
               options={[
                 { value: 'PLANNED', label: 'Programado' },
                 { value: 'IN_PROGRESS', label: 'En curso' },
-                { value: 'FINISHED', label: 'Finalizado' },
+                { value: 'COMPLETED', label: 'Completado' },
                 { value: 'CANCELLED', label: 'Cancelado' },
+                { value: 'ON_HOLD', label: 'En espera' },
+                { value: 'DISCONTINUED', label: 'Interrumpido' },
+                { value: 'DISCHARGED', label: 'Egresado' },
+                { value: 'ENTERED_IN_ERROR', label: 'Error de registro' },
+                { value: 'UNKNOWN', label: 'Desconocido' },
               ]}
             />
           </div>
