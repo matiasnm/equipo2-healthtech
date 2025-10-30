@@ -1,13 +1,13 @@
 import { useEffect, useState, useMemo } from "react";
 import { fetchPatientFromFhirMock } from "../../services/fhirMock";
-import { useNavigate } from "react-router-dom";
 import { Calendar, dateFnsLocalizer, Views } from "react-big-calendar";
 import type { View } from "react-big-calendar";
 import { format, parse, startOfWeek, getDay } from "date-fns";
 import { es } from "date-fns/locale";
 import { useAppointments } from "../../hooks/useAppointments";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import { GiPreviousButton, GiNextButton } from "react-icons/gi";
+import { useNavigate } from "react-router-dom";
+import { toast } from 'react-toastify';
 
 const localizer = dateFnsLocalizer({
   format,
@@ -30,75 +30,64 @@ export const AppointmentCalendar = ({ date, setDate, practitionerId }: Props) =>
   const [patient, setPatient] = useState<any>(null);
   const [loadingPatient, setLoadingPatient] = useState(false);
   const navigate = useNavigate();
-
   const { appointments, fetchByPractitioner, changeStatus } = useAppointments();
-  // Mock local de citas — se usa cuando el store no devuelve datos (fácil de reemplazar por fetch)
-  const MOCK_APPOINTMENTS: any[] = [
-    {
-      id: 'm1',
-      patientId: 101,
-      patientProfile: { fullName: 'María García' },
-      startTime: new Date(new Date().setHours(9, 30, 0, 0)).toISOString(),
-      endTime: new Date(new Date().setHours(10, 0, 0, 0)).toISOString(),
-      status: 'SCHEDULED',
-      reason: 'Consulta general',
-    },
-    {
-      id: 'm2',
-      patientId: 102,
-      patientProfile: { fullName: 'Carlos López' },
-      startTime: new Date(new Date().setHours(10, 30, 0, 0)).toISOString(),
-      endTime: new Date(new Date().setHours(11, 0, 0, 0)).toISOString(),
-      status: 'SCHEDULED',
-      reason: 'Control presión',
-    },
-    {
-      id: 'm3',
-      patientId: 103,
-      patientProfile: { fullName: 'Lucía Fernández' },
-      startTime: new Date(new Date().setHours(11, 30, 0, 0)).toISOString(),
-      endTime: new Date(new Date().setHours(12, 0, 0, 0)).toISOString(),
-      status: 'COMPLETED',
-      reason: 'Retorno',
-    },
-    {
-      id: 'm4',
-      patientId: 104,
-      patientProfile: { fullName: 'Sofía Martín' },
-      startTime: new Date(new Date().setHours(15, 0, 0, 0)).toISOString(),
-      endTime: new Date(new Date().setHours(15, 30, 0, 0)).toISOString(),
-      status: 'SCHEDULED',
-      reason: 'Consulta nueva',
-    },
-    {
-      id: 'm6',
-      patientId: 104,
-      patientProfile: { fullName: 'Marcos Britos' },
-      startTime: new Date(new Date().setHours(15, 30, 0, 0)).toISOString(),
-      endTime: new Date(new Date().setHours(16, 0, 0, 0)).toISOString(),
-      status: 'SCHEDULED',
-      reason: 'Consulta nueva',
-    },
-    {
-      id: 'm5',
-      patientId: 105,
-      patientProfile: { fullName: 'Diego Ramos' },
-      startTime: new Date(new Date().setDate(new Date().getDate() + 1)).toISOString(),
-      endTime: new Date(new Date().setDate(new Date().getDate() + 1)).toISOString(),
-      status: 'SCHEDULED',
-      reason: 'Teleconsulta',
-    },
-  ];
-
-  // Map appointments from the store to the event shape expected by react-big-calendar
+  // Map appointments from the store (API) to the event shape expected by react-big-calendar
   const calendarEvents = useMemo(() => {
-    const source = (appointments && appointments.length > 0) ? appointments : MOCK_APPOINTMENTS;
+
+    const normalize = (maybe: any) => {
+      if (!maybe) return [];
+      if (Array.isArray(maybe)) return maybe;
+      if (maybe.data && Array.isArray(maybe.data)) return maybe.data;
+      if (maybe.appointments && Array.isArray(maybe.appointments)) return maybe.appointments;
+      return [];
+    };
+    console.log('Appointments from store:', appointments);
+    const source = normalize(appointments);
     return source.map((a: any) => ({
       ...a,
       title: a.patientProfile?.fullName ?? `Paciente ${a.patientId}`,
       patientId: a.patientId,
     }));
   }, [appointments]);
+
+  // cache local de nombres de pacientes cuando la respuesta del backend no trae patientProfile
+  const [patientNames, setPatientNames] = useState<Record<number, string>>({});
+
+  useEffect(() => {
+    let mounted = true;
+    const missing = calendarEvents
+      .filter((e: any) => !e.patientProfile && e.patientId && !patientNames[e.patientId])
+      .map((e: any) => e.patientId);
+
+    if (missing.length === 0) return;
+
+    (async () => {
+      for (const id of missing) {
+        try {
+          const p = await fetchPatientFromFhirMock(id);
+          if (!mounted) return;
+          if (p?.fullName) {
+            setPatientNames((prev) => ({ ...prev, [id]: p.fullName }));
+          }
+        } catch (err) {
+          // no bloqueante, dejamos el fallback
+          console.error('fetchPatientFromFhirMock error', err);
+        }
+      }
+    })();
+
+    return () => {
+      mounted = false;
+    };
+  }, [calendarEvents]);
+
+  // eventos que realmente pasamos al calendar — usamos patientNames si hace falta
+  const displayedEvents = useMemo(() => {
+    return calendarEvents.map((e: any) => ({
+      ...e,
+      title: e.patientProfile?.fullName ?? patientNames[e.patientId] ?? `Paciente ${e.patientId}`,
+    }));
+  }, [calendarEvents, patientNames]);
 
   // Mock de disponibilidad por profesional (en el futuro viene del backend)
   const getPractitionerAvailability = (id: number) => {
@@ -171,41 +160,6 @@ export const AppointmentCalendar = ({ date, setDate, practitionerId }: Props) =>
     showMore: (total: number) => `+${total} más`,
   } as any;
 
-
-  const goToPrevious = () => {
-    const newDate = new Date(date);
-    switch (view) {
-      case Views.MONTH:
-        newDate.setMonth(date.getMonth() - 1);
-        break;
-      case Views.WEEK:
-      case Views.WORK_WEEK:
-        newDate.setDate(date.getDate() - 7);
-        break;
-      case Views.DAY:
-        newDate.setDate(date.getDate() - 1);
-        break;
-    }
-    setDate(newDate);
-  };
-
-  const goToNext = () => {
-    const newDate = new Date(date);
-    switch (view) {
-      case Views.MONTH:
-        newDate.setMonth(date.getMonth() + 1);
-        break;
-      case Views.WEEK:
-      case Views.WORK_WEEK:
-        newDate.setDate(date.getDate() + 7);
-        break;
-      case Views.DAY:
-        newDate.setDate(date.getDate() + 1);
-        break;
-    }
-    setDate(newDate);
-  };
-
   const CustomWeekHeader = ({ date }: { date: Date }) => {
     const day = format(date, "EEE", { locale: es });
     const num = format(date, "d", { locale: es });
@@ -219,12 +173,6 @@ export const AppointmentCalendar = ({ date, setDate, practitionerId }: Props) =>
   };
 
   const EventCompact = ({ event }: { event: any }) => {
-    // const initials = event.title
-    //   .split(" ")
-    //   .map((word: string) => word[0])
-    //   .join("")
-    //   .toUpperCase();
-
     return (
       <div
         className="text-white text-sm font-semibold truncate"
@@ -271,10 +219,36 @@ export const AppointmentCalendar = ({ date, setDate, practitionerId }: Props) =>
   };
 
   const handleStartTeleconsult = (event: any) => {
-    // Si existe teleconsultationUrl, abrir; si no, abrir url simulada
-    const url = event.teleconsultationUrl ?? `/teleconsult/${event.id}`;
-    // Abrir en nueva pestaña (mock)
-    window.open(url, '_blank');
+    // Crear un encounter en el backend y navegar al detalle
+    (async () => {
+      try {
+        const payload = {
+          encounterStatus: 'PLANNED',
+          encounterClass: 'IMP',
+          reasonCodeId: 1,
+          diagnosisCodeId: 1,
+          appointmentId: event.id,
+          patientId: event.patientId,
+          notes: event.reason ?? '',
+        };
+        const { createEncounter } = await import('../../services/encounters');
+        const res = await createEncounter(payload);
+        const created = res?.data ?? res;
+        const encounterId = created?.id ?? created?.encounterId ?? created?.data?.id;
+        if (encounterId) {
+          navigate(`/encounter/practitioner/${encounterId}`);
+        } else {
+          console.warn('Encounter creado pero sin id en la respuesta', created);
+          toast.warning('Encounter creado pero no se pudo obtener el id. Revisá la respuesta del servidor.');
+        }
+      } catch (err: any) {
+        console.error('Error creando encounter', err);
+        if (err.status === 409) {
+          console.log('Ya existe un encounter para esta cita');
+        }
+  toast.error('No se pudo iniciar la consulta. Intentá nuevamente.');
+      }
+    })();
   };
 
   const handleChangeStatus = async (id: string, status: string) => {
@@ -288,60 +262,12 @@ export const AppointmentCalendar = ({ date, setDate, practitionerId }: Props) =>
 
   return (
     <div className="bg-white/50 backdrop-blur-md rounded-xl p-6 shadow-md h-auto w-full border border-[var(--color-accent)]">
-      {/* Header */}
-      {/* <div className="flex justify-center items-center gap-4 mb-2">
-        <button onClick={goToPrevious} title="Anterior">
-          <GiPreviousButton className="w-5 h-5 text-[var(--color-primary)]" />
-        </button>
-
-        {view === Views.MONTH && (
-          <h2 className="text-lg font-bold text-[var(--color-primary)]">
-            {format(date, "MMMM yyyy", { locale: es })}
-          </h2>
-        )}
-
-        <button onClick={goToNext} title="Siguiente">
-          <GiNextButton className="w-5 h-5 text-[var(--color-primary)]" />
-        </button>
-      </div> */}
-
-      {/* Vistas */}
-      {/* <div className="flex justify-center gap-4 mb-4">
-        <button
-          onClick={() => setView(Views.DAY)}
-          className={`px-3 py-1 rounded-md ${view === Views.DAY
-            ? "bg-[var(--color-accent)] text-white"
-            : "bg-white text-[var(--color-primary)]"
-            } hover:bg-[var(--color-accent-hover)]`}
-        >
-          Vista diaria
-        </button>
-        <button
-          onClick={() => setView(Views.WEEK)}
-          className={`px-3 py-1 rounded-md ${view === Views.WEEK
-            ? "bg-[var(--color-accent)] text-white"
-            : "bg-white text-[var(--color-primary)]"
-            } hover:bg-[var(--color-accent-hover)]`}
-        >
-          Vista semanal
-        </button>
-        <button
-          onClick={() => setView(Views.MONTH)}
-          className={`px-3 py-1 rounded-md ${view === Views.MONTH
-            ? "bg-[var(--color-accent)] text-white"
-            : "bg-white text-[var(--color-primary)]"
-            } hover:bg-[var(--color-accent-hover)]`}
-        >
-          Vista mensual
-        </button>
-      </div> */}
-
       {/* Calendario */}
       <Calendar
         localizer={localizer}
         culture="es-AR"
         messages={messages}
-        events={calendarEvents}
+        events={displayedEvents}
         startAccessor={(event) => new Date(event.startTime)}
         endAccessor={(event) => new Date(event.endTime)}
         date={date}
@@ -384,7 +310,7 @@ export const AppointmentCalendar = ({ date, setDate, practitionerId }: Props) =>
           <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-xl">
             <h3 className="text-lg font-bold mb-2 text-[var(--color-primary)]">{selectedEvent.title}</h3>
             <p className="text-sm text-muted">{format(new Date(selectedEvent.startTime), "PPPPp", { locale: es })} – {format(new Date(selectedEvent.endTime), "p", { locale: es })}</p>
-            <p className="mt-2 text-sm">Estado: <strong>{selectedEvent.status}</strong></p>
+            <p className="mt-2 text-sm">Estado: <strong>{statusLabel(selectedEvent.status)}</strong></p>
 
             <div className="mt-3 border-t pt-3">
               <h4 className="text-sm font-semibold">Paciente</h4>
@@ -419,7 +345,7 @@ export const AppointmentCalendar = ({ date, setDate, practitionerId }: Props) =>
               <button
                 onClick={() => {
                   if (!canCancel(selectedEvent.startTime)) {
-                    alert('No se puede cancelar con menos de 2 horas de anticipación');
+                    toast.warn('No se puede cancelar con menos de 2 horas de anticipación');
                     return;
                   }
                   handleChangeStatus(selectedEvent.id, 'CANCELLED');
@@ -464,3 +390,19 @@ function getStatusColor(status: string) {
       return "var(--color-secondary)";
   }
 }
+
+
+const statusLabel = (status: string) => {
+  switch (status.toLowerCase()) {
+    case "scheduled":
+      return "Programado";
+    case "completed":
+      return "Completado";
+    case "cancelled":
+      return "Cancelado";
+    case "no_show":
+      return "Ausente";
+    default:
+      return status;
+  } 
+};

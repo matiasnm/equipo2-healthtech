@@ -31,8 +31,8 @@ fetchAppointments: async () => {
     fetchByPractitioner: async (id) => {
     set({ loading: true, error: null });
     try {
-      const data = await getAppointmentsByPractitioner(id);
-      set({ appointments: data, loading: false });
+      const data = await getAppointmentsByPractitioner();
+      set({ appointments: data.content, loading: false });
     } catch (err: any) {
       set({ error: err.message || "Error al filtrar por profesional", loading: false });
     }

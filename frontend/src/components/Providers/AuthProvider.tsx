@@ -3,6 +3,7 @@ import { useAuthStore } from '../../store/useAuthStore';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { redirectByRole } from '../../utils/redirectByRole';
 import { PrivateRoutes } from '../../routes/modules/private.routes';
+import { ROUTES } from '../../routes/routes';
 
 interface AuthProviderProps {
   children: React.ReactNode;
@@ -41,10 +42,10 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         var path = redirectByRole(user.role);
         navigate(path, { replace: true });
         return;
-      } else if (!user.status && routes.includes(location.pathname) && location.pathname !== '/profile/setup') {
+      } else if (!user.status && routes.includes(location.pathname) && location.pathname !== ROUTES.SETUP_PROFILE) {
         // Si el usuario no está activo y está intentando acceder a una ruta PRIVADA,
         // redirigimos a la configuración de perfil. Si está en una pública, no hacemos nada.
-        navigate('/profile/setup', { replace: true });
+        navigate(ROUTES.SETUP_PROFILE, { replace: true });
       }
       return;
     }
