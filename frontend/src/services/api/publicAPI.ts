@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const publicAPI = axios.create({
-  baseURL: 'http://api.mbst.online:8010',
+  baseURL: 'https://api.mbst.online',
   headers: {
     'Content-Type': 'application/json',
   },
