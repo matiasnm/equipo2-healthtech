@@ -7,6 +7,7 @@ import { es } from "date-fns/locale";
 import { useAppointments } from "../../hooks/useAppointments";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useNavigate } from "react-router-dom";
+import { toast } from 'react-toastify';
 
 const localizer = dateFnsLocalizer({
   format,
@@ -224,8 +225,8 @@ export const AppointmentCalendar = ({ date, setDate, practitionerId }: Props) =>
         const payload = {
           encounterStatus: 'PLANNED',
           encounterClass: 'IMP',
-          reasonCodeId: 404684003,
-          diagnosisCodeId: 0,
+          reasonCodeId: 1,
+          diagnosisCodeId: 1,
           appointmentId: event.id,
           patientId: event.patientId,
           notes: event.reason ?? '',
@@ -235,14 +236,17 @@ export const AppointmentCalendar = ({ date, setDate, practitionerId }: Props) =>
         const created = res?.data ?? res;
         const encounterId = created?.id ?? created?.encounterId ?? created?.data?.id;
         if (encounterId) {
-          navigate(`/encounter/${encounterId}`);
+          navigate(`/encounter/practitioner/${encounterId}`);
         } else {
           console.warn('Encounter creado pero sin id en la respuesta', created);
-          alert('Encounter creado pero no se pudo obtener el id. Revisá la respuesta del servidor.');
+          toast.warning('Encounter creado pero no se pudo obtener el id. Revisá la respuesta del servidor.');
         }
-      } catch (err) {
+      } catch (err: any) {
         console.error('Error creando encounter', err);
-        alert('No se pudo iniciar la consulta. Intentá nuevamente.');
+        if (err.status === 409) {
+          console.log('Ya existe un encounter para esta cita');
+        }
+  toast.error('No se pudo iniciar la consulta. Intentá nuevamente.');
       }
     })();
   };
@@ -341,7 +345,7 @@ export const AppointmentCalendar = ({ date, setDate, practitionerId }: Props) =>
               <button
                 onClick={() => {
                   if (!canCancel(selectedEvent.startTime)) {
-                    alert('No se puede cancelar con menos de 2 horas de anticipación');
+                    toast.warn('No se puede cancelar con menos de 2 horas de anticipación');
                     return;
                   }
                   handleChangeStatus(selectedEvent.id, 'CANCELLED');

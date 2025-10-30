@@ -65,7 +65,6 @@ export const PrivateRoutes: PrivateRoute[] = [
     ),
     allowedRoles: ['admin', 'practitioner'],
   },
-
   {
     path: ROUTES.SETUP_PROFILE,
     element: (
@@ -123,24 +122,14 @@ export const PrivateRoutes: PrivateRoute[] = [
   {
     path: ROUTES.APPOINTMENT_FORM,
     element: (
-      <ProtectedRoute allowedRoles={[' practitioner']}>
+      <ProtectedRoute allowedRoles={['practitioner']}>
         <CreateAppointment />
       </ProtectedRoute>
     ),
-    allowedRoles: [' practitioner'],
+    allowedRoles: ['practitioner'],
   },
   {
-    path: ROUTES.APPOINTMENT_ENCOUNTER,
-    element: (
-      <ProtectedRoute allowedRoles={[' practitioner']}>
-        <EncounterPractitioner />
-      </ProtectedRoute>
-    ),
-    allowedRoles: [' practitioner'],
-  },
-
-  {
-    path: `${ROUTES.ENCOUNTER}`,
+    path: `${ROUTES.ENCOUNTER}/:id`,
     element: (
       <ProtectedRoute allowedRoles={['admin', 'practitioner', 'patient']}>
         <Encounter />
@@ -148,7 +137,15 @@ export const PrivateRoutes: PrivateRoute[] = [
     ),
     allowedRoles: ['admin', 'practitioner', 'patient'],
   },
-
+  {
+    path: `${ROUTES.ENCOUNTER}/practitioner/:id`,
+    element: (
+      <ProtectedRoute allowedRoles={['practitioner']}>
+        <EncounterPractitioner />
+      </ProtectedRoute>
+    ),
+    allowedRoles: ['practitioner'],
+  },
   {
     path: ROUTES.ACCOUNT,
     element: (

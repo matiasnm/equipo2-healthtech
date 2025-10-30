@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from 'react-router-dom';
 import { Input, Layout, Navbar, Footer } from "../components/ui";
+import { toast } from 'react-toastify';
 import { getPractitionerById } from "../services/practitioners";
 import { createAppointment } from "../services/appointments";
 import type { PractitionerSummary } from "../schemas/practitioner.schema";
@@ -39,10 +40,11 @@ import { useAuth } from "../hooks/useAuth";
 
         try {
           await createAppointment(payload);
-          alert("Turno creado con éxito");
+          toast.success("Turno creado con éxito");
           navigate("/appointments/confirmation");
         } catch (error) {
           console.error("Error al crear turno:", error);
+          toast.error('No se pudo crear el turno. Intentá nuevamente.');
         }
     };
 

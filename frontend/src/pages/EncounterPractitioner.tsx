@@ -2,12 +2,18 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { getEncounterById, updateEncounter } from '../services/encounters';
 import { getAppointmentById } from '../services/appointments';
 import { useEffect, useState } from 'react';
+import { getEncounterReasonDiagnosisCodes } from '../services/codes';
+import { Select } from '../components/ui/Select';
+import { Button } from '../components/ui/Button';
+import { Layout, Navbar } from '../components/ui';
+import { toast } from 'react-toastify';
 
 export const EncounterPractitioner = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [encounter, setEncounter] = useState<any>(null);
   const [appointment, setAppointment] = useState<any>(null);
+  const [codes, setCodes] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
 
@@ -20,8 +26,14 @@ export const EncounterPractitioner = () => {
         const res = await getEncounterById(id);
         const data = res?.data ?? res;
         if (!mounted) return;
-        setEncounter(data);
-        // si viene appointmentId, traer appointment para obtener teleconsultationUrl
+        // mapear shape del backend: `reason` y `diagnosis` vienen como objetos
+        const mapped = {
+          ...data,
+          reasonCodeId: data?.reason?.id ?? data?.reasonCodeId ?? null,
+          diagnosisCodeId: data?.diagnosis?.id ?? data?.diagnosisCodeId ?? null,
+        };
+        setEncounter(mapped);
+  // si viene appointmentId, traer appointment para obtener teleconsultationUrl
         const apptId = data?.appointmentId ?? data?.appointment?.id;
         if (apptId) {
           try {
@@ -38,6 +50,18 @@ export const EncounterPractitioner = () => {
         if (mounted) setLoading(false);
       }
     })();
+
+    // load codes (reason/diagnosis)
+    (async () => {
+      try {
+        const r = await getEncounterReasonDiagnosisCodes({ size: 200 });
+        // respuesta esperada tiene `content` con el arreglo de codes
+        const list = r?.content ?? r?.data ?? r ?? [];
+        if (mounted && Array.isArray(list)) setCodes(list);
+      } catch (err) {
+        console.warn('No se pudieron cargar códigos de diagnosis', err);
+      }
+    })();
     return () => {
       mounted = false;
     };
@@ -47,18 +71,20 @@ export const EncounterPractitioner = () => {
     if (!id || !encounter) return;
     setSaving(true);
     try {
-      const payload = {
+      // enviar la estructura con objetos reason/diagnosis (backend devuelve así)
+      const payload: any = {
         encounterStatus: encounter.encounterStatus,
         encounterClass: encounter.encounterClass,
-        reasonCodeId: Number(encounter.reasonCodeId) || 0,
-        diagnosisCodeId: Number(encounter.diagnosisCodeId) || 0,
         notes: encounter.notes ?? '',
       };
+      if (encounter.reasonCodeId) payload.reason = { id: Number(encounter.reasonCodeId) };
+      if (encounter.diagnosisCodeId) payload.diagnosis = { id: Number(encounter.diagnosisCodeId) };
+
       await updateEncounter(id, payload);
-      alert('Encuentro actualizado');
+      toast.success('Encuentro actualizado');
     } catch (err) {
       console.error('Error updating encounter', err);
-      alert('No se pudo actualizar el encuentro');
+      toast.error('No se pudo actualizar el encuentro');
     } finally {
       setSaving(false);
     }
@@ -68,7 +94,9 @@ export const EncounterPractitioner = () => {
   if (!encounter) return <div className="p-6">Encuentro no encontrado</div>;
 
   return (
-    <div className="p-6 max-w-3xl mx-auto">
+    <Layout>
+      <Navbar />
+      <div className="p-6 max-w-3xl mx-auto">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-semibold">Encuentro #{id}</h1>
         <div className="flex gap-2">
@@ -82,60 +110,57 @@ export const EncounterPractitioner = () => {
               Abrir teleconsulta
             </a>
           )}
-          <button
-            onClick={() => navigate(-1)}
-            className="px-3 py-2 bg-[var(--color-accent)] text-white rounded-md hover:bg-[var(--color-accent-hover)]"
-          >
+          <Button onClick={() => navigate(-1)} variant="secondary" size="md">
             Volver
-          </button>
+          </Button>
         </div>
       </div>
 
       <div className="bg-white p-4 rounded-md shadow">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Estado</label>
-            <select
-              value={encounter.encounterStatus}
+            <Select
+              label="Estado"
+              name="encounterStatus"
+              value={encounter.encounterStatus ?? ''}
               onChange={(e) => setEncounter({ ...encounter, encounterStatus: e.target.value })}
-              className="input w-full"
-            >
-              <option value="PLANNED">PLANNED</option>
-              <option value="IN_PROGRESS">IN_PROGRESS</option>
-              <option value="FINISHED">FINISHED</option>
-              <option value="CANCELLED">CANCELLED</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Clase</label>
-            <select
-              value={encounter.encounterClass}
-              onChange={(e) => setEncounter({ ...encounter, encounterClass: e.target.value })}
-              className="input w-full"
-            >
-              <option value="IMP">IMP</option>
-              <option value="AMB">AMB</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Reason Code ID</label>
-            <input
-              type="number"
-              value={encounter.reasonCodeId ?? 0}
-              onChange={(e) => setEncounter({ ...encounter, reasonCodeId: Number(e.target.value) })}
-              className="input w-full"
+              options={[
+                { value: 'PLANNED', label: 'Programado' },
+                { value: 'IN_PROGRESS', label: 'En curso' },
+                { value: 'FINISHED', label: 'Finalizado' },
+                { value: 'CANCELLED', label: 'Cancelado' },
+              ]}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Diagnosis Code ID</label>
-            <input
-              type="number"
-              value={encounter.diagnosisCodeId ?? 0}
-              onChange={(e) => setEncounter({ ...encounter, diagnosisCodeId: Number(e.target.value) })}
-              className="input w-full"
+            <Select
+              label="Clase"
+              name="encounterClass"
+              value={encounter.encounterClass ?? ''}
+              onChange={(e) => setEncounter({ ...encounter, encounterClass: e.target.value })}
+              options={[
+                { value: 'IMP', label: 'Internación' },
+                { value: 'AMB', label: 'Ambulatorio' },
+              ]}
+            />
+          </div>
+
+          <div>
+            <Select
+              label="Diagnóstico"
+              name="diagnosisCode"
+              value={encounter.diagnosisCodeId ? String(encounter.diagnosisCodeId) : ''}
+              onChange={(e) => {
+                const val = e.target.value ? Number(e.target.value) : null;
+                // por ahora reason y diagnosis se setean iguales
+                setEncounter({ ...encounter, diagnosisCodeId: val, reasonCodeId: val });
+              }}
+              options={codes.map((c: any) => ({
+                value: String(c.id),
+                label: c.display ?? c.code ?? `${c.system ?? ''}:${c.id}`,
+              }))}
+              {...(encounter.diagnosisCodeId ? { placeholder: String(encounter.diagnosisCodeId) } : {})}
             />
           </div>
 
@@ -150,15 +175,12 @@ export const EncounterPractitioner = () => {
         </div>
 
         <div className="mt-4 flex gap-3">
-          <button
-            onClick={handleSave}
-            disabled={saving}
-            className={`px-4 py-2 rounded-md text-white ${saving ? 'bg-gray-400' : 'bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)]'}`}
-          >
+          <Button onClick={handleSave} variant="accent" disabled={saving}>
             {saving ? 'Guardando...' : 'Guardar encuentro'}
-          </button>
+          </Button>
         </div>
       </div>
     </div>
+    </Layout>
   );
 };
