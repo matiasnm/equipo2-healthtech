@@ -6,7 +6,6 @@ import { toast } from 'react-toastify';
 export const useLogin = () => {
   const { setUser, setToken } = useAuthStore();
 const { user } = useAuthStore.getState();
-console.log(user?.status);
 
   return useMutation({
     mutationFn: loginUser,

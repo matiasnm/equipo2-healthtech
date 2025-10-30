@@ -31,7 +31,7 @@ const Login = () => {
       const { login, user } = await loginUser(data);
       const { token, mfaRequired } = login;
 
-      console.log("Login response:", { login, user });
+      import.meta.env.DEV && console.log("Login response:", { login, user });
 
       if (mfaRequired && token && user.id) {
         setUserId(user.id.toString());
@@ -55,7 +55,7 @@ const Login = () => {
       setToken(token);
       navigate(redirectByRole(user.role));
     } catch (error: any) {
-      console.log("Error en login:", error);
+      import.meta.env.DEV && console.error("Error en login:", error);
       const message = error?.response?.data?.message;
       if (message === "No tenés permisos para esta acción") {
         toast.error(message);
