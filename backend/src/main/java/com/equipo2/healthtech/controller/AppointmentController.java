@@ -1,6 +1,7 @@
 package com.equipo2.healthtech.controller;
 
 import com.equipo2.healthtech.dto.appointment.*;
+import com.equipo2.healthtech.dto.encounter.EncounterReadResponseDto;
 import com.equipo2.healthtech.dto.practitioner.PractitionerReadSummaryResponseDto;
 import com.equipo2.healthtech.dto.practitioner.PractitionerRoleReadResponseDto;
 import com.equipo2.healthtech.model.appointment.AppointmentStatus;
@@ -49,6 +50,13 @@ public class AppointmentController {
     @GetMapping("/{id}")
     public ResponseEntity<AppointmentReadDetailResponseDto> getAppointment(@PathVariable Long id) {
         return ResponseEntity.ok(appointmentService.read(id));
+    }
+
+    @Operation(summary = "Gets the Encounter related with Appointment by id")
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/{id}/encounter")
+    public ResponseEntity<EncounterReadResponseDto> getEncounterFromAppointment(@PathVariable Long id) {
+        return ResponseEntity.ok(appointmentService.fetchEncounter(id));
     }
 
     @Operation(summary = "Lists all Appointment for this Authenticated User")

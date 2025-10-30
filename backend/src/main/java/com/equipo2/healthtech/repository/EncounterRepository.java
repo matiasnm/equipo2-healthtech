@@ -39,4 +39,6 @@ public interface EncounterRepository extends JpaRepository<Encounter, Long> {
     Page<Encounter> findAllByPatientId(Long patientId, Pageable pageable);
 
     boolean existsByAppointmentId(Long AppointmentId);
+
+    Optional<Encounter> findByAppointmentId(Long appointmentId);
 }
