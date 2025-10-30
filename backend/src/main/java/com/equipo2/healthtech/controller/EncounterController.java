@@ -1,8 +1,6 @@
 package com.equipo2.healthtech.controller;
 
-import com.equipo2.healthtech.dto.encounter.EncounterCreateRequestDto;
-import com.equipo2.healthtech.dto.encounter.EncounterReadResponseDto;
-import com.equipo2.healthtech.dto.encounter.EncounterUpdateRequestDto;
+import com.equipo2.healthtech.dto.encounter.*;
 import com.equipo2.healthtech.service.EncounterService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -54,6 +52,17 @@ public class EncounterController {
     @GetMapping("/{id}")
     ResponseEntity<EncounterReadResponseDto> readEncounter(@PathVariable Long id) {
         return ResponseEntity.ok(encounterService.read(id));
+    }
+
+    @Operation(summary = "List all Encounters for a particular Patient by Id")
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/list/{patientId}")
+    ResponseEntity<EncounterWithPatientProfileDto> readByPatientId(
+            @PathVariable Long patientId,
+            @ParameterObject
+            @PageableDefault(page = 0, size = 10, sort = "encounterStatus")
+            Pageable pageable) {
+        return ResponseEntity.ok(encounterService.readAllByPatientId(patientId, pageable));
     }
 
     @Operation(summary = "Lists all Encounters for this Authenticated User")

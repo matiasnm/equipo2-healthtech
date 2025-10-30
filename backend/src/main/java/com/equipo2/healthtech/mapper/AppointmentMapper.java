@@ -3,6 +3,7 @@ package com.equipo2.healthtech.mapper;
 import com.equipo2.healthtech.dto.appointment.AppointmentCreateRequestDto;
 import com.equipo2.healthtech.dto.appointment.AppointmentReadDetailResponseDto;
 import com.equipo2.healthtech.dto.appointment.AppointmentReadResponseDto;
+import com.equipo2.healthtech.dto.appointment.AppointmentReadSummaryResponseDto;
 import com.equipo2.healthtech.model.appointment.Appointment;
 import com.equipo2.healthtech.model.patient.Patient;
 import com.equipo2.healthtech.model.practitioner.Practitioner;
@@ -30,6 +31,9 @@ public interface AppointmentMapper {
     @Mapping(source = "practitionerIds", target = "practitioners")
     Appointment toAppointment(AppointmentCreateRequestDto dto);
 
+    @Mapping(source = "practitioners", target = "practitioners")
+    AppointmentReadSummaryResponseDto toAppointmentReadSummaryResponseDto(Appointment appointment);
+
     @Named("mapPractitionersToIds")
     default List<Long> mapPractitionersToIds(List<Practitioner> practitioners) {
         return practitioners == null
@@ -39,14 +43,14 @@ public interface AppointmentMapper {
                 .collect(Collectors.toList());
     }
 
-    default Patient mapPatient(Long id) {
+    default Patient mapPatientFromAppointmentDto(Long id) {
         if (id == null) return null;
         Patient p = new Patient();
         p.setId(id);
         return p;
     }
 
-    default List<Practitioner> mapPractitioners(List<Long> ids) {
+    default List<Practitioner> mapPractitionersFromAppointmentDto(List<Long> ids) {
         if (ids == null) return null;
         return ids.stream()
                 .map(id -> {
