@@ -76,8 +76,8 @@ public class PdfServiceImpl implements PdfService {
             document.add(new Paragraph("\n"));
             document.add(new Paragraph("Encounter Class: " + encounterDto.encounterClass(), unicodeFont));
             document.add(new Paragraph("Encounter Status: " + encounterDto.encounterStatus(), unicodeFont));
-            document.add(new Paragraph("Encounter Reason: " + encounterDto.reason().getDisplay(), unicodeFont));
-            document.add(new Paragraph("Encounter Diagnosis: " + encounterDto.diagnosis().getDisplay(), unicodeFont));
+            document.add(new Paragraph("Encounter Reason: " + encounterDto.reason().display(), unicodeFont));
+            document.add(new Paragraph("Encounter Diagnosis: " + encounterDto.diagnosis().display(), unicodeFont));
             document.add(new Paragraph("\n"));
             document.add(new Paragraph("Notes: " + encounterDto.notes(), unicodeFont));
 
