@@ -50,7 +50,7 @@ const Login = () => {
         return;
       }
 
-      localStorage.setItem("token", token);
+      //localStorage.setItem("token", token);
       setUser(user);
       setToken(token);
       navigate(redirectByRole(user.role));

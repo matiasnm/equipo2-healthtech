@@ -1,5 +1,16 @@
 import privateAPI from './api/privateAPI';
-import type { AppointmentCreatePayload } from "../types/appointment.types";
+import type { Appointment, AppointmentCreatePayload, AppointmentUpdatePayload, AppointmentStatus, ResponseAppointmentList, } from "../types/appointment.types";
+
+export const getAllAppointments = async () => {
+  const res = await privateAPI.get('/api/v1/appointments');
+  return res.data;
+};
+
+export const getAppointmentsByPractitioner = async (): Promise<ResponseAppointmentList> => {
+  const response = await privateAPI.get(`/api/v1/appointments/list`);
+  return response.data;
+};
+
 
 export const getAppointmentById = (id: string) =>
   privateAPI.get(`/api/v1/appointments/${id}`);
@@ -23,3 +34,9 @@ export const getAvailabilityByPractitioner = async (id: number) => {
   });
   return res.data;
 };
+
+export const getAppointments = async () => {
+  const res = await privateAPI.get('/api/v1/appointments/list');
+  return res.data;
+};
+
