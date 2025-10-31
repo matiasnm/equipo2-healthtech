@@ -4,27 +4,22 @@ export const roleBasedLinks: Record<string, NavLink[]> = {
 
   ADMIN: [
     { label: 'Reportes', to: '/dashboard' },
-    { label: 'Pacientes', to: '/patients' },
     { label: 'Agenda', to: '/appointments' },
     { label: 'Perfil', to: '/profile' },
     { label: 'Profesionales', to: '/practitioners' },
-    { label: 'Mi cuenta', to: '/account' },
     { label: 'Registro', to: '/encounter' },
   ], 
 
   PRACTITIONER: [
     { label: 'Reportes', to: '/dashboard' },
-    { label: 'Pacientes', to: '/patients' },
     { label: 'Agenda', to: '/appointments' },
     { label: 'Perfil', to: '/profile' },
     { label: 'Profesionales', to: '/practitioners' },
-    { label: 'Mi cuenta', to: '/account' },
   ],
 
   PATIENT: [
     { label: 'Perfil', to: '/profile' },
     { label: 'Profesionales', to: '/practitioners' },
-    { label: 'Mi cuenta', to: '/account' },
     { label: 'Registro', to: '/encounter' },
   ],
 

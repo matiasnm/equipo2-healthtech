@@ -6,11 +6,9 @@ import Profile from '../../pages/Profile';
 import ProfileSetupForm from '../../components/ProfileSetupForm';
 import { ROUTES } from '../../routes/routes';
 import ErrorBoundary from '../../components/ErrorBoundary';
-import Account from '../../pages/Account';
 import AppointmentForm from '../../components/appointments/AppointmentForm';
 import CreateAppointment from '../../pages/CreateAppointment';
 import Appointments from '../../pages/Appointments';
-import Patients from '../../pages/Patients';
 import Practitioners from '../../pages/Practitioners';
 import { EncounterPractitioner } from '../../pages/EncounterPractitioner'
 import { Loading } from '../../components/ui';
@@ -38,24 +36,6 @@ export const PrivateRoutes: PrivateRoute[] = [
     allowedRoles: ['admin', 'practitioner'],
   },
 
-  {
-    path: ROUTES.PATIENTS,
-    element: (
-      <ProtectedRoute allowedRoles={['admin', 'practitioner']}>
-        <Patients />
-      </ProtectedRoute>
-    ),
-    allowedRoles: ['admin', 'patient'],
-  },
-  {
-    path: ROUTES.PROFILE,
-    element: (
-      <ProtectedRoute allowedRoles={['admin', 'practitioner', 'patient']}>
-        <Account initialTab={'profile'} />
-      </ProtectedRoute>
-    ),
-    allowedRoles: ['admin', 'practitioner', 'patient'],
-  },
 
   {
     path: ROUTES.APPOINTMENTS,
@@ -146,15 +126,6 @@ export const PrivateRoutes: PrivateRoute[] = [
       </ProtectedRoute>
     ),
     allowedRoles: ['practitioner'],
-  },
-  {
-    path: ROUTES.ACCOUNT,
-    element: (
-      <ProtectedRoute allowedRoles={['admin', 'practitioner', 'patient']}>
-        <Account initialTab={'account'} />
-      </ProtectedRoute>
-    ),
-    allowedRoles: ['admin', 'practitioner', 'patient'],
   },
 
 ];
