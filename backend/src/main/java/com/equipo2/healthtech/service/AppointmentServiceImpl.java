@@ -3,6 +3,8 @@ package com.equipo2.healthtech.service;
 import com.equipo2.healthtech.dto.encounter.EncounterReadResponseDto;
 import com.equipo2.healthtech.dto.practitioner.PractitionerReadSummaryResponseDto;
 import com.equipo2.healthtech.dto.practitioner.PractitionerRoleReadResponseDto;
+import com.equipo2.healthtech.dto.practitioner.PractitionerWeeklyScheduleDto;
+import com.equipo2.healthtech.dto.practitioner.TimeRangeReadDto;
 import com.equipo2.healthtech.exception.ConflictAppointmentsException;
 import com.equipo2.healthtech.exception.NoResultsException;
 import com.equipo2.healthtech.dto.appointment.*;
@@ -15,6 +17,7 @@ import com.equipo2.healthtech.model.encounter.Encounter;
 import com.equipo2.healthtech.model.patient.Patient;
 import com.equipo2.healthtech.model.practitioner.Practitioner;
 import com.equipo2.healthtech.model.practitioner.PractitionerSpecifications;
+import com.equipo2.healthtech.model.unavailability.Unavailability;
 import com.equipo2.healthtech.model.user.Role;
 import com.equipo2.healthtech.model.user.User;
 import com.equipo2.healthtech.repository.*;
@@ -30,9 +33,14 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.DayOfWeek;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -51,6 +59,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final AppointmentManagerService appointmentManagerService;
     private final EncounterRepository encounterRepository;
     private final EncounterMapper encounterMapper;
+    private final NotificationService notificationService;
 
 
     private boolean canAccessAppointment(Appointment appointment) {
@@ -156,6 +165,64 @@ public class AppointmentServiceImpl implements AppointmentService {
         return encounterMapper.toEncounterReadResponseDto(encounter);
     }
 
+    @Override
+    public PractitionerWeeklyScheduleDto getPractitionerWeeklyUnavailability(Long id) {
+        Practitioner practitioner = getValidPractitioner(id);
+
+        OffsetDateTime today = OffsetDateTime.now();
+        OffsetDateTime startOfWeek = today.with(DayOfWeek.MONDAY);
+        OffsetDateTime endOfWeek = today.with(DayOfWeek.SUNDAY);
+
+        Map<DayOfWeek, List<TimeRangeReadDto>> occupied = new EnumMap<>(DayOfWeek.class);
+        for (DayOfWeek day : DayOfWeek.values()) {
+            occupied.put(day, new ArrayList<>());
+        }
+
+        // UNAVAILABILITIES
+        List<Unavailability> unavailabilities = practitioner.getUnavailability();
+        for (Unavailability u : unavailabilities) {
+            occupied.get(u.getDayOfWeek())
+                    .add(new TimeRangeReadDto(
+                            u.getStartTime().toString(),
+                            u.getEndTime().toString(),
+                            "UNAVAILABILITY"
+                    ));
+        }
+        // APPOINTMENTS
+        // (Monday 08:00)
+        OffsetDateTime startDateTime = OffsetDateTime.now()
+                .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+                .withHour(8).withMinute(0).withSecond(0).withNano(0);
+
+        // (Sunday 18:00)
+        OffsetDateTime endDateTime = OffsetDateTime.now()
+                .with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY))
+                .withHour(18).withMinute(0).withSecond(0).withNano(0);
+
+        List<Appointment> appointments = appointmentRepository.findAllFiltered(
+                startDateTime,
+                endDateTime,
+                id,     // practitionerId
+                null    // patientId
+        );
+        for (Appointment a : appointments) {
+            occupied.get(a.getStartTime().getDayOfWeek())
+                    .add(new TimeRangeReadDto(
+                            a.getStartTime().toString(),
+                            a.getEndTime().toString(),
+                            "APPOINTMENT"
+                    ));
+        }
+
+        PractitionerReadSummaryResponseDto profileDto = userMapper
+                .toPractitionerReadSummaryResponseDto(practitioner);
+
+        return new PractitionerWeeklyScheduleDto(
+                profileDto,
+                occupied
+        );
+    }
+
     private void ensureNoConflictingAppointments(Long id, OffsetDateTime start, OffsetDateTime end) {
         if (appointmentRepository.existsConflictingAppointments(id, start, end)) {
             log.info("PRACTITIONER id: {} -> APPOINTMENT CONFLICT", id);
@@ -252,7 +319,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointment.setPatient(getValidPatient(request.patientId()));
         appointment.setPractitioners(getValidPractitioners(request.practitionerIds()));
 
-        appointmentRepository.save(appointment);
+        Appointment updatedAppointment = appointmentRepository.save(appointment);
+        notificationService.notifyReschedule(updatedAppointment);
         log.info("UPDATE -> APPOINTMENT ID: {}", appointment.getId());
     }
 
