@@ -31,7 +31,7 @@ VALUES (2);
 -- Suppose the returned id is 2
 -- Create User Profile
 INSERT INTO user_profiles (user_id, full_name, gender, phone, address, birthday)
-VALUES (2, 'Patient One', 'FEMALE', '555-0100', 'Patient Street 10', '1990-05-15');
+VALUES (2, 'Kelly Indodia', 'FEMALE', '555-0100', 'Funny Street 10', '1992-05-15');
 
 -- Add Identifiers
 INSERT INTO identifiers (system, value, type, user_profile_id, related_person_id)
@@ -143,3 +143,8 @@ INSERT INTO users (
 
 INSERT INTO patients (user_id)
 VALUES (4);
+
+-- Suppose the returned id is 4
+-- Create User Profile
+INSERT INTO user_profiles (user_id, full_name, gender, phone, address, birthday)
+VALUES (4, 'Keny Bell', 'MALE', '535-0102', 'Funny Street 22', '1992-07-10');
