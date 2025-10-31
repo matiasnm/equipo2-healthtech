@@ -1,7 +1,20 @@
 import { ReactElement } from "react";
-import { GiHeartOrgan, GiBrain, GiStomach, GiKidneys, GiBabyBottle, GiPelvisBone, GiBoneKnife, GiEyeTarget, GiChemicalDrop, GiSoap, GiPsychicWaves,} from "react-icons/gi";
+import {
+  GiHeartOrgan,
+  GiBrain,
+  GiStomach,
+  GiKidneys,
+  GiBabyBottle,
+  GiPelvisBone,
+  GiBoneKnife,
+  GiEyeTarget,
+  GiChemicalDrop,
+  GiSoap,
+  GiPsychicWaves,
+} from "react-icons/gi";
 
 export interface Specialty {
+  code: string;        
   name: string;
   imageUrl: string;
   icon: ReactElement;
@@ -11,6 +24,7 @@ export interface Specialty {
 
 export const specialties: Specialty[] = [
   {
+    code: "CARD", 
     name: "Cardiología",
     imageUrl: "https://img.mbst.com.ar/panfamanager/health/speciality/cardiologia.jpg",
     icon: <GiHeartOrgan />,
@@ -18,6 +32,7 @@ export const specialties: Specialty[] = [
     linkTo: "#cardiología",
   },
   {
+    code: "NEUR",
     name: "Neurología",
     imageUrl: "https://img.mbst.com.ar/panfamanager/health/speciality/neurologia.jfif",
     icon: <GiBrain />,
@@ -25,6 +40,7 @@ export const specialties: Specialty[] = [
     linkTo: "#neurología",
   },
   {
+    code: "GAST",
     name: "Gastroenterología",
     imageUrl: "https://img.mbst.com.ar/panfamanager/health/speciality/gastro.jfif",
     icon: <GiStomach />,
@@ -32,6 +48,7 @@ export const specialties: Specialty[] = [
     linkTo: "#gastroenterología",
   },
   {
+    code: "NEFR",
     name: "Nefrología",
     imageUrl: "https://img.mbst.com.ar/panfamanager/health/speciality/nefrologia.jpg",
     icon: <GiKidneys />,
@@ -39,6 +56,7 @@ export const specialties: Specialty[] = [
     linkTo: "#nefrología",
   },
   {
+    code: "PEDI",
     name: "Pediatría",
     imageUrl: "https://img.mbst.com.ar/panfamanager/health/speciality/pediatría.webp",
     icon: <GiBabyBottle />,
@@ -46,6 +64,7 @@ export const specialties: Specialty[] = [
     linkTo: "#pediatría",
   },
   {
+    code: "GINE",
     name: "Ginecología",
     imageUrl: "https://img.mbst.com.ar/panfamanager/health/speciality/Ginecologia.png",
     icon: <GiPelvisBone />,
@@ -53,6 +72,7 @@ export const specialties: Specialty[] = [
     linkTo: "#ginecología",
   },
   {
+    code: "TRAU",
     name: "Traumatología",
     imageUrl: "https://img.mbst.com.ar/panfamanager/health/speciality/traumatologia.jfif",
     icon: <GiBoneKnife />,
@@ -60,13 +80,16 @@ export const specialties: Specialty[] = [
     linkTo: "#traumatología",
   },
   {
+    code: "PSIQ",
     name: "Psiquiatría",
     imageUrl: "https://img.mbst.com.ar/panfamanager/health/speciality/psiquiatria.jpg",
     icon: <GiPsychicWaves />,
     gradientClass: "bg-gradient-psiquiatría",
     linkTo: "#psiquiatría",
   },
+
   {
+    code: "OFTA",
     name: "Oftalmología",
     imageUrl: "https://img.mbst.com.ar/panfamanager/health/speciality/oftalmologia.jfif",
     icon: <GiEyeTarget />,
@@ -74,6 +97,7 @@ export const specialties: Specialty[] = [
     linkTo: "#oftalmología",
   },
   {
+    code: "ENDO",
     name: "Endocrinología",
     imageUrl: "https://img.mbst.com.ar/panfamanager/health/speciality/endocrinologia.jfif",
     icon: <GiChemicalDrop />,
@@ -81,11 +105,14 @@ export const specialties: Specialty[] = [
     linkTo: "#endocrinología",
   },
   {
+    code: "DERM",
     name: "Dermatología",
     imageUrl: "https://img.mbst.com.ar/panfamanager/health/speciality/dermatologia.jpg",
     icon: <GiSoap />,
     gradientClass: "bg-gradient-dermatología",
     linkTo: "#dermatología",
   },
+
 ];
+
 

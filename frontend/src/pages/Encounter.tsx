@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Clipboard, Users, FileText } from 'lucide-react';
+import { Clipboard, Users, FileText, Plus } from 'lucide-react';
 import { useMedicalStore } from '../store/useMedicalStore';
 import { Navbar, Layout } from '../components/ui';
 import TopBar from '../components/TopBar';
@@ -16,6 +16,8 @@ import { practitionersSchema } from '../schemas/practitioner.schema';
 import { MedicalFile } from '../schemas/medicalFile.schema';
 import { EncounterView } from '../types/encounterView.types';
 import { z } from 'zod';
+import { useNavigate } from 'react-router-dom';
+import { ROUTES } from '../routes/routes';
 
 type Section = 'encounters' | 'practitioners' | 'files';
 
@@ -31,7 +33,7 @@ const sectionTabs: {
 
 export default function Encounter() {
   const [activeSection, setActiveSection] = useState<Section>('encounters');
-
+  const navigate = useNavigate();
   const {
     setEncounters,
     setPractitioners,
@@ -128,6 +130,17 @@ export default function Encounter() {
                 <span className="text-sm font-medium">{tab.label}</span>
               </button>
             ))}
+            <button
+                key={sectionTabs.length + 1}
+                type="button"
+                title={"Crear cita"}
+                onClick={() => navigate(ROUTES.APPOINTMENT_FORM)}
+                className={'flex items-center px-4 py-2 rounded-lg transition-all duration-200 bg-[var(--color-accent)] text-[var(--color-text)] hover:bg-[var(--color-accent-hover)]'
+                }
+              >
+                <Plus size={18} className="mr-2" />
+                <span className="text-sm font-medium">Crear cita</span>
+              </button>
           </div>
 
           {activeSection === 'encounters' && <EncounterHistory />}

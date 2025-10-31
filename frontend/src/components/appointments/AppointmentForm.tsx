@@ -1,4 +1,5 @@
 import { useAppointments } from '../../hooks/useAppointments';
+import { formatWithLocalOffset } from '../../utils/date';
 import { createAppointmentSchema } from '../../schemas/createAppointment.schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -25,10 +26,10 @@ const onSubmit = async (data: CreateAppointmentFormData) => {
   try {
     await create({
       ...data,
-      startTime: new Date(data.startTime).toISOString(),
-      endTime: new Date(data.endTime).toISOString(),
-      teleconsultationUrl: data.teleconsultationUrl ?? undefined,
-    });
+      startTime: formatWithLocalOffset(new Date(data.startTime)),
+      endTime: formatWithLocalOffset(new Date(data.endTime)),
+      teleconsultationUrl: (data as any).teleconsultationUrl ?? undefined,
+    } as any);
     // cerrar el formulario después de crear
     onClose();
   } catch (error) {
