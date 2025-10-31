@@ -1,25 +1,46 @@
 import type { PractitionerSummary } from "../schemas/practitioner.schema";
 import type { CustomCardProps } from "../components/ui/CustomCard";
+import type { ClinicMetadata } from "../services/metadata";
+
+type Availability = {
+  days: string[];
+  hours: number[];
+};
 
 export const mapToCustomCardProps = (
   p: PractitionerSummary,
-  availability: { days: string[]; hours: number[] }
-): CustomCardProps => ({
-  imageUrl: p.practitionerProfile.photoUrl ?? "/images/default.jpg",
-  name: p.practitionerProfile.fullName,
-  specialty: p.practitionerRole.specialityCode.display,
-  education: p.practitionerProfile.education ?? "No especificado",
-  experience: p.practitionerProfile.experience
-    ? `${p.practitionerProfile.experience} años`
-    : "Sin datos",
-  license:
-    p.practitionerProfile.identifiers.find((i: { type: string; value: string }) => i.type === "NATIONAL_ID")?.value ??
-    "No disponible",
-  availableDays: availability.days,
-  availableHours: availability.hours,
-  phoneNumberLink: "tel:+542604123456",
-  whatsappLink: "https://wa.me/542604123456",
-  mapsLink: "https://maps.google.com/?q=Clínica+HealthTech+San+Rafael",
-  calendarLink: `/appointments/create/${p.id}`,
-});
+  availability: Availability,
+  metadata: ClinicMetadata
+): CustomCardProps => {
+  const clinic = metadata.clinic;
+
+  return {
+    id: p.id,
+    imageUrl: p.userProfile.photoUrl ?? "/images/default.jpg",
+    name: p.userProfile.fullName,
+    specialty: p.practitionerRole.specialityCode.display,
+    education: p.practitionerProfile.studies?.trim() || "No especificado",
+    experience:
+      typeof p.practitionerProfile.experience === "number"
+        ? `${p.practitionerProfile.experience} años`
+        : "Sin datos",
+    license: p.practitionerProfile.officeCode ?? "No disponible",
+    availableDays: availability.days,
+    availableHours: availability.hours,
+    metadata: {
+      appointmentChannels: metadata.appointmentChannels ?? [],
+      appointmentPriority: metadata.appointmentPriority ?? [],
+      appointmentStatuses: metadata.appointmentStatuses ?? [],
+    },
+    phoneNumberLink: clinic.secretaryPhone ?? clinic.administrationPhone ?? "",
+    whatsappLink: clinic.secretaryPhone
+      ? `https://wa.me/${clinic.secretaryPhone}`
+      : undefined,
+    mapsLink: clinic.address
+      ? `https://maps.google.com/?q=${encodeURIComponent(
+          `${clinic.address}, ${clinic.province ?? ""}, ${clinic.country ?? ""}`
+        )}`
+      : undefined,
+  };
+};
 

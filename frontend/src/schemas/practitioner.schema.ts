@@ -31,14 +31,29 @@ export const practitionerRoleSchema = z.object({
   specialityCode: codeDescriptorSchema,
 });
 
+export const practitionerProfileSchema = z.object({
+  studies: z.string().optional(),
+  experience: z.number().optional(),
+  officeCode: z.string().optional(),
+  remote: z.boolean().optional(),
+});
+
 export const practitionerSummarySchema = z.object({
   id: z.number(),
-  practitionerProfile: practitionerProfileSchema,
+  userProfile: userProfileSchema,
   practitionerRole: practitionerRoleSchema,
+  practitionerProfile: practitionerProfileSchema, 
 });
 
 export const practitionersSchema = z.array(practitionerSummarySchema);
 
-// Tipos derivados automáticamente
+
+export const practitionersResponseSchema = z.object({
+  content: practitionersSchema,
+  totalElements: z.number(),
+  totalPages: z.number(),
+});
+
+export type PractitionerResponse = z.infer<typeof practitionersResponseSchema>;
 export type PractitionerSummary = z.infer<typeof practitionerSummarySchema>;
 export type PractitionerList = z.infer<typeof practitionersSchema>;

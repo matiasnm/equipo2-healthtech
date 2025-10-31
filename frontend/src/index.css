@@ -158,8 +158,8 @@ html {
       white 10%,
      /* #ecc74d4a 40%,*/
       #919dfed4 60%,
-      #0076b6c5 90%,
-      #004e6db8 100%
+      #015988c5 90%,
+      #01384eb8 100%
     ),
     radial-gradient(circle at 50% 50%, var(--color-accent) 0%, transparent 0%),
     radial-gradient(circle at 50% 100%, var(--color-primary-hover) 0%, transparent 70%),

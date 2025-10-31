@@ -1,5 +1,5 @@
 export type AppointmentCreatePayload = {
-  patientId: number;
+  
   practitionerIds: number[];
   startTime: string; 
   endTime: string;   
@@ -8,6 +8,7 @@ export type AppointmentCreatePayload = {
 };
 
 export type AppointmentUpdatePayload = AppointmentCreatePayload;
+
 
 export type AppointmentStatus = 'SCHEDULED' | 'CANCELLED' | 'COMPLETED' | 'NO_SHOW';
 
