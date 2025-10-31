@@ -43,9 +43,12 @@ export default function Encounter() {
   useEffect(() => {
     async function loadData() {
       try {
-        // Encuentros
+        // Encuentros (la API devuelve un objeto paginado { content: [...] } )
         const rawEncounters = await getEncounters();
-        const parsedEncounters = z.array(EncounterSchema).parse(rawEncounters);
+        const encountersArray = Array.isArray(rawEncounters)
+          ? rawEncounters
+          : rawEncounters?.content ?? [];
+        const parsedEncounters = z.array(EncounterSchema).parse(encountersArray);
 
         const encounterViews: EncounterView[] = parsedEncounters.map((e) => ({
           id: e.id,

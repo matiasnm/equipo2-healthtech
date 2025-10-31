@@ -40,7 +40,7 @@ export async function getPractitionersList(): Promise<PractitionerDetail[]> {
 
 // Doctores vinculados al paciente
 export async function getMyPractitioners(): Promise<PractitionerDetail[]> {
-  const res = await privateAPI.get('/api/v1/patient/my-practitioners');
+  const res = await privateAPI.get('/api/v1/patients/my-practitioners');
   return res.data;
 }
 
