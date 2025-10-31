@@ -12,6 +12,19 @@ import { useAuthStore } from "../store/useAuthStore";
 import { getAvailableSlots } from "../utils/getAvailableSlot";
 import type { PractitionerSummary } from "../schemas/practitioner.schema";
 
+
+
+const carouselSettings = {
+  dots: false,
+  infinite: true,
+  speed: 800,
+  autoplay: true,
+  autoplaySpeed: 3000,
+  fade: false,
+  arrows: false,
+  pauseOnHover: false,
+};
+
 const PractitionersPage = () => {
   const [practitioners, setPractitioners] = useState<PractitionerSummary[]>([]);
   const [selectedPractitioner, setSelectedPractitioner] = useState<PractitionerSummary | null>(null);
@@ -154,7 +167,7 @@ const PractitionersPage = () => {
                 className="transition-all duration-300 transform hover:scale-[1.03] animate-cloud"
               >
                 <CompactCard
-                  imageUrl={p.userProfile.photoUrl ?? "/images/default.jpg"}
+                  imageUrl={p.userProfile.photoUrl ?? "/images/default.webp"}
                   name={p.userProfile.fullName}
                   specialty={p.practitionerRole.specialityCode.display}
                   onClick={() => handleSelect(p)}
