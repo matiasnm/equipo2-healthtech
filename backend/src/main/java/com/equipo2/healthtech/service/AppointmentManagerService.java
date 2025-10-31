@@ -40,7 +40,9 @@ public class AppointmentManagerService {
         log.info("APPOINTMENTS CONFLICTS -> Ids: {}", conflictsIds);
 
         if (conflicts.isEmpty()) {
-            return appointmentRepository.save(newAppointment);
+            Appointment appointment = appointmentRepository.save(newAppointment);
+            notificationService.notifySchedule(appointment);
+            return appointment;
         }
 
         if (newAppointment.getPriority().ordinal() >= AppointmentPriority.HIGH.ordinal()) {

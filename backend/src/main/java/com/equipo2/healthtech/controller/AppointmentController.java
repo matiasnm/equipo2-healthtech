@@ -4,6 +4,7 @@ import com.equipo2.healthtech.dto.appointment.*;
 import com.equipo2.healthtech.dto.encounter.EncounterReadResponseDto;
 import com.equipo2.healthtech.dto.practitioner.PractitionerReadSummaryResponseDto;
 import com.equipo2.healthtech.dto.practitioner.PractitionerRoleReadResponseDto;
+import com.equipo2.healthtech.dto.practitioner.PractitionerWeeklyScheduleDto;
 import com.equipo2.healthtech.model.appointment.AppointmentStatus;
 import com.equipo2.healthtech.model.practitioner.Practitioner;
 import com.equipo2.healthtech.service.AppointmentService;
@@ -105,6 +106,15 @@ public class AppointmentController {
             @Valid @RequestBody AppointmentAvailabilityRequestDto request) {
         Practitioner practitioner = appointmentService.findAvailablePractitioner(id, request.startTime(), request.endTime());
         return ResponseEntity.ok(practitioner.isStatus());
+    }
+
+    @Operation(summary = "Returns current and next week practitioner unavailable time slots")
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/available-practitioners/weekly/{id}")
+    public ResponseEntity<PractitionerWeeklyScheduleDto> practitionerWeeklyUnavailability(
+            @PathVariable Long id) {
+        PractitionerWeeklyScheduleDto dto = appointmentService.getPractitionerWeeklyUnavailability(id);
+        return ResponseEntity.ok(dto);
     }
 
     @Operation(summary = "Get ALL available practitioners upon Dto (dates/remote/speciality)")

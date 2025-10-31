@@ -4,6 +4,7 @@ import com.equipo2.healthtech.dto.appointment.*;
 import com.equipo2.healthtech.dto.encounter.EncounterReadResponseDto;
 import com.equipo2.healthtech.dto.practitioner.PractitionerReadSummaryResponseDto;
 import com.equipo2.healthtech.dto.practitioner.PractitionerRoleReadResponseDto;
+import com.equipo2.healthtech.dto.practitioner.PractitionerWeeklyScheduleDto;
 import com.equipo2.healthtech.model.appointment.Appointment;
 import com.equipo2.healthtech.model.appointment.AppointmentStatus;
 import com.equipo2.healthtech.model.practitioner.Practitioner;
@@ -41,4 +42,7 @@ public interface AppointmentService {
     public Practitioner findAvailablePractitioner(Long id, OffsetDateTime start, OffsetDateTime end);
 
     public EncounterReadResponseDto fetchEncounter(Long id);
+
+    public PractitionerWeeklyScheduleDto getPractitionerWeeklyUnavailability(Long id);
+
 }
