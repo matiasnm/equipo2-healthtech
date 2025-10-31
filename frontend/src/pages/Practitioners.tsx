@@ -167,7 +167,7 @@ const PractitionersPage = () => {
                 className="transition-all duration-300 transform hover:scale-[1.03] animate-cloud"
               >
                 <CompactCard
-                  imageUrl={p.userProfile.photoUrl ?? "/images/default.jpg"}
+                  imageUrl={p.userProfile.photoUrl ?? "/images/default.webp"}
                   name={p.userProfile.fullName}
                   specialty={p.practitionerRole.specialityCode.display}
                   onClick={() => handleSelect(p)}

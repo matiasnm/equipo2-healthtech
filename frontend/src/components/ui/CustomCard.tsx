@@ -75,168 +75,132 @@ export const CustomCard = ({
 
   return (
     <>
-      <div className="relative w-full md:w-[700px] mx-auto mb-6">
-        <div
-          className={`flex flex-col md:flex-row rounded-xl p-4 gap-6 items-start border border-[var(--color-accent)] shadow-lg transition-all duration-300 ${showModal ? "backdrop-blur-sm" : "bg-[var(--color-secondary)]/50"
-            }`}
+      <div className="max-w-3xl mx-auto mb-6">
+        <div className={`flex flex-col md:flex-row rounded-xl p-4 gap-6 items-start border border-[var(--color-accent)] shadow-lg bg-white`}
         >
-          <div className="md:w-1/3 w-full flex justify-center">
+          {/* Left: image */}
+          <div className="md:w-1/4 w-full flex justify-center">
             <img
               src={imageUrl}
               alt={name}
-              className="w-32 h-32 object-cover rounded-full border-2 border-[var(--color-accent)]"
+              onError={(e: any) => { e.currentTarget.src = '/images/default.webp'; }}
+              className="w-28 h-28 md:w-32 md:h-32 object-cover rounded-full border-2 border-[var(--color-accent)]"
             />
           </div>
-          <div className="flex flex-col gap-2 md:w-2/3 w-full">
-            <h2 className="text-xl font-bold text-[var(--color-text)]">{name}</h2>
-            <p className="text-sm text-[var(--color-muted)]">{specialty}</p>
-            <p className="text-sm text-[var(--color-muted)]">Estudios: {education}</p>
-            <p className="text-sm text-[var(--color-muted)]">Experiencia: {experience}</p>
-            <p className="text-sm text-[var(--color-muted)]">Matrícula: {license}</p>
 
-            <div className="mt-2">
-              <span className="text-sm font-semibold text-[var(--color-text)]">Días disponibles:</span>
-              <div className="flex gap-2 flex-wrap mt-1">
-                {allDays.map((day) => (
-                  <span
-                    key={day}
-                    className={`px-2 py-1 rounded-full text-sm border ${availableDays.some((d) =>
-                      new Date(d)
-                        .toLocaleDateString("es-AR", { weekday: "short" })
-                        .replace(".", "")
-                        .toLowerCase()
-                        .startsWith(day.toLowerCase())
-                    )
-                      ? "bg-[var(--color-accent)] text-white border-[var(--color-accent)]"
-                      : "bg-gray-100 text-gray-400 border-gray-300"
-                      }`}
-                  >
-                    {day}
-                  </span>
-                ))}
+          {/* Middle: info */}
+          <div className="flex-1">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h2 className="text-lg md:text-xl font-semibold text-[var(--color-text)]">{name}</h2>
+                <div className="mt-1 flex items-center gap-2">
+                  <span className="inline-block text-sm bg-[var(--color-accent)] text-white px-2 py-0.5 rounded">{specialty}</span>
+                  <span className="text-sm text-[var(--color-muted)]">{education}</span>
+                </div>
+                <p className="mt-2 text-sm text-[var(--color-muted)]">{experience}</p>
+                <p className="mt-1 text-sm text-[var(--color-muted)]">Matrícula: <strong className="text-[var(--color-text)]">{license}</strong></p>
               </div>
-            </div>
 
-            <div className="mt-2">
-              <span className="text-sm font-semibold text-[var(--color-text)]">Horarios disponibles:</span>
-              <div className="flex gap-2 flex-wrap mt-1">
-                {allHours.map((hour) => (
-                  <span
-                    key={hour}
-                    className={`px-2 py-1 rounded text-sm border ${availableHours.includes(hour)
-                      ? "bg-[var(--color-accent)] text-white border-[var(--color-accent)]"
-                      : "bg-gray-100 text-gray-400 border-gray-300"
-                      }`}
-                  >
-                    {hour}:00
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-          <div className="flex justify-center mt-4">
-            <button
-              type="button"
-              className="px-4 py-2 rounded bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white text-sm font-semibold"
-              onClick={() => { console.log('openAppointmentModal clicked for practitioner', id); openAppointmentModal(); }}
-            >
-              Agendar cita
-            </button>
-          </div>
-
-          <p className="mt-2 text-sm text-center text-[var(--color-muted)]">
-            También puedes acercarte a nuestras oficinas para agendar un turno o comunicarte con secretaria
-          </p>
-
-          <div className="flex justify-center gap-4 mt-4 text-xl text-[var(--color-muted)]">
-            {whatsappLink && (
-              <a href={whatsappLink} target="_blank" rel="noopener noreferrer" title="WhatsApp">
-                <FaWhatsapp className="hover:text-[var(--color-primary)]" />
-              </a>
-            )}
-            {phoneNumberLink && (
-              <a href={`tel:${phoneNumberLink}`} title="Llamar al doctor">
-                <FiPhone className="hover:text-[var(--color-primary)]" />
-              </a>
-            )}
-            {calendarLink && (
-              <a href={calendarLink} target="_blank" rel="noopener noreferrer" title="Google Calendar">
-                <FaCalendarAlt className="hover:text-[var(--color-primary)]" />
-              </a>
-            )}
-            {mapsLink && (
-              <a href={mapsLink} target="_blank" rel="noopener noreferrer" title="Cita presencial">
-                <FiMapPin className="hover:text-[var(--color-primary)]" />
-              </a>
-            )}
-            {meetsLink && (
-              <a href={meetsLink} target="_blank" rel="noopener noreferrer" title="Cita virtual">
-                <FiVideo className="hover:text-[var(--color-primary)]" />
-              </a>
-            )}
-          </div>
-
-          <div className="mt-2">
-            <span className="text-sm font-semibold text-[var(--color-text)]">Horarios disponibles:</span>
-            <div className="flex gap-2 flex-wrap mt-1">
-              {allHours.map((hour) => (
-                <span
-                  key={hour}
-                  className={`px-2 py-1 rounded text-sm ${availableHours.includes(hour)
-                    ? "bg-accent text-white"
-                    : "bg-gray-100 text-gray-400"
-                    }`}
+              <div className="hidden md:block text-right">
+                <button
+                  type="button"
+                  className="px-4 py-2 rounded bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white text-sm font-semibold"
+                  onClick={() => { console.log('openAppointmentModal clicked for practitioner', id); openAppointmentModal(); }}
                 >
-                  {hour}:00
-                </span>
-              ))}
+                  Agendar cita
+                </button>
+
+                <div className="mt-3 text-sm text-[var(--color-muted)]">
+                  <div>{location}</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Availability badges */}
+            <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-2">
+              <div>
+                <div className="text-xs text-[var(--color-muted)]">Días</div>
+                <div className="mt-1 flex gap-1 flex-wrap">
+                  {allDays.map((day) => (
+                    <span key={day} className={`px-2 py-1 text-xs rounded-full ${availableDays.some((d) =>
+                      new Date(d).toLocaleDateString('es-AR', { weekday: 'short' }).replace('.', '').toLowerCase().startsWith(day.toLowerCase())
+                    ) ? 'bg-[var(--color-accent)] text-white' : 'bg-gray-100 text-gray-400'}`}>
+                      {day}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <div className="text-xs text-[var(--color-muted)]">Horarios</div>
+                <div className="mt-1 flex gap-1 flex-wrap">
+                  {allHours.map((hour) => (
+                    <span key={hour} className={`px-2 py-1 text-xs rounded ${availableHours.includes(hour) ? 'bg-[var(--color-accent)] text-white' : 'bg-gray-100 text-gray-400'}`}>
+                      {hour}:00
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="md:col-span-2">
+                <div className="text-xs text-[var(--color-muted)]">Contacto</div>
+                <div className="mt-1 flex items-center gap-3 text-xl text-[var(--color-muted)]">
+                  {whatsappLink && (
+                    <a href={whatsappLink} target="_blank" rel="noopener noreferrer" title="WhatsApp">
+                      <FaWhatsapp className="hover:text-[var(--color-primary)]" />
+                    </a>
+                  )}
+                  {phoneNumberLink && (
+                    <a href={`tel:${phoneNumberLink}`} title="Llamar al doctor">
+                      <FiPhone className="hover:text-[var(--color-primary)]" />
+                    </a>
+                  )}
+                  {meetsLink && (
+                    <a href={meetsLink} target="_blank" rel="noopener noreferrer" title="Cita virtual">
+                      <FiVideo className="hover:text-[var(--color-primary)]" />
+                    </a>
+                  )}
+                  {mapsLink && (
+                    <a href={mapsLink} target="_blank" rel="noopener noreferrer" title="Cita presencial">
+                      <FiMapPin className="hover:text-[var(--color-primary)]" />
+                    </a>
+                  )}
+                  {calendarLink && (
+                    <a href={calendarLink} target="_blank" rel="noopener noreferrer" title="Google Calendar">
+                      <FaCalendarAlt className="hover:text-[var(--color-primary)]" />
+                    </a>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Mobile action */}
+            <div className="mt-4 md:hidden flex justify-center">
+              <button
+                type="button"
+                className="px-4 py-2 rounded bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white text-sm font-semibold w-full"
+                onClick={() => { console.log('openAppointmentModal clicked for practitioner', id); openAppointmentModal(); }}
+              >
+                Agendar cita
+              </button>
             </div>
           </div>
+        </div>
 
-          <div className="flex gap-4 mt-4 text-xl text-[var(--color-muted)]">
-            {whatsappLink && (
-              <a href={whatsappLink} target="_blank" rel="noopener noreferrer" title="WhatsApp">
-                <FaWhatsapp className="hover:text-[var(--color-primary)]" />
-              </a>
-            )}
-            {phoneNumberLink && (
-              <a href={`tel:${phoneNumberLink}`} title="Llamar al doctor">
-                <FiPhone className="hover:text-[var(--color-primary)]" />
-              </a>)}
-            {calendarLink && (
-              <a href={calendarLink} target="_blank" rel="noopener noreferrer" title="Google Calendar">
-                <FaCalendarAlt className="hover:text-[var(--color-primary)]" />
-              </a>
-            )}
-            {mapsLink && (
-              <a href={mapsLink} target="_blank" rel="noopener noreferrer" title="Cita presencial">
-                <FiMapPin className="hover:text-[var(--color-primary)]" />
-              </a>
-            )}
-            {meetsLink && (
-              <a href={meetsLink} target="_blank" rel="noopener noreferrer" title="Cita virtual">
-                <FiVideo className="hover:text-[var(--color-primary)]" />
-              </a>
-            )}
+        {showModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <AppointmentModal
+              isOpen={showModal}
+              practitioner={modalPractitioner}
+              patient={modalPatient}
+              metadata={metadata}
+              onClose={closeAppointmentModal}
+            />
           </div>
-        </div>
+        )}
       </div>
-      {showModal && (
-        // Use fixed positioning to ensure the modal is visible above all layout and not clipped by containers
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <AppointmentModal
-            isOpen={showModal}
-            practitioner={modalPractitioner}
-            patient={modalPatient}
-            metadata={metadata}
-            onClose={closeAppointmentModal}
-          />
-        </div>
-      )}
     </>
-
-
-  )
+  );
 };
 
 
