@@ -14,7 +14,7 @@ export const ROUTES = {
   PROFILE: '/profile',
   EDIT_PROFILE: 'edit/profile',  
   CREATE_APPOINTMENT: 'create/appointment', 
-  APPOINTMENT_FORM: 'appointment/form',
+  APPOINTMENT_FORM: '/appointment/create',
   PRACTITIONERS: '/practitioners',   
   APPOINTMENTS: '/appointments',  
   ENCOUNTER: '/encounter',
