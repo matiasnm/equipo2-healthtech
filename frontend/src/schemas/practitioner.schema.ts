@@ -1,13 +1,21 @@
 import { z } from "zod";
 
 export const codeDescriptorSchema = z.object({
+  id: z.number().optional(),
   system: z.string(),
   code: z.string(),
   display: z.string(),
   definition: z.string(),
 });
 
-export const practitionerProfileSchema = z.object({
+
+export const practitionerRoleSchema = z.object({
+  roleCode: codeDescriptorSchema,
+  specialityCode: codeDescriptorSchema,
+});
+
+// Perfil del usuario (información personal) — coincide con la respuesta API en `userProfile`
+export const userProfileSchema = z.object({
   id: z.number(),
   fullName: z.string(),
   gender: z.string(),
@@ -17,32 +25,30 @@ export const practitionerProfileSchema = z.object({
   photoUrl: z.string().url().optional(),
   education: z.string().optional(),
   experience: z.number().optional(),
-  identifiers: z.array(z.object({
-    system: z.string(),
-    value: z.string(),
-    type: z.string(),
-    userId: z.number(),
-  })),
+  // identificadores pueden no venir del API; lo hacemos opcional
+  identifiers: z.array(
+    z.object({
+      system: z.string(),
+      value: z.string(),
+      type: z.string(),
+      userId: z.number(),
+    })
+  ).optional(),
 });
 
-
-export const practitionerRoleSchema = z.object({
-  roleCode: codeDescriptorSchema,
-  specialityCode: codeDescriptorSchema,
-});
-
-export const userProfileShema = z.object({
-  studies: z.string().optional(),
+// Perfil profesional (información de practitionerProfile en la API)
+export const practitionerProfileSchema = z.object({
   experience: z.number().optional(),
+  studies: z.string().optional(),
   officeCode: z.string().optional(),
   remote: z.boolean().optional(),
 });
 
 export const practitionerSummarySchema = z.object({
   id: z.number(),
-  userProfile: userProfileShema,
+  userProfile: userProfileSchema,
   practitionerRole: practitionerRoleSchema,
-  practitionerProfile: practitionerProfileSchema, 
+  practitionerProfile: practitionerProfileSchema,
 });
 
 export const practitionersSchema = z.array(practitionerSummarySchema);

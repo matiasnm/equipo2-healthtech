@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import { createAppointment } from "../../../services/appointments";
 import { createAppointmentSchema } from "../../../schemas/createAppointment.schema";
 import type { AppointmentCreatePayload } from "../../../types/appointment.types";
+import { formatWithLocalOffset, buildLocalDate } from '../../../utils/date';
 
 type AppointmentModalProps = {
   isOpen: boolean;
@@ -39,13 +40,21 @@ export const AppointmentModal = ({
   if (!isOpen) return null;
 
   const today = new Date();
-  const validDays = practitioner.availableDays.filter((dayStr) => {
-    const day = new Date(dayStr);
-    const isFuture = day >= new Date(today.toDateString());
-    const weekday = day.getDay(); 
-    const isWeekday = weekday >= 1 && weekday <= 5;
-    return isFuture && isWeekday;
-  });
+  // Normalizamos availableDays a YYYY-MM-DD para evitar problemas con zonas horarias
+  const validDays = practitioner.availableDays
+    .map((dayStr) => {
+      const d = new Date(dayStr);
+      const pad = (n: number) => String(n).padStart(2, '0');
+      const normalized = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+      return { original: dayStr, date: d, normalized };
+    })
+    .filter(({ date }) => {
+      const isFuture = date >= new Date(today.toDateString());
+      const weekday = date.getDay();
+      const isWeekday = weekday >= 1 && weekday <= 5;
+      return isFuture && isWeekday;
+    })
+    .map(({ normalized }) => normalized);
 
   const slots = practitioner.availableHours.flatMap((hour) => [
     `${hour.toString().padStart(2, "0")}:00`,
@@ -72,16 +81,19 @@ export const AppointmentModal = ({
     }
 
     setLoading(true);
+    console.log('AppointmentModal: selectedDay=', selectedDay);
+    console.log('AppointmentModal: selectedSlot=', selectedSlot);
 
     try {
-      const start = new Date(`${selectedDay}T${selectedSlot}`);
+      // build local Date explicitly from parts to avoid timezone shifts
+      const start = buildLocalDate(selectedDay, selectedSlot);
       const end = new Date(start.getTime() + 30 * 60000);
 
-      const payload: AppointmentCreatePayload = {
+      const payload: any = {
         practitionerIds: [practitioner.id],
         patientId: patient.id,
-        startTime: start.toISOString(),
-        endTime: end.toISOString(),
+        startTime: formatWithLocalOffset(start),
+        endTime: formatWithLocalOffset(end),
         channel,
         status: "SCHEDULED",
         ...(metadata.appointmentPriority[0] && {
@@ -129,23 +141,25 @@ export const AppointmentModal = ({
           <h3 className="font-semibold">Selecciona un día</h3>
           <div className="flex gap-2 mt-2 flex-wrap">
             {validDays.length > 0 ? (
-              validDays.map((day) => (
-                <button
-                  key={day}
-                  onClick={() => setSelectedDay(day)}
-                  className={`px-3 py-1 rounded border ${
-                    selectedDay === day
-                      ? "bg-primary text-white border-primary"
-                      : "bg-gray-200 border-[var(--color-accent)]"
-                  }`}
-                >
-                  {new Date(day).toLocaleDateString("es-AR", {
-                    weekday: "short",
-                    day: "numeric",
-                    month: "short",
-                  })}
-                </button>
-              ))
+              validDays.map((normDay) => {
+                const display = new Date(normDay + 'T00:00:00').toLocaleDateString("es-AR", {
+                  weekday: "short",
+                  day: "numeric",
+                  month: "short",
+                });
+                return (
+                  <button
+                    key={normDay}
+                    onClick={() => setSelectedDay(normDay)}
+                    className={`px-3 py-1 rounded border ${selectedDay === normDay
+                        ? "bg-primary text-white border-primary"
+                        : "bg-gray-200 border-[var(--color-accent)]"
+                      }`}
+                  >
+                    {display}
+                  </button>
+                );
+              })
             ) : (
               <span className="text-gray-400 text-sm">Sin días disponibles</span>
             )}
@@ -161,11 +175,10 @@ export const AppointmentModal = ({
                 <button
                   key={slot}
                   onClick={() => setSelectedSlot(slot)}
-                  className={`px-3 py-1 rounded border ${
-                    selectedSlot === slot
+                  className={`px-3 py-1 rounded border ${selectedSlot === slot
                       ? "bg-primary text-white border-primary"
                       : "bg-gray-200 border-[var(--color-accent)]"
-                  }`}
+                    }`}
                 >
                   {slot}
                 </button>

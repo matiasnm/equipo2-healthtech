@@ -41,11 +41,12 @@ fetchAppointments: async () => {
   create: async (data) => {
     set({ loading: true });
     try {
+      const { formatWithLocalOffset } = await import('../utils/date');
       const payload = {
         ...data,
         teleconsultationUrl: data.teleconsultationUrl ?? undefined,
-        startTime: new Date(data.startTime).toISOString(),
-        endTime: new Date(data.endTime).toISOString(),
+        startTime: formatWithLocalOffset(new Date(data.startTime)),
+        endTime: formatWithLocalOffset(new Date(data.endTime)),
       };
       await createAppointment(payload);
       await useAppointments.getState().fetchAppointments();

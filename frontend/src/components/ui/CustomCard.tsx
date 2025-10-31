@@ -136,8 +136,9 @@ export const CustomCard = ({
           </div>
           <div className="flex justify-center mt-4">
             <button
+              type="button"
               className="px-4 py-2 rounded bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white text-sm font-semibold"
-              onClick={openAppointmentModal}
+              onClick={() => { console.log('openAppointmentModal clicked for practitioner', id); openAppointmentModal(); }}
             >
               Agendar cita
             </button>
@@ -221,7 +222,8 @@ export const CustomCard = ({
         </div>
       </div>
       {showModal && (
-        <div className="absolute top-0 left-0 right-0 z-20 flex items-center justify-center">
+        // Use fixed positioning to ensure the modal is visible above all layout and not clipped by containers
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <AppointmentModal
             isOpen={showModal}
             practitioner={modalPractitioner}
@@ -229,8 +231,8 @@ export const CustomCard = ({
             metadata={metadata}
             onClose={closeAppointmentModal}
           />
-        </div>)
-      }
+        </div>
+      )}
     </>
 
 
