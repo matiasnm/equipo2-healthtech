@@ -1,17 +1,63 @@
 import { z } from 'zod';
 
-export const practitionerSchema = z.object({
-  name: z.string().min(1, 'El nombre es obligatorio'),
-  specialty: z.string().min(1, 'La especialidad es obligatoria'),
-  education: z.string().optional(),
-  experience: z.string().optional(),
-  license: z.string().min(1, 'La matrícula es obligatoria'),
-  availableDays: z.array(z.enum(['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'])),
-  availableHours: z.array(z.number().int().min(8).max(18)),
-  imageUrl: z.string().url(),
-  mapsLink: z.string().url().optional(),
-  meetsLink: z.string().url().optional(),
-  phoneNumberLink: z.string().optional(),
-  whatsappLink: z.string().optional(),
-  calendarLink: z.string().optional(),
+export const codeDescriptorSchema = z.object({
+  system: z.string(),
+  code: z.string(),
+  display: z.string(),
+  definition: z.string(),
 });
+
+export const practitionerRoleSchema = z.object({
+  roleCode: codeDescriptorSchema,
+  specialityCode: codeDescriptorSchema,
+});
+
+
+export const userProfileSchema = z.object({
+  id: z.number(),
+  fullName: z.string(),
+  gender: z.string(),
+  phone: z.string(),
+  address: z.string(),
+  birthday: z.string(),
+  photoUrl: z.string().url().optional(),
+  education: z.string().optional(),
+  experience: z.number().optional(),
+  identifiers: z
+    .array(
+      z.object({
+        system: z.string(),
+        value: z.string(),
+        type: z.string(),
+        userId: z.number(),
+      })
+    )
+    .optional(),
+});
+
+export const practitionerProfileSchema = z.object({
+  studies: z.string().optional(),
+  experience: z.number().optional(),
+  officeCode: z.string().optional(),
+  remote: z.boolean().optional(),
+});
+
+
+export const practitionerSummarySchema = z.object({
+  id: z.number(),
+  userProfile: userProfileSchema,
+  practitionerRole: practitionerRoleSchema,
+  practitionerProfile: practitionerProfileSchema, 
+});
+
+export const practitionersSchema = z.array(practitionerSummarySchema);
+
+export const practitionersResponseSchema = z.object({
+  content: practitionersSchema,
+  totalElements: z.number(),
+  totalPages: z.number(),
+});
+
+export type PractitionerResponse = z.infer<typeof practitionersResponseSchema>;
+export type PractitionerSummary = z.infer<typeof practitionerSummarySchema>;
+export type PractitionerList = z.infer<typeof practitionersSchema>;

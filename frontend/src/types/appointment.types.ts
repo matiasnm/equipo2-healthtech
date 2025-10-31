@@ -1,9 +1,14 @@
 export type AppointmentCreatePayload = {
-  patientId: number;
+  
   practitionerIds: number[];
-  startTime: string; // formato ISO
-  endTime: string;   // formato ISO
+  patientId: number;
+  startTime: string; // ISO
+  endTime: string;   // ISO
+  channel: string;
+  priority?: string;
+  status: "SCHEDULED" | "CANCELLED" | "COMPLETED" | "NO_SHOW";
 };
+
 
 export type AppointmentUpdatePayload = {
   patientId: number;
