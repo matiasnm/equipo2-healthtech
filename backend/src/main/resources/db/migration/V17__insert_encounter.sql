@@ -11,11 +11,11 @@ INSERT INTO encounters (
 ) VALUES (
              'COMPLETED',
              'AMB',
+             3,
+             5,
              1,
              2,
-             1,
-             2,
-             'Patient visited for routine check-up',
+             'Patient attended for an annual routine check-up. Reports no acute complaints. Vital signs within normal limits. Physical examination unremarkable. Denies chest pain, dyspnea, abdominal discomfort, or urinary symptoms. Sleep and appetite normal. Preventive labs and vaccination status reviewed; patient encouraged to maintain balanced diet and regular physical activity. Follow-up visit scheduled in 12 months or sooner if symptoms arise.',
              now(),
              now()
          )

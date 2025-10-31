@@ -24,10 +24,22 @@ CREATE TABLE appointment_practitioners (
 
 -- 1️⃣ Insert appointment
 INSERT INTO appointments (patient_id, start_time, end_time, status, priority, created_at, updated_at)
-VALUES (2, now(), now() + interval '30 minutes', 'COMPLETED', 'NORMAL', now(), now())
+VALUES (2, now(), now(), 'COMPLETED', 'NORMAL', now(), now())
 RETURNING id;
 
 -- Suppose returned id = 1
 -- 2️⃣ Link practitioner
 INSERT INTO appointment_practitioners (appointment_id, practitioner_id)
 VALUES (1, 3);
+
+
+-- 1️⃣ Insert appointment
+INSERT INTO appointments (patient_id, start_time, end_time, status, priority, created_at, updated_at)
+VALUES (2, now(), now() + interval '60 minutes', 'SCHEDULED', 'NORMAL', now(), now())
+RETURNING id;
+
+-- Suppose returned id = 1
+-- 2️⃣ Link practitioner
+INSERT INTO appointment_practitioners (appointment_id, practitioner_id)
+VALUES (2, 3);
+

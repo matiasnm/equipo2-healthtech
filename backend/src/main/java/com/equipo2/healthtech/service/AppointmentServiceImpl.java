@@ -35,6 +35,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
@@ -167,6 +169,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public PractitionerWeeklyScheduleDto getPractitionerWeeklyUnavailability(Long id) {
+        ZoneOffset offsetArgentina = ZoneOffset.ofHours(-3);
+
         Practitioner practitioner = getValidPractitioner(id);
 
         OffsetDateTime today = OffsetDateTime.now();
@@ -183,8 +187,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         for (Unavailability u : unavailabilities) {
             occupied.get(u.getDayOfWeek())
                     .add(new TimeRangeReadDto(
-                            u.getStartTime().toString(),
-                            u.getEndTime().toString(),
+                            u.getStartTime().withOffsetSameInstant(offsetArgentina).toString(),
+                            u.getEndTime().withOffsetSameInstant(offsetArgentina).toString(),
                             "UNAVAILABILITY"
                     ));
         }
@@ -208,8 +212,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         for (Appointment a : appointments) {
             occupied.get(a.getStartTime().getDayOfWeek())
                     .add(new TimeRangeReadDto(
-                            a.getStartTime().toString(),
-                            a.getEndTime().toString(),
+                            a.getStartTime().withOffsetSameInstant(offsetArgentina).toString(),
+                            a.getEndTime().withOffsetSameInstant(offsetArgentina).toString(),
                             "APPOINTMENT"
                     ));
         }
