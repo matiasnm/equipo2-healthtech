@@ -31,7 +31,7 @@ export const practitionerRoleSchema = z.object({
   specialityCode: codeDescriptorSchema,
 });
 
-export const practitionerProfileSchema = z.object({
+export const userProfileShema = z.object({
   studies: z.string().optional(),
   experience: z.number().optional(),
   officeCode: z.string().optional(),
@@ -40,7 +40,7 @@ export const practitionerProfileSchema = z.object({
 
 export const practitionerSummarySchema = z.object({
   id: z.number(),
-  userProfile: userProfileSchema,
+  userProfile: userProfileShema,
   practitionerRole: practitionerRoleSchema,
   practitionerProfile: practitionerProfileSchema, 
 });

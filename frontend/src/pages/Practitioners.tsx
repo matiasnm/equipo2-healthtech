@@ -12,6 +12,19 @@ import { useAuthStore } from "../store/useAuthStore";
 import { getAvailableSlots } from "../utils/getAvailableSlot";
 import type { PractitionerSummary } from "../schemas/practitioner.schema";
 
+
+
+const carouselSettings = {
+  dots: false,
+  infinite: true,
+  speed: 800,
+  autoplay: true,
+  autoplaySpeed: 3000,
+  fade: false,
+  arrows: false,
+  pauseOnHover: false,
+};
+
 const PractitionersPage = () => {
   const [practitioners, setPractitioners] = useState<PractitionerSummary[]>([]);
   const [selectedPractitioner, setSelectedPractitioner] = useState<PractitionerSummary | null>(null);

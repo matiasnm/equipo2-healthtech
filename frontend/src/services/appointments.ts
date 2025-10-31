@@ -5,6 +5,7 @@ import type {
   AppointmentCreatePayload,
   AppointmentUpdatePayload,
   AppointmentStatus,
+  ResponseAppointmentList,
 } from "../types/appointment.types";
 
 // Tipos para disponibilidad
@@ -120,4 +121,20 @@ export const getPractitionerWeeklyAvailability = async (practitionerId: number) 
     return {};
   }
 };
+
+
+
+export const getAllAppointments = async () => {
+  const res = await privateAPI.get('/api/v1/appointments/list');
+  return res.data;
+};
+
+export const getAppointmentsByPractitioner = async (): Promise<ResponseAppointmentList> => {
+  const response = await privateAPI.get(`/api/v1/appointments/list`);
+  return response.data;
+};
+
+
+export const getAppointmentById = (id: string) =>
+  privateAPI.get(`/api/v1/appointments/${id}`);
 

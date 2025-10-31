@@ -60,12 +60,12 @@ export const CustomCard = ({
   const closeAppointmentModal = () => setShowModal(false);
 
   const modalPractitioner = {
-  id,
-  name,
-  specialty,
-  availableDays,
-  availableHours,
-};
+    id,
+    name,
+    specialty,
+    availableDays,
+    availableHours,
+  };
 
   const modalPatient = {
     id: user.id,
@@ -74,34 +74,33 @@ export const CustomCard = ({
   };
 
   return (
-    <div className="relative w-full md:w-[700px] mx-auto mb-6">
-      <div
-        className={`flex flex-col md:flex-row rounded-xl p-4 gap-6 items-start border border-[var(--color-accent)] shadow-lg transition-all duration-300 ${
-          showModal ? "backdrop-blur-sm" : "bg-[var(--color-secondary)]/50"
-        }`}
-      >
-        <div className="md:w-1/3 w-full flex justify-center">
-          <img
-            src={imageUrl}
-            alt={name}
-            className="w-32 h-32 object-cover rounded-full border-2 border-[var(--color-accent)]"
-          />
-        </div>
-        <div className="flex flex-col gap-2 md:w-2/3 w-full">
-          <h2 className="text-xl font-bold text-[var(--color-text)]">{name}</h2>
-          <p className="text-sm text-[var(--color-muted)]">{specialty}</p>
-          <p className="text-sm text-[var(--color-muted)]">Estudios: {education}</p>
-          <p className="text-sm text-[var(--color-muted)]">Experiencia: {experience}</p>
-          <p className="text-sm text-[var(--color-muted)]">Matrícula: {license}</p>
+    <>
+      <div className="relative w-full md:w-[700px] mx-auto mb-6">
+        <div
+          className={`flex flex-col md:flex-row rounded-xl p-4 gap-6 items-start border border-[var(--color-accent)] shadow-lg transition-all duration-300 ${showModal ? "backdrop-blur-sm" : "bg-[var(--color-secondary)]/50"
+            }`}
+        >
+          <div className="md:w-1/3 w-full flex justify-center">
+            <img
+              src={imageUrl}
+              alt={name}
+              className="w-32 h-32 object-cover rounded-full border-2 border-[var(--color-accent)]"
+            />
+          </div>
+          <div className="flex flex-col gap-2 md:w-2/3 w-full">
+            <h2 className="text-xl font-bold text-[var(--color-text)]">{name}</h2>
+            <p className="text-sm text-[var(--color-muted)]">{specialty}</p>
+            <p className="text-sm text-[var(--color-muted)]">Estudios: {education}</p>
+            <p className="text-sm text-[var(--color-muted)]">Experiencia: {experience}</p>
+            <p className="text-sm text-[var(--color-muted)]">Matrícula: {license}</p>
 
-          <div className="mt-2">
-            <span className="text-sm font-semibold text-[var(--color-text)]">Días disponibles:</span>
-            <div className="flex gap-2 flex-wrap mt-1">
-              {allDays.map((day) => (
-                <span
-                  key={day}
-                  className={`px-2 py-1 rounded-full text-sm border ${
-                    availableDays.some((d) =>
+            <div className="mt-2">
+              <span className="text-sm font-semibold text-[var(--color-text)]">Días disponibles:</span>
+              <div className="flex gap-2 flex-wrap mt-1">
+                {allDays.map((day) => (
+                  <span
+                    key={day}
+                    className={`px-2 py-1 rounded-full text-sm border ${availableDays.some((d) =>
                       new Date(d)
                         .toLocaleDateString("es-AR", { weekday: "short" })
                         .replace(".", "")
@@ -110,32 +109,31 @@ export const CustomCard = ({
                     )
                       ? "bg-[var(--color-accent)] text-white border-[var(--color-accent)]"
                       : "bg-gray-100 text-gray-400 border-gray-300"
-                  }`}
-                >
-                  {day}
-                </span>
-              ))}
+                      }`}
+                  >
+                    {day}
+                  </span>
+                ))}
+              </div>
             </div>
-          </div>
 
-          <div className="mt-2">
-            <span className="text-sm font-semibold text-[var(--color-text)]">Horarios disponibles:</span>
-            <div className="flex gap-2 flex-wrap mt-1">
-              {allHours.map((hour) => (
-                <span
-                  key={hour}
-                  className={`px-2 py-1 rounded text-sm border ${
-                    availableHours.includes(hour)
+            <div className="mt-2">
+              <span className="text-sm font-semibold text-[var(--color-text)]">Horarios disponibles:</span>
+              <div className="flex gap-2 flex-wrap mt-1">
+                {allHours.map((hour) => (
+                  <span
+                    key={hour}
+                    className={`px-2 py-1 rounded text-sm border ${availableHours.includes(hour)
                       ? "bg-[var(--color-accent)] text-white border-[var(--color-accent)]"
                       : "bg-gray-100 text-gray-400 border-gray-300"
-                  }`}
-                >
-                  {hour}:00
-                </span>
-              ))}
+                      }`}
+                  >
+                    {hour}:00
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
           <div className="flex justify-center mt-4">
             <button
               className="px-4 py-2 rounded bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white text-sm font-semibold"
@@ -179,15 +177,14 @@ export const CustomCard = ({
 
           <div className="mt-2">
             <span className="text-sm font-semibold text-[var(--color-text)]">Horarios disponibles:</span>
-          <div className="flex gap-2 flex-wrap mt-1">
+            <div className="flex gap-2 flex-wrap mt-1">
               {allHours.map((hour) => (
                 <span
                   key={hour}
-                  className={`px-2 py-1 rounded text-sm ${
-                    availableHours.includes(hour)
-                      ? "bg-accent text-white"
-                      : "bg-gray-100 text-gray-400"
-                  }`}
+                  className={`px-2 py-1 rounded text-sm ${availableHours.includes(hour)
+                    ? "bg-accent text-white"
+                    : "bg-gray-100 text-gray-400"
+                    }`}
                 >
                   {hour}:00
                 </span>
@@ -223,18 +220,21 @@ export const CustomCard = ({
           </div>
         </div>
       </div>
-
-        {showModal && (
+      {showModal && (
         <div className="absolute top-0 left-0 right-0 z-20 flex items-center justify-center">
           <AppointmentModal
-          isOpen={showModal}
-          practitioner={modalPractitioner}
-          patient={modalPatient}
-          metadata={metadata}
-          onClose={closeAppointmentModal}
-        />
-    </div>
-  )}
+            isOpen={showModal}
+            practitioner={modalPractitioner}
+            patient={modalPatient}
+            metadata={metadata}
+            onClose={closeAppointmentModal}
+          />
+        </div>)
+      }
+    </>
+
+
+  )
 };
 
 
