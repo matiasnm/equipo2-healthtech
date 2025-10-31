@@ -2,6 +2,7 @@ import { Search, Bell } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 import { useNavigate } from 'react-router-dom';
 import { roleLabel } from '../utils/roleLabel';
+import avatarImage from '../assets/avatar.jpg';
 
 export default function TopBar() {
   const { user, role } = useAuthStore();
@@ -40,7 +41,7 @@ export default function TopBar() {
           className="flex items-center space-x-3 hover:bg-[var(--color-secondary-bg)] transition-colors duration-200 rounded-lg px-2 py-1"
         >
           <img
-            src={avatar}
+            src={avatarImage}
             alt="avatar"
             className="w-8 h-8 rounded-full object-cover border border-[var(--color-accent)]"
           />

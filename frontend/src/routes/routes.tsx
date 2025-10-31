@@ -9,8 +9,7 @@ export const ROUTES = {
   CONTACT: '/contact',
   
   // Private Routes
-  DASHBOARD: '/dashboard',
-  PATIENTS: '/patients',  
+  DASHBOARD: '/dashboard', 
   SETUP_PROFILE: 'setup/profile',  
   PROFILE: '/profile',
   EDIT_PROFILE: 'edit/profile',  
@@ -19,8 +18,6 @@ export const ROUTES = {
   PRACTITIONERS: '/practitioners',   
   APPOINTMENTS: '/appointments',  
   ENCOUNTER: '/encounter',
-  ACCOUNT: '/account',
-  SETTINGS: '/settings',
   
 } as const;
 
