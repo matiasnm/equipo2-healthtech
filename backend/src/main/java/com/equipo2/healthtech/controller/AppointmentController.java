@@ -100,7 +100,7 @@ public class AppointmentController {
 
     @Operation(summary = "Check if a specific practitioner is available in a time range")
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/available-practitioners/{id}")
+    @GetMapping("/available-practitioners/{id}")
     public ResponseEntity<Boolean> isPractitionerAvailable(
             @PathVariable Long id,
             @Valid @RequestBody AppointmentAvailabilityRequestDto request) {
@@ -110,7 +110,7 @@ public class AppointmentController {
 
     @Operation(summary = "Returns current and next week practitioner unavailable time slots")
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/available-practitioners/weekly/{id}")
+    @GetMapping("/available-practitioners/weekly/{id}")
     public ResponseEntity<PractitionerWeeklyScheduleDto> practitionerWeeklyUnavailability(
             @PathVariable Long id) {
         PractitionerWeeklyScheduleDto dto = appointmentService.getPractitionerWeeklyUnavailability(id);
@@ -119,7 +119,7 @@ public class AppointmentController {
 
     @Operation(summary = "Get ALL available practitioners upon Dto (dates/remote/speciality)")
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/available-practitioners")
+    @GetMapping("/available-practitioners")
     public ResponseEntity<List<PractitionerReadSummaryResponseDto>> getAvailablePractitioners(
             @Valid @RequestBody AppointmentAvailabilityRequestDto request) {
         List<PractitionerReadSummaryResponseDto> available =
